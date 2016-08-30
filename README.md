@@ -44,7 +44,7 @@ For each list you must define a configuration in your `config.yml`:
 welp_mailchimp:
     api_key: YOURMAILCHIMPAPIKEY
     lists:
-        list1:
+        listId1:
             # optional language option, used only in full synchronization
             mc_language: 'fr'
 
@@ -61,11 +61,11 @@ welp_mailchimp:
             # provider used in full synchronization
             subscriber_providers: 'yourapp.provider1'
 
-        list2:
+        listId2:
             subscriber_providers: 'yourapp.provider2'
 ```
 
-Where `listX` is the name of your MailChimp lists, and `yourapp.providerX` is the key of your provider's service that will provide the subscribers that need to be synchronized in MailChimp. The key `mc_language` is optional and will set this language for all subscribers in this list, see [the list of accepted language codes](http://kb.mailchimp.com/lists/managing-subscribers/view-and-edit-subscriber-languages#code).
+Where `listIdX` is the listId of your MailChimp lists, and `yourapp.providerX` is the key of your provider's service that will provide the subscribers that need to be synchronized in MailChimp. The key `mc_language` is optional and will set this language for all subscribers in this list, see [the list of accepted language codes](http://kb.mailchimp.com/lists/managing-subscribers/view-and-edit-subscriber-languages#code).
 
 Defining lists and providers is necessary only if you use full synchronization with the command.
 

@@ -19,14 +19,14 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('welp_mailchimp');
-        
+
         $rootNode
             ->children()
                 ->scalarNode('api_key')->end()
 
                 // lists
                 ->arrayNode('lists')
-                    ->useAttributeAsKey('name')
+                    ->useAttributeAsKey('listId')
                     ->prototype('array')
                         ->children()
 

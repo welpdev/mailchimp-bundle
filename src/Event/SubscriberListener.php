@@ -30,10 +30,10 @@ class SubscriberListener
         );
     }
 
-    protected function getListId($listName)
+    protected function getListId($listId)
     {
-        $listData = $this->listRepository->findByName($listName);
-        
+        $listData = $this->listRepository->findById($listId);
+
         return $listData['id'];
     }
 }

@@ -6,20 +6,18 @@ parameters:
 services:
     # MailChimp
     welp_mailchimp.mailchimp_master:
-        class: Mailchimp
+        class: \DrewM\MailChimp\MailChimp
         arguments: ['%welp_mailchimp.api_key%']
 
     welp_mailchimp.list_repository:
         class: %welp_mailchimp.list_repository_class%
         arguments:
             - '@welp_mailchimp.mailchimp_master'
-            - '@logger'
 
     welp_mailchimp.list_synchronizer:
         class: %welp_mailchimp.list_synchronizer_class%
         arguments:
             - '@welp_mailchimp.list_repository'
-            - '@logger'
 
     # Events
     welp_mailchimp.subscriber_listener:

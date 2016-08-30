@@ -22,7 +22,7 @@ class ListSynchronizerSpec extends ObjectBehavior
 
     function it_synchronize_merge_tags($listRepository, SubscriberList $list)
     {
-        $listRepository->findByName('foobar')->willReturn(['id' => 123]);
+        $listRepository->findById('foobar')->willReturn(['id' => 123]);
         $listRepository->findMergeTags(123)->willReturn([
             ['tag' => 'TAG1', 'name' => 'Tag 1'],
             ['tag' => 'OBSOLETE', 'name' => 'This tag should not exist'],

@@ -12,7 +12,7 @@ class SubscriberListenerSpec extends ObjectBehavior
 {
     function let(ListRepository $listRepository, SubscriberEvent $event, Subscriber $subscriber)
     {
-        $listRepository->findByName('foo')->willReturn(['id' => 123]);
+        $listRepository->findById('foo')->willReturn(['id' => 123]);
 
         $event->getListName()->willReturn('foo');
         $event->getSubscriber()->willReturn($subscriber);

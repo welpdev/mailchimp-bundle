@@ -4,19 +4,16 @@ namespace spec\Welp\MailchimpBundle\Subscriber;
 
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Mailchimp;
-use Mailchimp_Lists;
+use \DrewM\MailChimp\MailChimp;
 use Psr\Log\LoggerInterface;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
 
 class ListRepositorySpec extends ObjectBehavior
 {
-    function let(Mailchimp $mailchimp, LoggerInterface $logger, Mailchimp_Lists $mailchimpLists, Subscriber $subscriber)
+    function let(MailChimp $mailchimp, LoggerInterface $logger, Subscriber $subscriber)
     {
         $this->prepareSubscriber($subscriber);
-        $this->prepareMailchimpLists($mailchimpLists);
-
-        $mailchimp->lists = $mailchimpLists;
+        $this->prepareMailchimpLists($mailchimp);
 
         $this->beConstructedWith($mailchimp, $logger);
     }
@@ -26,16 +23,15 @@ class ListRepositorySpec extends ObjectBehavior
         $this->shouldHaveType('Welp\MailchimpBundle\Subscriber\ListRepository');
     }
 
-    function it_can_find_a_list_by_its_name($mailchimpLists)
+    function it_can_find_a_list_by_its_id()
     {
-        $this->findByName('toto')->shouldReturn(['id' => 123]);
-        $this
-            ->shouldThrow(new \RuntimeException('The list "tutu" was not found in Mailchimp. You need to create it first in Mailchimp backend.'))
-            ->duringFindByName('tutu')
-        ;
+        $this->findById('1337')->shouldReturn(json_decode('{
+            "id": "1337",
+            "name": "Prospect",
+        }'));
     }
 
-    function it_subscribe_a_subscriber($subscriber, $mailchimpLists)
+    /*function it_subscribe_a_subscriber($subscriber, $mailchimpLists)
     {
         $mailchimpLists->subscribe(
             1337,
@@ -71,7 +67,7 @@ class ListRepositorySpec extends ObjectBehavior
             'success_count' => 0,
             'errors' => []
         ]);
-        
+
         $mailchimpLists->batchSubscribe(
             42,
             $this->formatMailChimp($secondChunk, $options),
@@ -130,7 +126,7 @@ class ListRepositorySpec extends ObjectBehavior
             'success_count' => 0,
             'errors' => []
         ]);
-        
+
         $mailchimpLists->batchSubscribe(
             42,
             $this->formatMailChimp($secondChunk, $options),
@@ -187,7 +183,7 @@ class ListRepositorySpec extends ObjectBehavior
             ->willReturn([
                 'data' => [
                     [
-                        'id' => 123, 
+                        'id' => 123,
                         'merge_vars' => [
                             ['tag' => 'EMAIL'], //this tag should be ignored
                             ['tag' => 'FOO', 'name' => 'Bar'],
@@ -230,13 +226,13 @@ class ListRepositorySpec extends ObjectBehavior
             'tag' => 'FOO',
             'name' => 'Foo bar',
             'options' => [
-                'req' => true, 
+                'req' => true,
                 'field_type' => 'text' // should be removed, cannot be updated
             ]
         ]);
 
         $logger->info('Tag "FOO" has been updated in MailChimp.');
-    }
+    }*/
 
     protected function prepareSubscriber(Subscriber $subscriber)
     {
@@ -244,18 +240,20 @@ class ListRepositorySpec extends ObjectBehavior
         $subscriber->getMergeTags()->willReturn(['FIRSTNAME' => 'Charles']);
     }
 
-    protected function prepareMailchimpLists(Mailchimp_Lists $mailchimpLists)
+    protected function prepareMailchimpLists(MailChimp $mailchimp)
     {
-        $mailchimpLists->getList(['list_name' => 'toto'])->willReturn([
-            'total' => 1, 
-            'data' => [
-                ['id' => 123]
-            ]
-        ]);
 
-        $mailchimpLists->getList(['list_name' => 'tutu'])->willReturn([
-            'total' => 0
-        ]);
+        $mailchimp->get("lists/notfound")->willReturn(json_decode('{
+          "type": "http://developer.mailchimp.com/documentation/mailchimp/guides/error-glossary/",
+          "title": "Resource Not Found",
+          "status": 404,
+          "detail": "The requested resource could not be found.",
+          "instance": ""
+        }'));
+        $mailchimp->get("lists/1337")->willReturn(json_decode('{
+            "id": "1337",
+            "name": "Prospect",
+        }'));
     }
 
     protected function getSubscriberChunk($count, $offset)

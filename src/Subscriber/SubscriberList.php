@@ -7,20 +7,20 @@ use Welp\MailchimpBundle\Provider\ProviderInterface;
 
 class SubscriberList
 {
-    protected $name;
+    protected $listId;
     protected $provider;
     protected $options;
 
-    public function __construct($name, ProviderInterface $provider, array $options = [])
+    public function __construct($listId, ProviderInterface $provider, array $options = [])
     {
-        $this->name = $name;
+        $this->listId = $listId;
         $this->provider = $provider;
         $this->options = $this->resolveOptions($options);
     }
 
-    public function getName()
+    public function getListId()
     {
-        return $this->name;
+        return $this->listId;
     }
 
     public function getProvider()

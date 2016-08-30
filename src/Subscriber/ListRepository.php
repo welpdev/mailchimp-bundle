@@ -2,49 +2,36 @@
 
 namespace Welp\MailchimpBundle\Subscriber;
 
-use Mailchimp;
-use Psr\Log\LoggerInterface;
+use \DrewM\MailChimp\MailChimp;
 
 class ListRepository
 {
     const SUBSCRIBER_BATCH_SIZE = 500;
 
-    public function __construct(Mailchimp $mailchimp, LoggerInterface $logger)
+    public function __construct(MailChimp $mailchimp)
     {
         $this->mailchimp = $mailchimp;
-        $this->logger = $logger;
     }
 
-    public function findByName($name)
+    public function findById($listId)
     {
-        $listData = $this->mailchimp->lists->getList([
-            'list_name' => $name
-        ]);
+        $listData = $this->mailchimp->get("lists/$listId");
 
-        if (
-            !isset($listData['total']) || 
-            $listData['total'] === 0
-        ) {
-            throw new \RuntimeException(sprintf('The list "%s" was not found in Mailchimp. You need to create it first in Mailchimp backend.', $name));
-        }
+        /*if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }*/
 
-        if (!isset($listData['data'][0]['id'])) {
-            throw new \RuntimeException('List id could not be found.');
-        }
-
-        return $listData['data'][0];
+        return $listData;
     }
 
     public function subscribe($listId, Subscriber $subscriber)
     {
-        $this->mailchimp->lists->subscribe(
-            $listId,
-            ['email' => $subscriber->getEmail()],
-            $subscriber->getMergeTags(),
-            'html', // email preference
-            false, // do not use dual optin (to prevent sending another confirmation e-mail)
-            true // do update the subscriber if it already exists
-        );
+        $result = $MailChimp->post("lists/$listId/members", [
+                'email_address' => $subscriber->getEmail(),
+                'status'        => 'subscribed',
+                'email_type'    => 'html',
+                'merge_fields'  => $subscriber->getMergeTags()
+            ]);
     }
 
     public function batchSubscribe($listId, array $subscribers, array $options = [])
@@ -67,9 +54,7 @@ class ListRepository
             $result['update_count'] += $chunkResult['update_count'];
             $result['error_count'] += $chunkResult['error_count'];
             $result['errors'] = array_merge($result['errors'], $chunkResult['errors']);
-        } 
-
-        $this->logResult($result);
+        }
     }
 
     public function unsubscribe($listId, Subscriber $subscriber)
@@ -108,8 +93,6 @@ class ListRepository
             $result['error_count'] += $chunkResult['error_count'];
             $result['errors'] = array_merge($result['errors'], $chunkResult['errors']);
         }
-
-        $this->logResult($result);
     }
 
     public function getSubscriberEmails(array $listData)
@@ -125,8 +108,8 @@ class ListRepository
                 'limit' => $limit
             ]);
 
-            $emails = array_merge($emails, array_map(function($data) { 
-                return $data['email']; 
+            $emails = array_merge($emails, array_map(function($data) {
+                return $data['email'];
             }, $members['data']));
 
             $page++;
@@ -154,15 +137,11 @@ class ListRepository
     public function deleteMergeTag($listId, $tag)
     {
         $this->mailchimp->lists->mergeVarDel($listId, $tag);
-
-        $this->logger->info(sprintf('Tag "%s" has been removed from MailChimp.', $tag));
     }
 
     public function addMergeTag($listId, array $tag)
     {
         $this->mailchimp->lists->mergeVarAdd($listId, $tag['tag'], $tag['name'], $tag['options']);
-
-        $this->logger->info(sprintf('Tag "%s" has been added to MailChimp.', $tag['name']));
     }
 
     public function updateMergeTag($listId, array $tag)
@@ -171,8 +150,6 @@ class ListRepository
         unset($tag['options']['field_type']);
 
         $this->mailchimp->lists->mergeVarUpdate($listId, $tag['tag'], $tag['options']);
-
-        $this->logger->info(sprintf('Tag "%s" has been updated in MailChimp.', $tag['name']));
     }
 
     protected function getMailchimpFormattedSubscribers(array $subscribers, array $options)
@@ -185,36 +162,9 @@ class ListRepository
         }, $subscribers);
     }
 
-    protected function logResult(array $result = [])
-    {
-        if ($result['add_count'] > 0) {
-            $this->logger->info(sprintf('%s subscribers added.', $result['add_count']));
-        }
-
-        if ($result['update_count'] > 0) {
-            $this->logger->info(sprintf('%s subscribers updated.', $result['update_count']));
-        }
-
-        if ($result['success_count'] > 0) {
-            $this->logger->info(sprintf('%s emails unsubscribed from mailchimp.', $result['success_count']));
-        }
-
-        if ($result['error_count'] > 0) {
-            $this->logger->error(sprintf('%s subscribers errored.', $result['error_count']));
-            foreach ($result['errors'] as $error) {
-                $this->logger->error(sprintf('Subscriber "%s" has not been processed: "%s"', $error['email']['email'], $error['error']));
-            }
-        }
-    }
-
     protected function getDefaultResult()
     {
         return [
-            'add_count' => 0,
-            'update_count' => 0,
-            'error_count' => 0,
-            'success_count' => 0,
-            'errors' => []
         ];
     }
 }

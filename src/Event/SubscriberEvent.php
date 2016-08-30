@@ -10,18 +10,18 @@ class SubscriberEvent extends Event
     const EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
     const EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
 
-    protected $listname;
+    protected $listId;
     protected $subscriber;
 
-    public function __construct($listname, Subscriber $subscriber)
+    public function __construct($listId, Subscriber $subscriber)
     {
-        $this->listname = $listname;
+        $this->listId = $listId;
         $this->subscriber = $subscriber;
     }
 
-    public function getListName()
+    public function getListId()
     {
-        return $this->listname;
+        return $this->listId;
     }
 
     public function getSubscriber()

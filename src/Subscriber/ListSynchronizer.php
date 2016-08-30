@@ -2,23 +2,19 @@
 
 namespace Welp\MailchimpBundle\Subscriber;
 
-use Mailchimp;
-use Psr\Log\LoggerInterface;
 
 class ListSynchronizer
 {
     protected $listRepository;
-    protected $logger;
 
-    public function __construct(ListRepository $listRepository, LoggerInterface $logger)
+    public function __construct(ListRepository $listRepository)
     {
         $this->listRepository = $listRepository;
-        $this->logger = $logger;
     }
 
     public function synchronize(SubscriberList $list)
     {
-        $listData = $this->listRepository->findByName($list->getName());
+        $listData = $this->listRepository->findById($list->getName());
 
         $subscribers = $list->getProvider()->getSubscribers();
 
