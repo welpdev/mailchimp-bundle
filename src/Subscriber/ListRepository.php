@@ -13,6 +13,11 @@ class ListRepository
         $this->mailchimp = $mailchimp;
     }
 
+    /**
+     * Find MailChimp List by list Id
+     * @param String $listId
+     * @return Object list http://developer.mailchimp.com/documentation/mailchimp/reference/lists/#read-get_lists_list_id
+     */
     public function findById($listId)
     {
         $listData = $this->mailchimp->get("lists/$listId");
@@ -20,56 +25,99 @@ class ListRepository
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
         }
-
         return $listData;
     }
 
+    /**
+     * Subscribe a Subscriber to a list
+     * @param String $listId
+     * @param Subscriber $subscriber
+     * @return array
+     */
     public function subscribe($listId, Subscriber $subscriber)
     {
-        $result = $MailChimp->post("lists/$listId/members", [
+        $result = $this->mailchimp->post("lists/$listId/members", [
                 'email_address' => $subscriber->getEmail(),
                 'status'        => 'subscribed',
                 'email_type'    => 'html',
                 'merge_fields'  => $subscriber->getMergeTags()
             ]);
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
     }
 
+    /**
+     * Subscribe a Subscriber to a list
+     * @param String $listId
+     * @param Subscriber $subscriber
+     */
+    public function unsubscribe($listId, Subscriber $subscriber)
+    {
+
+        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", [
+                'status'  => 'unsubscribed'
+            ]);
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Delete a Subscriber to a list
+     * @param String $listId
+     * @param Subscriber $subscriber
+     */
+    public function delete($listId, Subscriber $subscriber)
+    {
+
+        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $result = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Subscribe a batch of Subscriber to a list
+     * @param String $listId
+     * @param Array $subscribers
+     * @param Array $options
+     */
     public function batchSubscribe($listId, array $subscribers, array $options = [])
     {
         $subscribers = $this->getMailchimpFormattedSubscribers($subscribers, $options);
-
-        $result = $this->getDefaultResult();
+        //@TODO
 
         // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
         $subscriberChunks = array_chunk($subscribers, self::SUBSCRIBER_BATCH_SIZE);
         foreach ($subscriberChunks as $subscriberChunk) {
-            $chunkResult = $this->mailchimp->lists->batchSubscribe(
-                $listId,
-                $subscriberChunk,
-                false, // do not use dual optin (to prevent sending another confirmation e-mail)
-                true // do update the subscriber if it already exists
-            );
-
-            $result['add_count'] += $chunkResult['add_count'];
-            $result['update_count'] += $chunkResult['update_count'];
-            $result['error_count'] += $chunkResult['error_count'];
-            $result['errors'] = array_merge($result['errors'], $chunkResult['errors']);
+            $Batch = $this->mailchimp->new_batch();
+            foreach ($subscriberChunk as $index => $newsubscribers) {
+                $Batch->post("op$index", "lists/$listId/members", [
+                    'email_address' => 'micky@example.com',
+                    'status'        => 'subscribed',
+                ]);
+            }
+            $result = $Batch->execute();
         }
     }
 
-    public function unsubscribe($listId, Subscriber $subscriber)
-    {
-        $this->mailchimp->lists->unsubscribe(
-            $listId,
-            ['email' => $subscriber->getEmail()],
-            true, // and remove it from the list
-            false, // do not send goodbye email
-            false // do not send notify
-        );
-    }
+
 
     public function batchUnsubscribe($listId, array $emails)
     {
+        //@TODO
         // format emails for MailChimp
         $emails = array_map(function($email) {
             return [
@@ -97,6 +145,7 @@ class ListRepository
 
     public function getSubscriberEmails(array $listData)
     {
+        //@TODO
         $emails = [];
         $memberCount = $listData['stats']['member_count'];
 
@@ -120,6 +169,7 @@ class ListRepository
 
     public function findMergeTags($listId)
     {
+        //@TODO
         $result = $this->mailchimp->lists->mergeVars([$listId]);
         if (!isset($result['data'][0]['merge_vars'])) {
             throw new \RuntimeException(sprintf('Could not find merge tags for list "%s".', $listId));
@@ -136,22 +186,31 @@ class ListRepository
 
     public function deleteMergeTag($listId, $tag)
     {
+        //@TODO
         $this->mailchimp->lists->mergeVarDel($listId, $tag);
     }
 
     public function addMergeTag($listId, array $tag)
     {
+        //@TODO
         $this->mailchimp->lists->mergeVarAdd($listId, $tag['tag'], $tag['name'], $tag['options']);
     }
 
     public function updateMergeTag($listId, array $tag)
     {
+        //@TODO
         $tag['options']['name'] = $tag['name'];
         unset($tag['options']['field_type']);
 
         $this->mailchimp->lists->mergeVarUpdate($listId, $tag['tag'], $tag['options']);
     }
 
+    /**
+     * Format Subscriber for MailChimp API requests
+     * @param Array $subscriber
+     * @param Array $options
+     * @return Array
+     */
     protected function getMailchimpFormattedSubscribers(array $subscribers, array $options)
     {
         return array_map(function(Subscriber $subscriber) use ($options) {
@@ -160,11 +219,5 @@ class ListRepository
                 'merge_vars' => array_merge($options, $subscriber->getMergeTags())
             ];
         }, $subscribers);
-    }
-
-    protected function getDefaultResult()
-    {
-        return [
-        ];
     }
 }
