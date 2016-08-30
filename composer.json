@@ -6,10 +6,6 @@
         {
             "name": "Titouan BENOIT",
             "email": "titouan@welp.today"
-        },
-        {
-            "name": "Gabriel Pillet",
-            "email": "contact@gabrielpillet.com"
         }
     ],
     "autoload": {

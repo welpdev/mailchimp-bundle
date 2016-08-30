@@ -36,12 +36,30 @@ class ListRepository
      */
     public function subscribe($listId, Subscriber $subscriber)
     {
-        $result = $this->mailchimp->post("lists/$listId/members", [
-                'email_address' => $subscriber->getEmail(),
-                'status'        => 'subscribed',
-                'email_type'    => 'html',
-                'merge_fields'  => $subscriber->getMergeTags()
-            ]);
+        $result = $this->mailchimp->post("lists/$listId/members",
+            array_merge(
+                $subscriber->formatMailChimp(),
+                ['status' => 'subscribed']
+            )
+        );
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * Update a Subscriber to a list
+     * @param String $listId
+     * @param Subscriber $subscriber
+     */
+    public function update($listId, Subscriber $subscriber)
+    {
+
+        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", $subscriber->formatMailChimp());
 
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
@@ -95,9 +113,8 @@ class ListRepository
      * @param Array $subscribers
      * @param Array $options
      */
-    public function batchSubscribe($listId, array $subscribers, array $options = [])
+    public function batchSubscribe($listId, array $subscribers)
     {
-        $subscribers = $this->getMailchimpFormattedSubscribers($subscribers, $options);
         //@TODO
 
         // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
@@ -123,29 +140,7 @@ class ListRepository
     public function batchUnsubscribe($listId, array $emails)
     {
         //@TODO
-        // format emails for MailChimp
-        $emails = array_map(function($email) {
-            return [
-                'email' => $email,
-            ];
-        }, $emails);
 
-        $result = $this->getDefaultResult();
-
-        // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
-        $unsubscribeChunks = array_chunk($emails, self::SUBSCRIBER_BATCH_SIZE);
-        foreach ($unsubscribeChunks as $unsubscribeChunk) {
-            $chunkResult = $this->mailchimp->lists->batchUnsubscribe(
-                $listId,
-                $unsubscribeChunk,
-                true, // and remove it from the list
-                false // do not send goodbye email
-            );
-
-            $result['success_count'] += $chunkResult['success_count'];
-            $result['error_count'] += $chunkResult['error_count'];
-            $result['errors'] = array_merge($result['errors'], $chunkResult['errors']);
-        }
     }
 
     /**
@@ -170,12 +165,12 @@ class ListRepository
     }
 
     /**
-     * find all merge tags for a list
+     * find all merge fields for a list
      * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
      * @param String $listId
      * @return Array
      */
-    public function findMergeTags($listId)
+    public function getMergeFields($listId)
     {
         $result = $this->mailchimp->get("lists/$listId/merge-fields");
 
@@ -187,31 +182,13 @@ class ListRepository
     }
 
     /**
-     * delete merge tag for a list
-     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
-     * @param String $listId
-     * @param String $mergeId
-     * @return Array
-     */
-    public function deleteMergeTag($listId, $mergeId)
-    {
-        $result = $this->mailchimp->delete("lists/$listId/merge-fields/$mergeId");
-
-        if(!$this->mailchimp->success()){
-            throw new \RuntimeException($this->mailchimp->getLastError());
-        }
-
-        return $result;
-    }
-
-    /**
-     * add merge tag for a list
+     * add merge field for a list
      * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
      * @param String $listId
      * @param Array $mergeData ["name" => '', "type" => '']
      * @return Array
      */
-    public function addMergeTag($listId, array $mergeData)
+    public function addMergeField($listId, array $mergeData)
     {
         $result = $this->mailchimp->post("lists/$listId/merge-fields", $mergeData);
 
@@ -223,13 +200,13 @@ class ListRepository
     }
 
     /**
-     * add merge tag for a list
+     * add merge field for a list
      * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#edit-patch_lists_list_id_merge_fields_merge_id
      * @param String $listId
      * @param Array $mergeData ["name" => '', "type" => '', ...]
      * @return Array
      */
-    public function updateMergeTag($listId, $mergeId, $mergeData)
+    public function updateMergeField($listId, $mergeId, $mergeData)
     {
         $result = $this->mailchimp->patch("lists/$listId/merge-fields/$mergeId", $mergeData);
 
@@ -241,20 +218,20 @@ class ListRepository
     }
 
     /**
-     * @TODO refactor this
-     * Format Subscriber for MailChimp API requests
-     * @param Array $subscriber
-     * @param Array $options
-     * @return Array
-     */
-    protected function getMailchimpFormattedSubscribers(array $subscribers, array $options)
+    * delete merge field for a list
+    * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
+    * @param String $listId
+    * @param String $mergeId
+    * @return Array
+    */
+    public function deleteMergeField($listId, $mergeId)
     {
+        $result = $this->mailchimp->delete("lists/$listId/merge-fields/$mergeId");
 
-        return array_map(function(Subscriber $subscriber) use ($options) {
-            return [
-                'email' => ['email' => $subscriber->getEmail()],
-                'merge_vars' => array_merge($options, $subscriber->getMergeTags())
-            ];
-        }, $subscribers);
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
     }
 }

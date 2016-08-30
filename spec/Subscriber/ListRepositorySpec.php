@@ -40,9 +40,10 @@ class ListRepositorySpec extends ObjectBehavior
     {
         $this->subscribe('ba039c6198', $subscriber)->shouldReturn([
                 'email_address' => 'charles@terrasse.fr',
-                'status'        => 'subscribed',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
                 'email_type'    => 'html',
-                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
+                'status'        => 'subscribed'
             ]);
     }
 
@@ -124,7 +125,9 @@ class ListRepositorySpec extends ObjectBehavior
     protected function prepareSubscriber(Subscriber $subscriber)
     {
         $subscriber->getEmail()->willReturn('charles@terrasse.fr');
-        $subscriber->getMergeTags()->willReturn(['FNAME' => 'Charles', 'LNAME' => 'Terrasse']);
+        $subscriber->getMergeFields()->willReturn(['FNAME' => 'Charles', 'LNAME' => 'Terrasse']);
+        $subscriber->getOptions()->willReturn(['language' => 'fr', 'email_type' => 'html']);
+        $subscriber->formatMailChimp()->willReturn(['email_address' => 'charles@terrasse.fr', 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'], 'language' => 'fr', 'email_type' => 'html']);
     }
 
     protected function prepareMailchimpLists(MailChimp $mailchimp)
@@ -139,17 +142,17 @@ class ListRepositorySpec extends ObjectBehavior
         // subscribe member
         $mailchimp->post("lists/ba039c6198/members", [
                 'email_address' => 'charles@terrasse.fr',
-                'status'        => 'subscribed',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
                 'email_type'    => 'html',
-                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
+                'status'        => 'subscribed'
             ])->willReturn([
-                    'email_address' => 'charles@terrasse.fr',
-                    'status'        => 'subscribed',
-                    'email_type'    => 'html',
-                    'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
-                ]);
-        // unsubscribe member
-        // delete
+                'email_address' => 'charles@terrasse.fr',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
+                'email_type'    => 'html',
+                'status'        => 'subscribed'
+            ]);
     }
 
     protected function getSubscriberChunk($count, $offset)
@@ -160,15 +163,5 @@ class ListRepositorySpec extends ObjectBehavior
         }
 
         return $subscribers;
-    }
-
-    protected function formatMailChimp(array $subscribers, array $options = [])
-    {
-        return array_map(function(Subscriber $subscriber) use ($options) {
-            return [
-                'email' => ['email' => $subscriber->getEmail()],
-                'merge_vars' => array_merge($options, $subscriber->getMergeTags())
-            ];
-        }, $subscribers);
     }
 }

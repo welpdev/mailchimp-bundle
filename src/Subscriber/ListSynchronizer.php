@@ -63,27 +63,27 @@ class ListSynchronizer
 
     /**
      * @TODO test this, make it works
-     * Synchronize Merge tags of a list and the array $mergeTags
+     * Synchronize Merge fields of a list and the array $mergeFields
      * @param String $listId
-     * @param Array $mergeTags
+     * @param Array $mergeFields
      */
-    public function synchronizeMergeTags($listId, array $mergeTags = [])
+    public function synchronizeMergeFields($listId, array $mergeFields = [])
     {
-        $mailChimpMergeTags = $this->listRepository->findMergeTags($listId);
+        $mailChimpMergeFields = $this->listRepository->getMergeFields($listId);
 
-        foreach ($mailChimpMergeTags as $tag) {
-            if (!$this->tagExists($tag['tag'], $mergeTags)) {
+        foreach ($mailChimpMergeFields as $tag) {
+            if (!$this->tagExists($tag['tag'], $mergeFields)) {
                 // tag only exist in mailchimp, we are removing it
-                $this->listRepository->deleteMergeTag($listId, $tag['tag']);
+                $this->listRepository->deleteMergeField($listId, $tag['tag']);
             }
         }
 
-        foreach ($mergeTags as $tag) {
+        foreach ($mergeFields as $tag) {
             // todo TAGid... refactor this for API V3
-            if ($this->tagExists($tag['tag'], $mailChimpMergeTags)) {
-                $this->listRepository->updateMergeTag($listId, 1, $tag);
+            if ($this->tagExists($tag['tag'], $mailChimpMergeFields)) {
+                $this->listRepository->updateMergeField($listId, 1, $tag);
             } else {
-                $this->listRepository->addMergeTag($listId, $tag);
+                $this->listRepository->addMergeField($listId, $tag);
             }
         }
     }

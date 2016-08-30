@@ -35,6 +35,7 @@ class SubscriberList
 
     protected function resolveOptions(array $options)
     {
+        //@TODO
         $resolver = new OptionsResolver();
         $resolver->setDefaults(['mc_language' => null]);
 

@@ -2,18 +2,26 @@
 
 [![Build Status](https://travis-ci.org/welpdev/mailchimp-bundle.svg?branch=master)](https://travis-ci.org/welpdev/mailchimp-bundle)
 
-This bundle will help you synchronise your project's newsletter subscribers into MailChimp.
+This bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.
+
+Features:
+
+* Use your own userProvider (basic `FosSubscriberProvider` included to interface with FosUserBundle)
+* Synchronise Merge Fields with your config
+* Synchronise your subscriber with a List
+* Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List
+* Register Webhook (@TODO)
 
 You can [synchronize all your subscribers at once with a Symfony command](#full-synchronization-with-command) : new users will be added to MailChimp, existing users will be updated and user no longer in your project will be deleted from MailChimp.
 
-You can also [synchronize subscribe / unsubscribe one at a time with events](#unit-synchronization-with-events).
+You can also [synchronize subscribe/unsubscribe one at a time with events](#unit-synchronization-with-events).
 
 Optionnaly, it also help you to [synchronize your list merge tags](#synchronize-merge-tags).
 
 * [Setup](#setup)
 * [Configuration](#configuration)
 * [Usage](#usage)
-    * [Synchronize merge tags](#synchronize-merge-tags)
+    * [Synchronize merge fields](#synchronize-merge-fields)
     * [Full synchronization with command](#full-synchronization-with-command)
     * [Unit synchronization with events](#unit-synchronization-with-events)
 
@@ -49,7 +57,7 @@ welp_mailchimp:
             mc_language: 'fr'
 
             # optional merge tags you want to synchronize
-            merge_tags:
+            merge_fields:
                 -
                     tag: FIRSTTAG
                     name: My first tag
@@ -71,9 +79,9 @@ Defining lists and providers is necessary only if you use full synchronization w
 
 ## Usage
 
-### Synchronize merge tags
+### Synchronize merge fields
 
-Merge tags (or merge vars) are values you can add to your subscribers (for example the firstsname or birthdate of your user). You can then use these tags in your newsletters or create segments out of them.
+Merge fields are values you can add to your subscribers (for example the firstname or birthdate of your user). You can then use these tags in your newsletters or create segments out of them.
 
 To learn more about merge tags, please see this [guide on MailChimp](http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags).
 
@@ -106,7 +114,7 @@ use Welp\MailchimpBundle\Subscriber\Subscriber;
 use YourApp\Model\User\UserRepository;
 use YourApp\Model\User\User;
 
-class SubscriberProvider implements ProviderInterface
+class ExampleSubscriberProvider implements ProviderInterface
 {
     // these tags should match the one you added in MailChimp's backend
     const TAG_NICKNAME =           'NICKNAME';
@@ -135,8 +143,6 @@ class SubscriberProvider implements ProviderInterface
                 self::TAG_CITY => $user->getCity(),
                 self::TAG_LAST_ACTIVITY_DATE => $user->getLastActivityDate() ? $user->getLastActivityDate()->format('Y-m-d') : null,
                 self::TAG_REGISTRATION_DATE => $user->getRegistrationDate() ? $user->getRegistrationDate()->format('Y-m-d') : null,
-                // you don't need to specify "mc_language" tag if you added it in your config
-                // you can also use all MailChimp configuration tags here as well
             ]);
 
             return $subscriber;
@@ -145,6 +151,16 @@ class SubscriberProvider implements ProviderInterface
         return $subscribers;
     }
 }
+
+```
+
+FosSubscriberProvider:
+
+```yaml
+services:
+    yourapp_mailchimp_fos_subscriber_provider:
+        class: Welp\MailchimpBundle\Provider\FosSubscriberProvider
+        arguments: [@fos_user.user_manager]
 ```
 
 ### Unit synchronization with events
@@ -167,10 +183,9 @@ public function newUser(User $user)
 
     $subscriber = new Subscriber($user->getEmail(), [
 		'FIRSTNAME' => $user->getFirstname(),
-		'mc_language' => 'fr',
-		// Important note : mc_language defined in config.yml will not be used, be sure to set it here if needed
-		// as well as any other MailChimp tag you need.
-	]);
+	], [
+        'language' => 'fr'
+    ]);
 
 	$this->container->get('event_dispatcher')->dispatch(
         SubscriberEvent::EVENT_SUBSCRIBE,
@@ -179,7 +194,7 @@ public function newUser(User $user)
 }
 ```
 
-If you want to tell MailChimp that an existing subscriber has changed its e-mail, you can do it by adding the `new-email` option to the merge tags:
+If you want to tell MailChimp that an existing subscriber has changed its e-mail, you can do it by adding the `new-email` option to the merge fields:
 
 ```php
 <?php
@@ -204,7 +219,7 @@ public function changedEmail($previousMail, $newEmail)
 }
 ```
 
-Unsubscribe is simpler, you only need the email, all merge tags will be ignored:
+Unsubscribe is simpler, you only need the email, all merge fields will be ignored:
 
 ```php
 <?php

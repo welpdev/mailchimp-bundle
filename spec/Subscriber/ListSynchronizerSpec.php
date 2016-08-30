@@ -22,16 +22,16 @@ class ListSynchronizerSpec extends ObjectBehavior
     function it_synchronize_merge_tags($listRepository, SubscriberList $list)
     {
         $listRepository->findById('foobar')->willReturn(['id' => 'foobar']);
-        $listRepository->findMergeTags('foobar')->willReturn([
+        $listRepository->getMergeFields('foobar')->willReturn([
             ['tag' => 'TAG1', 'name' => 'Tag 1'],
             ['tag' => 'OBSOLETE', 'name' => 'This tag should not exist'],
         ]);
 
-        $listRepository->deleteMergeTag('foobar', 'OBSOLETE')->shouldBeCalled();
-        $listRepository->updateMergeTag('foobar', 1, ['tag' => 'TAG1', 'name' => 'Tag 1', 'options' => ['req' => true]])->shouldBeCalled();
-        $listRepository->addMergeTag('foobar', ['tag' => 'TAG2', 'name' => 'Tag 2', 'options' => ['req' => false]])->shouldBeCalled();
+        $listRepository->deleteMergeField('foobar', 'OBSOLETE')->shouldBeCalled();
+        $listRepository->updateMergeField('foobar', 1, ['tag' => 'TAG1', 'name' => 'Tag 1', 'options' => ['req' => true]])->shouldBeCalled();
+        $listRepository->addMergeField('foobar', ['tag' => 'TAG2', 'name' => 'Tag 2', 'options' => ['req' => false]])->shouldBeCalled();
 
-        $this->synchronizeMergeTags('foobar', [
+        $this->synchronizeMergeFields('foobar', [
             ['tag' => 'TAG1', 'name' => 'Tag 1', 'options' => ['req' => true]],
             ['tag' => 'TAG2', 'name' => 'Tag 2', 'options' => ['req' => false]],
         ]);
