@@ -15,9 +15,11 @@
     },
     "require": {
         "drewm/mailchimp-api": "^2.2",
+        "symfony/options-resolver": "~2@dev|~3@dev"
+    },
+    "require-dev": {
         "phpspec/phpspec": "~2@dev",
-        "symfony/options-resolver": "~2@dev|~3@dev",
-        "phpunit/phpunit": "^5.5"
+        "phpunit/phpunit": "^4.8"
     },
     "config": {
         "bin-dir": "bin"
