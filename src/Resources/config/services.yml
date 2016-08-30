@@ -1,0 +1,31 @@
+parameters:
+    welp_mailchimp.list_synchronizer_class: Welp\MailchimpBundle\Subscriber\ListSynchronizer
+    welp_mailchimp.list_repository_class: Welp\MailchimpBundle\Subscriber\ListRepository
+    welp_mailchimp.subscriber_listener_class: Welp\MailchimpBundle\Event\SubscriberListener
+
+services:
+    # MailChimp
+    welp_mailchimp.mailchimp_master:
+        class: Mailchimp
+        arguments: ['%welp_mailchimp.api_key%']
+
+    welp_mailchimp.list_repository:
+        class: %welp_mailchimp.list_repository_class%
+        arguments:
+            - '@welp_mailchimp.mailchimp_master'
+            - '@logger'
+
+    welp_mailchimp.list_synchronizer:
+        class: %welp_mailchimp.list_synchronizer_class%
+        arguments:
+            - '@welp_mailchimp.list_repository'
+            - '@logger'
+
+    # Events
+    welp_mailchimp.subscriber_listener:
+        class: %welp_mailchimp.subscriber_listener_class%
+        arguments:
+            - '@welp_mailchimp.list_repository'
+        tags:
+            - { name: kernel.event_listener, event: welp.mailchimp.subscribe, method: onSubscribe }
+            - { name: kernel.event_listener, event: welp.mailchimp.unsubscribe, method: onUnsubscribe }

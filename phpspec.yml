@@ -1,0 +1,4 @@
+suites:
+    default:
+        namespace: Welp\MailchimpBundle
+        psr4_prefix: Welp\MailchimpBundle

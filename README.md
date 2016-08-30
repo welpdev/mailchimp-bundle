@@ -1,5 +1,7 @@
 # mailchimp-bundle
 
+[![Build Status](https://travis-ci.org/welpdev/mailchimp-bundle.svg?branch=master)](https://travis-ci.org/welpdev/mailchimp-bundle)
+
 This bundle will help you synchronise your project's newsletter subscribers into MailChimp.
 
 You can [synchronize all your subscribers at once with a Symfony command](#full-synchronization-with-command) : new users will be added to MailChimp, existing users will be updated and user no longer in your project will be deleted from MailChimp.
