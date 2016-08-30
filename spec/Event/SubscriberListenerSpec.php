@@ -14,7 +14,7 @@ class SubscriberListenerSpec extends ObjectBehavior
     {
         $listRepository->findById('foo')->willReturn(['id' => 123]);
 
-        $event->getListName()->willReturn('foo');
+        $event->getListId()->willReturn('foo');
         $event->getSubscriber()->willReturn($subscriber);
 
         $this->beConstructedWith($listRepository);

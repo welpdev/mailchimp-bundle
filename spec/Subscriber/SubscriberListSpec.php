@@ -10,7 +10,7 @@ class SubscriberListSpec extends ObjectBehavior
 {
     function let(ProviderInterface $provider)
     {
-        $this->beConstructedWith('foobar', $provider);
+        $this->beConstructedWith('1337', $provider);
     }
 
     function it_is_initializable()
@@ -20,7 +20,7 @@ class SubscriberListSpec extends ObjectBehavior
 
     function it_has_a_name()
     {
-        $this->getName()->shouldReturn('foobar');
+        $this->getListId()->shouldReturn('1337');
     }
 
     function it_has_a_provider($provider)

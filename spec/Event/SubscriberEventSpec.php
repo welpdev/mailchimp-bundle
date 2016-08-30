@@ -10,7 +10,7 @@ class SubscriberEventSpec extends ObjectBehavior
 {
     function let(Subscriber $subscriber)
     {
-        $this->beConstructedWith('listname', $subscriber);
+        $this->beConstructedWith('1337', $subscriber);
     }
 
     function it_is_initializable()
@@ -21,7 +21,7 @@ class SubscriberEventSpec extends ObjectBehavior
 
     function it_has_a_listname()
     {
-        $this->getListName()->shouldReturn('listname');
+        $this->getListId()->shouldReturn('1337');
     }
 
     function it_has_a_subscriber($subscriber)

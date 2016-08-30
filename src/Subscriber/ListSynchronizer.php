@@ -14,7 +14,7 @@ class ListSynchronizer
 
     public function synchronize(SubscriberList $list)
     {
-        $listData = $this->listRepository->findById($list->getName());
+        $listData = $this->listRepository->findById($list->getListId());
 
         $subscribers = $list->getProvider()->getSubscribers();
 
@@ -43,9 +43,9 @@ class ListSynchronizer
         $this->listRepository->batchUnsubscribe($listData['id'], $diffenceEmails);
     }
 
-    public function synchronizeMergeTags($listName, array $mergeTags = [])
+    public function synchronizeMergeTags($listId, array $mergeTags = [])
     {
-        $listData = $this->listRepository->findByName($listName);
+        $listData = $this->listRepository->findById($listId);
         $listId = $listData['id'];
 
         $mailChimpMergeTags = $this->listRepository->findMergeTags($listId);

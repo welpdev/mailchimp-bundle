@@ -242,18 +242,11 @@ class ListRepositorySpec extends ObjectBehavior
 
     protected function prepareMailchimpLists(MailChimp $mailchimp)
     {
-
-        $mailchimp->get("lists/notfound")->willReturn(json_decode('{
-          "type": "http://developer.mailchimp.com/documentation/mailchimp/guides/error-glossary/",
-          "title": "Resource Not Found",
-          "status": 404,
-          "detail": "The requested resource could not be found.",
-          "instance": ""
-        }'));
         $mailchimp->get("lists/1337")->willReturn(json_decode('{
             "id": "1337",
             "name": "Prospect",
         }'));
+        $mailchimp->success()->willReturn(true);
     }
 
     protected function getSubscriberChunk($count, $offset)

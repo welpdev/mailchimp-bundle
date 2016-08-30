@@ -17,9 +17,9 @@ class ListRepository
     {
         $listData = $this->mailchimp->get("lists/$listId");
 
-        /*if(!$this->mailchimp->success()){
+        if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
-        }*/
+        }
 
         return $listData;
     }
