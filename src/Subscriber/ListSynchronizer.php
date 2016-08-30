@@ -12,24 +12,42 @@ class ListSynchronizer
         $this->listRepository = $listRepository;
     }
 
+    /**
+     * Synchronise user from provider with MailChimp List
+     * @param SubscriberList $list
+     * @return void
+     */
     public function synchronize(SubscriberList $list)
     {
         $listData = $this->listRepository->findById($list->getListId());
 
+        // get Subscribers from the provider
         $subscribers = $list->getProvider()->getSubscribers();
 
-        $this->unsubscribeDifference($listData, $subscribers);
-        $this->batchSubscribe($listData, $subscribers, $list->getOptions());
+        // unsubscribe difference
+        $this->unsubscribeDifference($list->getListId(), $subscribers);
+        // subscribe the rest
+        $this->batchSubscribe($list->getListId(), $subscribers, $list->getOptions());
     }
 
-    protected function batchSubscribe(array $listData, array $subscribers = [], array $options = [])
+    /**
+     * Subscribe a batch of user
+     * @param String $listId
+     * @param Array $subscribers
+     */
+    protected function batchSubscribe($listId, array $subscribers = [])
     {
-        $this->listRepository->batchSubscribe($listData['id'], $subscribers, $options);
+        $this->listRepository->batchSubscribe($listId, $subscribers);
     }
 
-    protected function unsubscribeDifference(array $listData, array $subscribers)
+    /**
+     * Unsubscribe the difference between the array subscriber an user
+     * @param String $listId
+     * @param array $subscribers
+     */
+    protected function unsubscribeDifference($listId, array $subscribers)
     {
-        $mailchimpEmails = $this->listRepository->getSubscriberEmails($listData);
+        $mailchimpEmails = $this->listRepository->getSubscriberEmails($listId);
         $internalEmails = array_map(function(Subscriber $subscriber) {
             return $subscriber->getEmail();
         }, $subscribers);
@@ -40,14 +58,17 @@ class ListSynchronizer
             return;
         }
 
-        $this->listRepository->batchUnsubscribe($listData['id'], $diffenceEmails);
+        $this->listRepository->batchUnsubscribe($listId, $diffenceEmails);
     }
 
+    /**
+     * @TODO test this, make it works
+     * Synchronize Merge tags of a list and the array $mergeTags
+     * @param String $listId
+     * @param Array $mergeTags
+     */
     public function synchronizeMergeTags($listId, array $mergeTags = [])
     {
-        $listData = $this->listRepository->findById($listId);
-        $listId = $listData['id'];
-
         $mailChimpMergeTags = $this->listRepository->findMergeTags($listId);
 
         foreach ($mailChimpMergeTags as $tag) {
@@ -58,14 +79,18 @@ class ListSynchronizer
         }
 
         foreach ($mergeTags as $tag) {
+            // todo TAGid... refactor this for API V3
             if ($this->tagExists($tag['tag'], $mailChimpMergeTags)) {
-                $this->listRepository->updateMergeTag($listId, $tag);
+                $this->listRepository->updateMergeTag($listId, 1, $tag);
             } else {
                 $this->listRepository->addMergeTag($listId, $tag);
             }
         }
     }
 
+    /**
+    * @TODO test this, make it works
+    */
     protected function tagExists($tagName, array $tags)
     {
         foreach ($tags as $tag) {

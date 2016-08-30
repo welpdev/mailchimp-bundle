@@ -6,7 +6,7 @@ use \DrewM\MailChimp\MailChimp;
 
 class ListRepository
 {
-    const SUBSCRIBER_BATCH_SIZE = 500;
+    const SUBSCRIBER_BATCH_SIZE = 300;
 
     public function __construct(MailChimp $mailchimp)
     {
@@ -89,6 +89,7 @@ class ListRepository
     }
 
     /**
+     * @TODO
      * Subscribe a batch of Subscriber to a list
      * @param String $listId
      * @param Array $subscribers
@@ -113,8 +114,12 @@ class ListRepository
         }
     }
 
-
-
+    /**
+     * @TODO
+     * Unsubscribe a batch of Subscriber to a list
+     * @param String $listId
+     * @param Array $emails
+     */
     public function batchUnsubscribe($listId, array $emails)
     {
         //@TODO
@@ -143,69 +148,100 @@ class ListRepository
         }
     }
 
-    public function getSubscriberEmails(array $listData)
+    /**
+     * Get an Array of subscribers emails from a list
+     * @param String $listId
+     * @return Array
+     */
+    public function getSubscriberEmails($listId)
     {
-        //@TODO
         $emails = [];
-        $memberCount = $listData['stats']['member_count'];
+        $result = $this->mailchimp->get("lists/$listId/members");
 
-        $page = 0;
-        $limit = 100;
-        while ($page * $limit < $memberCount) {
-            $members = $this->mailchimp->lists->members($listData['id'], 'subscribed', [
-                'start' => $page,
-                'limit' => $limit
-            ]);
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
 
-            $emails = array_merge($emails, array_map(function($data) {
-                return $data['email'];
-            }, $members['data']));
-
-            $page++;
+        foreach ($result['members'] as $key => $member) {
+            array_push($emails, $member['email_address']);
         }
 
         return $emails;
     }
 
+    /**
+     * find all merge tags for a list
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
+     * @param String $listId
+     * @return Array
+     */
     public function findMergeTags($listId)
     {
-        //@TODO
-        $result = $this->mailchimp->lists->mergeVars([$listId]);
-        if (!isset($result['data'][0]['merge_vars'])) {
-            throw new \RuntimeException(sprintf('Could not find merge tags for list "%s".', $listId));
+        $result = $this->mailchimp->get("lists/$listId/merge-fields");
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
         }
 
-        $tags = $result['data'][0]['merge_vars'];
-        $tags = array_filter($tags, function($tag) {
-            // we exclude the EMAIL tag that can't be worked on
-            return $tag['tag'] !== 'EMAIL';
-        });
-
-        return array_values($tags);
-    }
-
-    public function deleteMergeTag($listId, $tag)
-    {
-        //@TODO
-        $this->mailchimp->lists->mergeVarDel($listId, $tag);
-    }
-
-    public function addMergeTag($listId, array $tag)
-    {
-        //@TODO
-        $this->mailchimp->lists->mergeVarAdd($listId, $tag['tag'], $tag['name'], $tag['options']);
-    }
-
-    public function updateMergeTag($listId, array $tag)
-    {
-        //@TODO
-        $tag['options']['name'] = $tag['name'];
-        unset($tag['options']['field_type']);
-
-        $this->mailchimp->lists->mergeVarUpdate($listId, $tag['tag'], $tag['options']);
+        return $result['merge_fields'];
     }
 
     /**
+     * delete merge tag for a list
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
+     * @param String $listId
+     * @param String $mergeId
+     * @return Array
+     */
+    public function deleteMergeTag($listId, $mergeId)
+    {
+        $result = $this->mailchimp->delete("lists/$listId/merge-fields/$mergeId");
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * add merge tag for a list
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#
+     * @param String $listId
+     * @param Array $mergeData ["name" => '', "type" => '']
+     * @return Array
+     */
+    public function addMergeTag($listId, array $mergeData)
+    {
+        $result = $this->mailchimp->post("lists/$listId/merge-fields", $mergeData);
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * add merge tag for a list
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/#edit-patch_lists_list_id_merge_fields_merge_id
+     * @param String $listId
+     * @param Array $mergeData ["name" => '', "type" => '', ...]
+     * @return Array
+     */
+    public function updateMergeTag($listId, $mergeId, $mergeData)
+    {
+        $result = $this->mailchimp->patch("lists/$listId/merge-fields/$mergeId", $mergeData);
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @TODO refactor this
      * Format Subscriber for MailChimp API requests
      * @param Array $subscriber
      * @param Array $options
@@ -213,6 +249,7 @@ class ListRepository
      */
     protected function getMailchimpFormattedSubscribers(array $subscribers, array $options)
     {
+
         return array_map(function(Subscriber $subscriber) use ($options) {
             return [
                 'email' => ['email' => $subscriber->getEmail()],
