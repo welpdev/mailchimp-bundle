@@ -27,3 +27,4 @@ services:
         tags:
             - { name: kernel.event_listener, event: welp.mailchimp.subscribe, method: onSubscribe }
             - { name: kernel.event_listener, event: welp.mailchimp.unsubscribe, method: onUnsubscribe }
+            - { name: kernel.event_listener, event: welp.mailchimp.delete, method: onDelete }

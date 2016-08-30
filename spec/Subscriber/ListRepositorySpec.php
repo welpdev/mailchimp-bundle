@@ -5,17 +5,16 @@ namespace spec\Welp\MailchimpBundle\Subscriber;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use \DrewM\MailChimp\MailChimp;
-use Psr\Log\LoggerInterface;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
 
 class ListRepositorySpec extends ObjectBehavior
 {
-    function let(MailChimp $mailchimp, LoggerInterface $logger, Subscriber $subscriber)
+    function let(MailChimp $mailchimp, Subscriber $subscriber)
     {
         $this->prepareSubscriber($subscriber);
         $this->prepareMailchimpLists($mailchimp);
 
-        $this->beConstructedWith($mailchimp, $logger);
+        $this->beConstructedWith($mailchimp);
     }
 
     function it_is_initializable()
@@ -23,158 +22,46 @@ class ListRepositorySpec extends ObjectBehavior
         $this->shouldHaveType('Welp\MailchimpBundle\Subscriber\ListRepository');
     }
 
-    function it_can_find_a_list_by_its_id()
+    function it_can_find_a_list_by_its_id(MailChimp $mailchimp)
     {
-        $this->findById('1337')->shouldReturn(json_decode('{
-            "id": "1337",
-            "name": "Prospect",
-        }'));
+        $this->findById('ba039c6198')->shouldReturn(['id' => 'ba039c6198', 'name' => 'myList']);
     }
 
-    /*function it_subscribe_a_subscriber($subscriber, $mailchimpLists)
+    function it_can_not_find_a_list_by_its_id(MailChimp $mailchimp)
     {
-        $mailchimpLists->subscribe(
-            1337,
-            ['email' => 'charles@terrasse.fr'],
-            ['FIRSTNAME' => 'Charles'],
-            'html',
-            false,
-            true
-        )->shouldBeCalled();
+        $mailchimp->success()->willReturn(false);
+        $mailchimp->getLastError()->willReturn('404: The requested resource could not be found.');
 
-        $this->subscribe(1337, $subscriber);
+        $this->shouldThrow(new \Exception('404: The requested resource could not be found.'))
+            ->duringFindById('notfound');
     }
 
-    function it_subscribes_several_subscribers($mailchimpLists, $logger)
+    function it_subscribe_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $firstChunk = $this->getSubscriberChunk(500, 0);
-        $secondChunk = $this->getSubscriberChunk(500, 500);
-        $thirdChunk = $this->getSubscriberChunk(123, 1000);
-
-        $subscribers = array_merge($firstChunk, $secondChunk, $thirdChunk);
-
-        $options = ['mc_language' => 'fr'];
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($firstChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 500,
-            'update_count' => 0,
-            'error_count' => 0,
-            'success_count' => 0,
-            'errors' => []
-        ]);
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($secondChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 250,
-            'update_count' => 250,
-            'error_count' => 0,
-            'success_count' => 0,
-            'errors' => []
-        ]);
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($thirdChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 100,
-            'update_count' => 22,
-            'error_count' => 1,
-            'success_count' => 0,
-            'errors' => [
-                ['email' => ['email' => 'foo@bar.com'], 'error' => 'Foo has errored.']
-            ]
-        ]);
-
-        $logger->info('850 subscribers added.')->shouldBeCalled();
-        $logger->info('272 subscribers updated.')->shouldBeCalled();
-        $logger->error('1 subscribers errored.')->shouldBeCalled();
-        $logger->error('Subscriber "foo@bar.com" has not been processed: "Foo has errored."')->shouldBeCalled();
-
-        $this->batchSubscribe(42, $subscribers, $options);
+        $this->subscribe('ba039c6198', $subscriber)->shouldReturn([
+                'email_address' => 'charles@terrasse.fr',
+                'status'        => 'subscribed',
+                'email_type'    => 'html',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
+            ]);
     }
 
-    function it_unsubscribes_several_subscribers($mailchimpLists, $logger)
+    function it_unsubscribe_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $firstChunk = $this->getSubscriberChunk(500, 0);
-        $secondChunk = $this->getSubscriberChunk(500, 500);
-        $thirdChunk = $this->getSubscriberChunk(123, 1000);
+        $mailchimp->patch("lists/ba039c6198/members/md5ofthesubscribermail", [
+                'status'  => 'unsubscribed'
+            ])->willReturn('unsubscribed');
 
-        $subscribers = array_merge($firstChunk, $secondChunk, $thirdChunk);
-
-        $options = ['mc_language' => 'fr'];
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($firstChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 500,
-            'update_count' => 0,
-            'error_count' => 0,
-            'success_count' => 0,
-            'errors' => []
-        ]);
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($secondChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 250,
-            'update_count' => 250,
-            'error_count' => 0,
-            'success_count' => 0,
-            'errors' => []
-        ]);
-
-        $mailchimpLists->batchSubscribe(
-            42,
-            $this->formatMailChimp($thirdChunk, $options),
-            false,
-            true
-        )->willReturn([
-            'add_count' => 100,
-            'update_count' => 22,
-            'error_count' => 1,
-            'success_count' => 0,
-            'errors' => [
-                ['email' => ['email' => 'foo@bar.com'], 'error' => 'Foo has errored.']
-            ]
-        ]);
-
-        $logger->info('850 subscribers added.')->shouldBeCalled();
-        $logger->info('272 subscribers updated.')->shouldBeCalled();
-        $logger->error('1 subscribers errored.')->shouldBeCalled();
-        $logger->error('Subscriber "foo@bar.com" has not been processed: "Foo has errored."')->shouldBeCalled();
-
-        $this->batchSubscribe(42, $subscribers, $options);
+        $this->unsubscribe('ba039c6198', $subscriber)->shouldReturn('unsubscribed');
     }
 
-    function it_unsubscribe_a_subscriber($subscriber, $mailchimpLists)
+    function it_delete_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $mailchimpLists->unsubscribe(
-            1337,
-            ['email' => 'charles@terrasse.fr'],
-            true,
-            false,
-            false
-        )->shouldBeCalled();
+        $mailchimp->delete("lists/ba039c6198/members/md5ofthesubscribermail")->willReturn('deleted');
 
-        $this->unsubscribe(1337, $subscriber);
+        $this->delete('ba039c6198', $subscriber)->shouldReturn('deleted');
     }
+    /*
 
     function it_finds_merge_tags($mailchimpLists)
     {
@@ -237,16 +124,32 @@ class ListRepositorySpec extends ObjectBehavior
     protected function prepareSubscriber(Subscriber $subscriber)
     {
         $subscriber->getEmail()->willReturn('charles@terrasse.fr');
-        $subscriber->getMergeTags()->willReturn(['FIRSTNAME' => 'Charles']);
+        $subscriber->getMergeTags()->willReturn(['FNAME' => 'Charles', 'LNAME' => 'Terrasse']);
     }
 
     protected function prepareMailchimpLists(MailChimp $mailchimp)
     {
-        $mailchimp->get("lists/1337")->willReturn(json_decode('{
-            "id": "1337",
-            "name": "Prospect",
-        }'));
+        // subscriber hash
+        $mailchimp->subscriberHash('charles@terrasse.fr')->willReturn('md5ofthesubscribermail');
+        // success
         $mailchimp->success()->willReturn(true);
+        // get the list
+        $mailchimp->get("lists/ba039c6198")->willReturn(['id' => 'ba039c6198', 'name' => 'myList']);
+        $mailchimp->get("lists/notfound")->willReturn(null);
+        // subscribe member
+        $mailchimp->post("lists/ba039c6198/members", [
+                'email_address' => 'charles@terrasse.fr',
+                'status'        => 'subscribed',
+                'email_type'    => 'html',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
+            ])->willReturn([
+                    'email_address' => 'charles@terrasse.fr',
+                    'status'        => 'subscribed',
+                    'email_type'    => 'html',
+                    'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse']
+                ]);
+        // unsubscribe member
+        // delete
     }
 
     protected function getSubscriberChunk($count, $offset)

@@ -27,13 +27,13 @@ class SubscriberListenerSpec extends ObjectBehavior
 
     function it_listen_to_subscribe_events($listRepository, $event, $subscriber)
     {
-        $listRepository->subscribe(123, $subscriber)->shouldBeCalled();
+        $listRepository->subscribe('foo', $subscriber)->shouldBeCalled();
         $this->onSubscribe($event);
     }
 
     function it_listen_to_unsubscribe_events($listRepository, $event, $subscriber)
     {
-        $listRepository->unsubscribe(123, $subscriber)->shouldBeCalled();
+        $listRepository->unsubscribe('foo', $subscriber)->shouldBeCalled();
         $this->onUnsubscribe($event);
     }
 }

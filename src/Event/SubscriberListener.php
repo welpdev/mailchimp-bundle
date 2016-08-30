@@ -17,7 +17,7 @@ class SubscriberListener
     public function onSubscribe(SubscriberEvent $event)
     {
         $this->listRepository->subscribe(
-            $this->getListId($event->getListId()),
+            $event->getListId(),
             $event->getSubscriber()
         );
     }
@@ -25,15 +25,16 @@ class SubscriberListener
     public function onUnsubscribe(SubscriberEvent $event)
     {
         $this->listRepository->unsubscribe(
-            $this->getListId($event->getListId()),
+            $event->getListId(),
             $event->getSubscriber()
         );
     }
 
-    protected function getListId($listId)
+    public function onDelete(SubscriberEvent $event)
     {
-        $listData = $this->listRepository->findById($listId);
-
-        return $listData['id'];
+        $this->listRepository->delete(
+            $event->getListId(),
+            $event->getSubscriber()
+        );
     }
 }
