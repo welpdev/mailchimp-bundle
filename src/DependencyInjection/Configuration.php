@@ -25,14 +25,14 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('api_key')
                     ->isRequired()
                 ->end()
-                ->scalarNode('subscriber_provider')->end()
-                ->scalarNode('webhook_secret')->end()
-                ->scalarNode('webhook_url')->end()
                 // lists
                 ->arrayNode('lists')
                     ->useAttributeAsKey('listId')
                     ->prototype('array')
                         ->children()
+                            ->scalarNode('subscriber_provider')->end()
+                            ->scalarNode('webhook_secret')->end()
+                            ->scalarNode('webhook_url')->end()
                             // merge_fields
                             ->arrayNode('merge_fields')
                                 ->prototype('array')

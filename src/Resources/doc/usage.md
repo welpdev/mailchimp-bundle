@@ -6,7 +6,7 @@ Merge fields are values you can add to your subscribers (for example the firstna
 
 To learn more about merge tags, please see this [guide on MailChimp](http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags).
 
-To synchronize you need to create your lists in MailChimp backend first. Then you need to add them in your `config.yml` as shown in the [above configuration](#configuration). The `options` you can provide are the same as the one found in [MailChimp API](https://apidocs.mailchimp.com/api/2.0/lists/merge-var-add.php).
+To synchronize you need to create your lists in MailChimp backend first. Then you need to add them in your `config.yml` as shown in the [above configuration](configuration.md). The `options` you can provide are the same as the one found in [MailChimp API](http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/).
 
 You can then synchronize the tags using the `app/console welp:mailchimp:synchronize-merge-tags` command. Note that every tag that are present in MailChimp but are not defined in your configuration **will be deleted along with associated values**.
 
@@ -14,7 +14,7 @@ You can then synchronize the tags using the `app/console welp:mailchimp:synchron
 
 You can synchronize all subscribers of your project at once by calling the Symfony command `app/console welp:mailchimp:synchronize-subscribers`. It will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.
 
-After [configuring your lists](#configuration) in `config.yml`, you need to create at least one `Provider`that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in `subscriber_providers` in the configuration above):
+After [configuring your lists](configuration.md) in `config.yml`, you need to create at least one `Provider`that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in `subscriber_providers` in the configuration above):
 
 ```yaml
 services:
@@ -110,32 +110,7 @@ public function newUser(User $user)
 
 	$this->container->get('event_dispatcher')->dispatch(
         SubscriberEvent::EVENT_SUBSCRIBE,
-        new SubscriberEvent('your_list_name', $subscriber)
-    );
-}
-```
-
-If you want to tell MailChimp that an existing subscriber has changed its e-mail, you can do it by adding the `new-email` option to the merge fields:
-
-```php
-<?php
-
-use Welp\MailchimpBundle\Event\SubscriberEvent;
-use Welp\MailchimpBundle\Subscriber\Subscriber;
-
-// ...
-
-public function changedEmail($previousMail, $newEmail)
-{
-    // ...
-
-    $subscriber = new Subscriber($previousEmail, [
-		 'new-email' => $newEmail
-    ]);
-
-    $this->container->get('event_dispatcher')->dispatch(
-        SubscriberEvent::EVENT_SUBSCRIBE,
-        new SubscriberEvent('your_list_name', $subscriber)
+        new SubscriberEvent('your_list_id', $subscriber)
     );
 }
 ```
@@ -150,7 +125,7 @@ use Welp\MailchimpBundle\Subscriber\Subscriber;
 
 // ...
 
-public function deletedUser(User $user)
+public function unsubscribeUser(User $user)
 {
     // ...
 
@@ -158,7 +133,32 @@ public function deletedUser(User $user)
 
     $this->container->get('event_dispatcher')->dispatch(
         SubscriberEvent::EVENT_UNSUBSCRIBE,
-        new SubscriberEvent('your_list_name', $subscriber)
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+```
+
+And finally delete a User
+
+Unsubscribe is simpler, you only need the email, all merge fields will be ignored:
+
+```php
+<?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function deleteUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user->getEmail());
+
+    $this->container->get('event_dispatcher')->dispatch(
+        SubscriberEvent::EVENT_DELETE,
+        new SubscriberEvent('your_list_id', $subscriber)
     );
 }
 ```
