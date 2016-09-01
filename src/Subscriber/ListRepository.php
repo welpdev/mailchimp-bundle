@@ -282,4 +282,65 @@ class ListRepository
 
         return $result;
     }
+
+    /**
+    * Automatically configure Webhook for a list
+    * @param String $listId
+    * @param String $webhookurl
+    * @return Array
+    */
+    public function registerMainWebhook($listId, $webhookurl)
+    {
+        // Configure webhook
+        $subscribeWebhook = [
+            'url' => $webhookurl,
+            'events' => [
+                'subscribe'   => true,
+                'unsubscribe' => true,
+                'cleaned'     => true
+            ],
+            'sources' => [
+                'user'  => true,
+                'admin' => true,
+                'api'   => true
+            ]
+        ];
+
+        return $this->addWebhook($listId, $subscribeWebhook);
+    }
+
+    /**
+    * Add a new webhook to a list
+    * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/webhooks/#
+    * @param String $listId
+    * @param Array $webhookData
+    * @return Array
+    */
+    public function addWebhook($listId, array $webhookData)
+    {
+        $result = $this->mailchimp->post("lists/$listId/webhooks", $webhookData);
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+    * Get webhooks of a list
+    * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/webhooks/#
+    * @param String $listId
+    * @return Array
+    */
+    public function getWebhooks($listId)
+    {
+        $result = $this->mailchimp->get("lists/$listId/webhooks");
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
 }

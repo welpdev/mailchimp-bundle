@@ -1,0 +1,3 @@
+welp_mailchimp_webhook:
+    resource: Welp\MailchimpBundle\Controller\WebhookController
+    type:     annotation

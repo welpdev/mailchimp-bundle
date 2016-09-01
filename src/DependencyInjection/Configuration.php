@@ -22,7 +22,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('api_key')->end()
+                ->scalarNode('api_key')
+                    ->isRequired()
+                ->end()
+                ->scalarNode('subscriber_provider')->end()
+                ->scalarNode('webhook_secret')->end()
+                ->scalarNode('webhook_url')->end()
                 // lists
                 ->arrayNode('lists')
                     ->useAttributeAsKey('listId')
@@ -68,9 +73,6 @@ class Configuration implements ConfigurationInterface
                                         ->end()
                                     ->end()
                                 ->end()
-                            ->end()
-                            ->scalarNode('subscriber_provider')
-                                ->isRequired()
                             ->end()
                         ->end()
                     ->end()

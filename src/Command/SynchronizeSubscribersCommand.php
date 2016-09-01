@@ -17,6 +17,7 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
         $this
             ->setDescription('Synchronizing subscribers in MailChimp')
             ->setName('welp:mailchimp:synchronize-subscribers')
+            // @TODO add params : listId, providerServiceKey
         ;
     }
 

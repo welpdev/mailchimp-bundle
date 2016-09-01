@@ -8,17 +8,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 use Welp\MailchimpBundle\Provider\ProviderInterface;
-use Welp\MailchimpBundle\Subscriber\SubscriberList;
+use Welp\MailchimpBundle\Subscriber\ListRepository;
 
-class SynchronizeMergeFieldsCommand extends ContainerAwareCommand
+class WebhookCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setDescription('Synchronizing merge fields in MailChimp')
-            ->setName('welp:mailchimp:synchronize-merge-fields')
-            // @TODO add params : listId
+            ->setDescription('Add main webhook to a MailChimp List')
+            ->setName('welp:mailchimp:webhook')
         ;
+        // @TODO add params : listId, webhookurl
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -31,8 +31,8 @@ class SynchronizeMergeFieldsCommand extends ContainerAwareCommand
         }
 
         foreach ($lists as $listId => $listParameters) {
-            $this->getContainer()->get('welp_mailchimp.list_synchronizer')
-                ->synchronizeMergeTags($listId, $listParameters['merge_fields']);
+            $this->getContainer()->get('welp_mailchimp.list_repository')
+                ->registerMainWebhook($listId, $listParameters['webhook_url']);
             ;
         }
     }

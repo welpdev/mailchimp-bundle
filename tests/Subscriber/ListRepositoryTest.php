@@ -104,5 +104,14 @@ class ListRepositoryTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
+    public function testWebhook()
+    {
+
+        $result = $this->listRepository->registerMainWebhook(self::LIST_ID, 'http://requestb.in/rkhf26rk');
+
+        var_dump($result);
+        //$this->assertNotEmpty($result);
+    }
+
 }
 ?>
