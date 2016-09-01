@@ -14,7 +14,7 @@ This bundle will help you synchronise your project's newsletter subscribers into
 * Synchronize your subscriber with a List
 * Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List
 * Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
-* Register Webhook (@TODO)
+* Register Webhooks
 
 ## Setup
 
@@ -48,13 +48,14 @@ More configuration on the [documentation](src/Resources/doc/configuration.md).
 
 * [Setup](src/Resources/doc/setup.md)
 * [Configuration](src/Resources/doc/configuration.md)
+* [Subscriber Provider](src/Resources/doc/subscriber-provider.md)
 * [Usage](src/Resources/doc/usage.md)
     * Synchronize merge fields
     * Full synchronization with command
     * Unit synchronization with events
         * Subscribe new User
-        * Unsubscribe User
-        * Delete User
+        * Unsubscribe a User
+        * Delete a User
     * Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
-    * Webhook
-        * Update User when subscribe/unsubscribe
+* [Webhook](src/Resources/doc/webhook.md)
+    * Update User when subscribe/unsubscribe

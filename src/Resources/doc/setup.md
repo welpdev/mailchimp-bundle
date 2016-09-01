@@ -25,3 +25,5 @@ In your `config.yml`:
 welp_mailchimp:
     api_key: YOURMAILCHIMPAPIKEY
 ```
+
+[More configuration](configuration.md)
