@@ -1,7 +1,18 @@
 {
     "name": "welp/mailchimp-bundle",
     "description": "MailChimp API V3 Symfony Bundle",
+    "version": "1.0.0-dev",
+    "type": "symfony-bundle",
+    "homepage": "https://github.com/welpdev/mailchimp-bundle",
     "license": "MIT",
+    "keywords": [
+        "Symfony",
+        "MailChimp",
+        "API",
+        "V3",
+        "User",
+        "Subscriber"
+    ],
     "authors": [
         {
             "name": "Titouan BENOIT",
