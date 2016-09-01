@@ -1,6 +1,8 @@
 # mailchimp-bundle
 
 [![Build Status](https://travis-ci.org/welpdev/mailchimp-bundle.svg?branch=master)](https://travis-ci.org/welpdev/mailchimp-bundle)
+[![Packagist](https://img.shields.io/packagist/v/welp/mailchimp-bundle.svg)](https://packagist.org/packages/welp/mailchimp-bundle)
+[![Packagist](https://img.shields.io/packagist/dt/welp/mailchimp-bundle.svg)](https://packagist.org/packages/welp/mailchimp-bundle)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/welpdev/mailchimp-bundle/master/LICENSE.md)
 
 This bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.
