@@ -34,6 +34,7 @@ class ListSynchronizer
      * Subscribe a batch of user
      * @param String $listId
      * @param Array $subscribers
+     * @return void
      */
     protected function batchSubscribe($listId, array $subscribers = [])
     {
@@ -44,6 +45,7 @@ class ListSynchronizer
      * Unsubscribe the difference between the array subscriber an user
      * @param String $listId
      * @param array $subscribers
+     * @return void
      */
     protected function unsubscribeDifference($listId, array $subscribers)
     {
@@ -62,10 +64,10 @@ class ListSynchronizer
     }
 
     /**
-     * @TODO test this, make it works
      * Synchronize Merge fields of a list and the array $mergeFields
      * @param String $listId
      * @param Array $mergeFields
+     * @return void
      */
     public function synchronizeMergeFields($listId, array $mergeFields = [])
     {
@@ -74,14 +76,14 @@ class ListSynchronizer
         foreach ($mailChimpMergeFields as $tag) {
             if (!$this->tagExists($tag['tag'], $mergeFields)) {
                 // tag only exist in mailchimp, we are removing it
-                $this->listRepository->deleteMergeField($listId, $tag['tag']);
+                $this->listRepository->deleteMergeField($listId, $tag['merge_id']);
             }
         }
 
         foreach ($mergeFields as $tag) {
-            // todo TAGid... refactor this for API V3
-            if ($this->tagExists($tag['tag'], $mailChimpMergeFields)) {
-                $this->listRepository->updateMergeField($listId, 1, $tag);
+            if ($tagId = $this->tagExists($tag['tag'], $mailChimpMergeFields)) {
+                // update mergeField in mailChimp
+                $this->listRepository->updateMergeField($listId, $tagId, $tag);
             } else {
                 $this->listRepository->addMergeField($listId, $tag);
             }
@@ -89,16 +91,21 @@ class ListSynchronizer
     }
 
     /**
-    * @TODO test this, make it works
+    * Test if the merge field Tag exists in an array
+    * @param String $tagName
+    * @param Array $tags
+    * @return Mixed (Boolean true|false) or $tag['merge_id']
     */
     protected function tagExists($tagName, array $tags)
     {
         foreach ($tags as $tag) {
             if ($tag['tag'] == $tagName) {
+                if(array_key_exists('merge_id', $tag)){
+                    return $tag['merge_id'];
+                }
                 return true;
             }
         }
-
         return false;
     }
 }

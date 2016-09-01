@@ -104,12 +104,40 @@ class ListRepositoryTest extends TestCase
         $this->assertNotEmpty($result);
     }
 
+    public function testChangeEmail()
+    {
+        // No solution so far with the API V3
+        // Waiting for further informations
+        /// http://stackoverflow.com/questions/32224697/mailchimp-api-v3-0-change-subscriber-email
+        /*$subscriber = new Subscriber('toto@gmail.com', ['FNAME' => 'Toto', 'LNAME' => 'TEST'], ['language' => 'fr']);
+        $this->listRepository->subscribe(self::LIST_ID, $subscriber);
+
+        $result = $this->listRepository->changeEmailAddress(self::LIST_ID, $subscriber->getEmail(), 'ratata@gmail.com');
+        var_dump($result);
+        $this->assertNotEmpty($result);
+        */
+    }
+
+    public function testMergeTags()
+    {
+        $result = $this->listRepository->addMergeField(self::LIST_ID, ["name" => "Test", "type" => "text", "tag" => "MYTEST"]);
+        //var_dump($result);
+        $this->assertNotEmpty($result);
+        $this->assertEquals($result['tag'], 'MYTEST');
+        $result2 = $this->listRepository->updateMergeField(self::LIST_ID, $result['merge_id'], ["tag" => "SECONDTEST"]);
+        //var_dump($result2);
+        $this->assertNotEmpty($result2);
+        $this->assertEquals($result2['tag'], 'SECONDTEST');
+        $result3 = $this->listRepository->deleteMergeField(self::LIST_ID, $result2['merge_id']);
+        $this->assertEmpty($result3);
+    }
+
     public function testWebhook()
     {
 
-        $result = $this->listRepository->registerMainWebhook(self::LIST_ID, 'http://requestb.in/rkhf26rk');
+        //$result = $this->listRepository->registerMainWebhook(self::LIST_ID, 'http://requestb.in/rkhf26rk');
 
-        var_dump($result);
+        //var_dump($result);
         //$this->assertNotEmpty($result);
     }
 

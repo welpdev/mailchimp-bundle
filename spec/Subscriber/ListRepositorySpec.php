@@ -67,65 +67,57 @@ class ListRepositorySpec extends ObjectBehavior
 
         $this->delete('ba039c6198', $subscriber)->shouldReturn('deleted');
     }
-    /*
 
-    function it_finds_merge_tags($mailchimpLists)
+    function it_update_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $mailchimpLists
-            ->mergeVars([123])
-            ->willReturn([
-                'data' => [
-                    [
-                        'id' => 123,
-                        'merge_vars' => [
-                            ['tag' => 'EMAIL'], //this tag should be ignored
-                            ['tag' => 'FOO', 'name' => 'Bar'],
-                        ]
-                    ]
+        $mailchimp->patch("lists/ba039c6198/members/md5ofthesubscribermail", ["email_address" => "charles@terrasse.fr", "merge_fields" => ["FNAME" => "Charles", "LNAME" => "Terrasse"], "language" => "fr", "email_type" => "html"])->willReturn('update');
+
+        $this->update('ba039c6198', $subscriber)->shouldReturn('update');
+    }
+
+    function it_finds_merge_tags(MailChimp $mailchimp)
+    {
+        $mailchimp
+            ->get("lists/123/merge-fields")
+            ->willReturn(
+                [
+                    'merge_fields' => [
+                        ['tag' => 'EMAIL', 'name' => 'email'],
+                        ['tag' => 'FOO', 'name' => 'Bar'],
                 ]
-            ])
-        ;
+            ]);
 
-        $this->findMergeTags(123)->shouldReturn([['tag' => 'FOO', 'name' => 'Bar']]);
+        $this->getMergeFields(123)->shouldReturn([['tag' => 'EMAIL', 'name' => 'email'], ['tag' => 'FOO', 'name' => 'Bar']]);
     }
 
-    function it_deletes_a_merge_tag($mailchimpLists, $logger)
+    function it_deletes_a_merge_tag(MailChimp $mailchimp)
     {
-        $mailchimpLists->mergeVarDel(123, 'FOO')->shouldBeCalled();
+        $mailchimp->delete("lists/123/merge-fields/foo")->shouldBeCalled();
 
-        $this->deleteMergeTag(123, 'FOO');
-
-        $logger->info('Tag "FOO" has been removed from MailChimp.');
+        $this->deleteMergeField(123, 'foo');
     }
 
-    function it_adds_a_merge_tag($mailchimpLists, $logger)
+    function it_adds_a_merge_tag(MailChimp $mailchimp)
     {
-        $mailchimpLists->mergeVarAdd(123, 'FOO', 'Foo bar', ['req' => true])->shouldBeCalled();
-
-        $this->addMergeTag(123, [
+        $mailchimp->post("lists/123/merge-fields", $mergeData = [
             'tag' => 'FOO',
             'name' => 'Foo bar',
             'options' => ['req' => true]
-        ]);
+        ])->shouldBeCalled();
 
-        $logger->info('Tag "FOO" has been added to MailChimp.');
+        $this->addMergeField(123, $mergeData);
     }
 
-    function it_updates_a_merge_tag($mailchimpLists, $logger)
+    function it_updates_a_merge_tag(MailChimp $mailchimp)
     {
-        $mailchimpLists->mergeVarUpdate(123, 'FOO', ['name' => 'Foo bar', 'req' => true])->shouldBeCalled();
-
-        $this->updateMergeTag(123, [
+        $mailchimp->patch("lists/123/merge-fields/2", $mergeData = [
             'tag' => 'FOO',
             'name' => 'Foo bar',
-            'options' => [
-                'req' => true,
-                'field_type' => 'text' // should be removed, cannot be updated
-            ]
-        ]);
+            'options' => ['req' => true]
+        ])->shouldBeCalled();
 
-        $logger->info('Tag "FOO" has been updated in MailChimp.');
-    }*/
+        $this->updateMergeField(123, 2, $mergeData);
+    }
 
     protected function prepareSubscriber(Subscriber $subscriber)
     {

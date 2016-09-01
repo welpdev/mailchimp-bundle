@@ -23,11 +23,11 @@ class ListSynchronizerSpec extends ObjectBehavior
     {
         $listRepository->findById('foobar')->willReturn(['id' => 'foobar']);
         $listRepository->getMergeFields('foobar')->willReturn([
-            ['tag' => 'TAG1', 'name' => 'Tag 1'],
-            ['tag' => 'OBSOLETE', 'name' => 'This tag should not exist'],
+            ['id' => 1, 'tag' => 'TAG1', 'name' => 'Tag 1'],
+            ['id' => 2, 'tag' => 'OBSOLETE', 'name' => 'This tag should not exist'],
         ]);
 
-        $listRepository->deleteMergeField('foobar', 'OBSOLETE')->shouldBeCalled();
+        $listRepository->deleteMergeField('foobar', 2)->shouldBeCalled();
         $listRepository->updateMergeField('foobar', 1, ['tag' => 'TAG1', 'name' => 'Tag 1', 'options' => ['req' => true]])->shouldBeCalled();
         $listRepository->addMergeField('foobar', ['tag' => 'TAG2', 'name' => 'Tag 2', 'options' => ['req' => false]])->shouldBeCalled();
 

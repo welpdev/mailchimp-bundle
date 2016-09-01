@@ -61,6 +61,7 @@ class ListRepository
 
     /**
      * Update a Subscriber to a list
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/#edit-patch_lists_list_id_members_subscriber_hash
      * @param String $listId
      * @param Subscriber $subscriber
      */
@@ -69,6 +70,31 @@ class ListRepository
 
         $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", $subscriber->formatMailChimp());
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
+     * @TODO not working with API V3... we can't change email of a user
+     *       one possible solution is to delete old subscriber and add a new one
+     *       with the same mergeFieds and Options...
+     * Change email address
+     * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/#edit-put_lists_list_id_members_subscriber_hash
+     * @param String $listId
+     * @param String $oldEmailAddress
+     * @param String $newEmailAddress
+     */
+    public function changeEmailAddress($listId, $oldEmailAddress, $newEmailAddress)
+    {
+
+        $subscriberHash = $this->mailchimp->subscriberHash($oldEmailAddress);
+        $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", [
+            'email_address' => $newEmailAddress
+        ]);
 
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
@@ -297,7 +323,10 @@ class ListRepository
             'events' => [
                 'subscribe'   => true,
                 'unsubscribe' => true,
-                'cleaned'     => true
+                'profile'     => false,
+                'cleaned'     => true,
+                'upemail'     => false,
+                'campaign'    => false
             ],
             'sources' => [
                 'user'  => true,
