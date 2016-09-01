@@ -14,6 +14,15 @@ class ListRepository
     }
 
     /**
+     * Get MailChimp Object to do custom actions
+     * @return MailChimp https://github.com/drewm/mailchimp-api
+     */
+    public function getMailChimp()
+    {
+        return $this->mailchimp;
+    }
+
+    /**
      * Find MailChimp List by list Id
      * @param String $listId
      * @return Object list http://developer.mailchimp.com/documentation/mailchimp/reference/lists/#read-get_lists_list_id
@@ -107,40 +116,79 @@ class ListRepository
     }
 
     /**
-     * @TODO
      * Subscribe a batch of Subscriber to a list
      * @param String $listId
      * @param Array $subscribers
-     * @param Array $options
+     * @return Array $batchIds
      */
     public function batchSubscribe($listId, array $subscribers)
     {
-        //@TODO
-
+        $batchIds = [];
         // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
         $subscriberChunks = array_chunk($subscribers, self::SUBSCRIBER_BATCH_SIZE);
         foreach ($subscriberChunks as $subscriberChunk) {
             $Batch = $this->mailchimp->new_batch();
             foreach ($subscriberChunk as $index => $newsubscribers) {
-                $Batch->post("op$index", "lists/$listId/members", [
-                    'email_address' => 'micky@example.com',
-                    'status'        => 'subscribed',
-                ]);
+                $Batch->post("op$index", "lists/$listId/members", array_merge(
+                    $newsubscribers->formatMailChimp(),
+                    ['status' => 'subscribed']
+                ));
             }
-            $result = $Batch->execute();
+            $Batch->execute();
+            $currentBatch = $Batch->check_status();
+            array_push($batchIds, $currentBatch['id']);
         }
+        return $batchIds;
     }
 
     /**
-     * @TODO
      * Unsubscribe a batch of Subscriber to a list
      * @param String $listId
      * @param Array $emails
+     * @return Array $batchIds
      */
     public function batchUnsubscribe($listId, array $emails)
     {
-        //@TODO
+        $batchIds = [];
+        // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
+        $emailsChunks = array_chunk($emails, self::SUBSCRIBER_BATCH_SIZE);
+        foreach ($emailsChunks as $emailsChunk) {
+            $Batch = $this->mailchimp->new_batch();
+            foreach ($emailsChunk as $index => $email) {
+                $emailHash = $this->mailchimp->subscriberHash($email);
+                $Batch->patch("op$index", "lists/$listId/members/$emailHash", [
+                    'status' => 'unsubscribed'
+                ]);
+            }
+            $result = $Batch->execute();
+            $currentBatch = $Batch->check_status();
+            array_push($batchIds, $currentBatch['id']);
+        }
+        return $batchIds;
+    }
 
+    /**
+     * Delete a batch of Subscriber to a list
+     * @param String $listId
+     * @param Array $emails
+     * @return Array $batchIds
+     */
+    public function batchDelete($listId, array $emails)
+    {
+        $batchIds = [];
+        // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
+        $emailsChunks = array_chunk($emails, self::SUBSCRIBER_BATCH_SIZE);
+        foreach ($emailsChunks as $emailsChunk) {
+            $Batch = $this->mailchimp->new_batch();
+            foreach ($emailsChunk as $index => $email) {
+                $emailHash = $this->mailchimp->subscriberHash($email);
+                $Batch->delete("op$index", "lists/$listId/members/$emailHash");
+            }
+            $result = $Batch->execute();
+            $currentBatch = $Batch->check_status();
+            array_push($batchIds, $currentBatch['id']);
+        }
+        return $batchIds;
     }
 
     /**

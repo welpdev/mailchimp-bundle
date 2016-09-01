@@ -22,6 +22,11 @@ class ListRepositorySpec extends ObjectBehavior
         $this->shouldHaveType('Welp\MailchimpBundle\Subscriber\ListRepository');
     }
 
+    function it_can_get_the_mailchimp_object()
+    {
+        $this->getMailChimp()->shouldHaveType('\DrewM\MailChimp\MailChimp');
+    }
+
     function it_can_find_a_list_by_its_id(MailChimp $mailchimp)
     {
         $this->findById('ba039c6198')->shouldReturn(['id' => 'ba039c6198', 'name' => 'myList']);

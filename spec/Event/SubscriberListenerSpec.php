@@ -36,4 +36,10 @@ class SubscriberListenerSpec extends ObjectBehavior
         $listRepository->unsubscribe('foo', $subscriber)->shouldBeCalled();
         $this->onUnsubscribe($event);
     }
+
+    function it_listen_to_delete_events($listRepository, $event, $subscriber)
+    {
+        $listRepository->delete('foo', $subscriber)->shouldBeCalled();
+        $this->onDelete($event);
+    }
 }
