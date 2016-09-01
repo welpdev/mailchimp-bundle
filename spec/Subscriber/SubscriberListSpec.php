@@ -27,23 +27,4 @@ class SubscriberListSpec extends ObjectBehavior
     {
         $this->getProvider()->shouldReturn($provider);
     }
-
-    function it_has_default_options()
-    {
-        $this->getOptions()->shouldReturn(['mc_language' => null]);
-    }
-
-    function it_can_set_options($provider)
-    {
-        $this->beConstructedWith('foobar', $provider, ['mc_language' => 'fr']);
-        $this->getOptions()->shouldReturn(['mc_language' => 'fr']);
-    }
-
-    function it_cannot_set_any_option($provider)
-    {
-        $this
-            ->shouldThrow(new \Exception('The option "bar" does not exist. Defined options are: "mc_language".'))
-            ->during('__construct', ['foobar', $provider, ['bar' => 'foo']])
-        ;
-    }
 }

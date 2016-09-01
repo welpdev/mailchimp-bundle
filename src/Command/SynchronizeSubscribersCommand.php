@@ -3,18 +3,14 @@
 namespace Welp\MailchimpBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Monolog\Logger;
+
 use Welp\MailchimpBundle\Provider\ProviderInterface;
 use Welp\MailchimpBundle\Subscriber\SubscriberList;
 
-class SynchroniseSubscribersCommand extends ContainerAwareCommand
+class SynchronizeSubscribersCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
@@ -28,30 +24,26 @@ class SynchroniseSubscribersCommand extends ContainerAwareCommand
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
 
-        $this->getContainer()->get('logger')->pushHandler(new ConsoleHandler($output, true, array(
-            OutputInterface::VERBOSITY_NORMAL => Logger::INFO,
-            OutputInterface::VERBOSITY_VERBOSE => Logger::DEBUG,
-            OutputInterface::VERBOSITY_VERY_VERBOSE => Logger::DEBUG,
-            OutputInterface::VERBOSITY_DEBUG => Logger::DEBUG,
-        )));
-
         $lists = $this->getContainer()->getParameter('welp_mailchimp.lists');
         if (sizeof($lists) == 0) {
             throw new \RuntimeException("No Mailchimp list has been defined. Check the your config.yml file based on MailchimpBundle's README.md");
         }
 
-        foreach ($lists as $listName => $listParameters) {
+        foreach ($lists as $listId => $listParameters) {
             $providerServiceKey = $listParameters['subscriber_provider'];
 
             $provider = $this->getProvider($providerServiceKey);
-            $list = new SubscriberList($listName, $provider, [
-                'mc_language' => isset($listParameters['mc_language']) ? $listParameters['mc_language'] : null
-            ]);
+            $list = new SubscriberList($listId, $provider);
 
             $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
         }
     }
 
+    /**
+     * Get subscriber provider
+     * @param String $providerServiceKey
+     * @return ProviderInterface $provider
+     */
     protected function getProvider($providerServiceKey)
     {
         try {

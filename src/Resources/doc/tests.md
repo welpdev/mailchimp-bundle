@@ -1,12 +1,13 @@
-# Test with phpspec
+# Tests
 
 * <http://www.phpspec.net/>
+* <https://phpunit.de/>
 
-Unit test:
+Unit tests:
 
     bin/phpspec run
 
-Integration test:
+Integration tests:
 
     bin/phpunit -c .
 

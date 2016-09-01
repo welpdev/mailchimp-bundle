@@ -32,4 +32,21 @@ class SubscriberSpec extends ObjectBehavior
         $this->beConstructedWith('charles@terrasse.fr', $tags = ['FIRSTNAME' => 'Charles']);
         $this->getMergeFields()->shouldReturn($tags);
     }
+
+    function it_can_have_merge_fields_options()
+    {
+        $this->beConstructedWith('charles@terrasse.fr', $tags = ['FIRSTNAME' => 'Charles'], $options = ['language' => "fr"]);
+        $this->getMergeFields()->shouldReturn($tags);
+        $this->getOptions()->shouldReturn($options);
+    }
+
+    function it_format_for_mailchimp()
+    {
+        $this->beConstructedWith('charles@terrasse.fr', $tags = ['FIRSTNAME' => 'Charles'], $options = ['language' => "fr"]);
+        $this->formatMailChimp()->shouldReturn([
+            'email_address' => 'charles@terrasse.fr',
+            'merge_fields' => $tags,
+            'language' => "fr"
+        ]);
+    }
 }

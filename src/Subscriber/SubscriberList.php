@@ -9,13 +9,11 @@ class SubscriberList
 {
     protected $listId;
     protected $provider;
-    protected $options;
 
-    public function __construct($listId, ProviderInterface $provider, array $options = [])
+    public function __construct($listId, ProviderInterface $provider)
     {
         $this->listId = $listId;
         $this->provider = $provider;
-        $this->options = $this->resolveOptions($options);
     }
 
     public function getListId()
@@ -26,19 +24,5 @@ class SubscriberList
     public function getProvider()
     {
         return $this->provider;
-    }
-
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    protected function resolveOptions(array $options)
-    {
-        //@TODO
-        $resolver = new OptionsResolver();
-        $resolver->setDefaults(['mc_language' => null]);
-
-        return $resolver->resolve($options);
     }
 }
