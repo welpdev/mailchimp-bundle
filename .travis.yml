@@ -1,6 +1,7 @@
 language: php
 phpp:
     - 5.6
+    - 7
 
 before_script:
     - composer install --dev -v --prefer-source
