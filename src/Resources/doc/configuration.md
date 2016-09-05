@@ -20,6 +20,16 @@ welp_mailchimp:
             # optional merge tags you want to synchronize
             merge_fields:
                 -
+                    tag: FNAME
+                    name: First Name
+                    type: text
+                    public: true
+                -
+                    tag: LNAME
+                    name: Last Name
+                    type: text
+                    public: true
+                -
                     tag: FIRSTTAG
                     name: My first tag
                     type: text
@@ -84,4 +94,21 @@ Example:
                 size: 50
             help_text: this is a full test
 
+```
+
+Note: MailChimp provides two default merge fields (FNAME & LNAME). You can use this config to handle them:
+
+```yaml
+    ...
+    merge_fields:
+        -
+            tag: FNAME
+            name: First Name
+            type: text
+            public: true
+        -
+            tag: LNAME
+            name: Last Name
+            type: text
+            public: true
 ```

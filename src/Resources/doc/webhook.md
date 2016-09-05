@@ -152,7 +152,7 @@ Example:
             arguments:
                 - @service_container
 
-### 3- Test with ngrok and you will see in app log:
+### 3- Test with ngrok (or other localhost tunnel) and you will see the result in app log:
 
     ...
     [2016-09-05 11:55:48] app.INFO: Unsubscribe Event: {"reason":"manual","id":"5c1b5a7c1e","email":"tztz@gmail.com","email_type":"html","web_id":"3375995","merges":{"EMAIL":"tztz@gmail.com","FNAME":"Tztz","LNAME":"TZST"},"list_id":"ba039c6198"} []

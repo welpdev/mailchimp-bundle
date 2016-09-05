@@ -32,7 +32,7 @@ class SynchronizeMergeFieldsCommand extends ContainerAwareCommand
 
         foreach ($lists as $listId => $listParameters) {
             $this->getContainer()->get('welp_mailchimp.list_synchronizer')
-                ->synchronizeMergeTags($listId, $listParameters['merge_fields']);
+                ->synchronizeMergeFields($listId, $listParameters['merge_fields']);
             ;
         }
     }
