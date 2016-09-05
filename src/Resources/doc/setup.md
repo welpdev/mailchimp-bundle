@@ -8,12 +8,12 @@ Add bundle to your project:
 composer require welp/mailchimp-bundle
 ```
 
-Add `Welp\MailChimpBundle\WelpMailChimpBundle` to your `AppKernel.php`:
+Add `Welp\MailchimpBundle\WelpMailchimpBundle` to your `AppKernel.php`:
 
 ```php
 $bundles = [
     // ...
-    new Welp\MailChimpBundle\WelpMailChimpBundle(),
+    new Welp\MailchimpBundle\WelpMailchimpBundle(),
 ];
 ```
 
