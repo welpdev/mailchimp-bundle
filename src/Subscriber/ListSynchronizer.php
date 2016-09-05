@@ -21,13 +21,14 @@ class ListSynchronizer
     {
         $listData = $this->listRepository->findById($list->getListId());
 
+        // @TODO handle user already unsubscribe in MailChimp...
         // get Subscribers from the provider
         $subscribers = $list->getProvider()->getSubscribers();
 
         // unsubscribe difference
         $this->unsubscribeDifference($list->getListId(), $subscribers);
         // subscribe the rest
-        $this->batchSubscribe($list->getListId(), $subscribers, $list->getOptions());
+        $this->batchSubscribe($list->getListId(), $subscribers);
     }
 
     /**

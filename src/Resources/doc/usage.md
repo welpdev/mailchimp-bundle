@@ -17,7 +17,9 @@ NOTE: MailChimp provide two default merge fields:
 
 ## Full synchronization with command
 
-You can synchronize all subscribers of your project at once by calling the Symfony command `app/console welp:mailchimp:synchronize-subscribers`. It will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.
+You can synchronize all subscribers of your project at once by calling the Symfony command `php app/console welp:mailchimp:synchronize-subscribers`.
+
+It will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.
 
 NOTE: you must have configure and create your own [subscriber provider](subscriber-provider.md).
 
@@ -115,6 +117,7 @@ The service key is `welp_mailchimp.mailchimp_master`.
 Example:
 
 ``` php
+<?php
 // in any controller action...
     ...
     $MailChimp = $this->container->get('welp_mailchimp.mailchimp_master');

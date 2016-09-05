@@ -9,12 +9,12 @@ This bundle will help you synchronise your project's newsletter subscribers into
 
 ## Features
 
-* Use your own userProvider (basic `FosSubscriberProvider` included to interface with FosUserBundle)
-* Synchronize Merge Fields with your config
-* Synchronize your subscriber with a List
-* Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List
-* Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
-* Register Webhooks
+* Use your own userProvider (basic `FosSubscriberProvider` included to interface with FosUserBundle) (✔)
+* Synchronize Merge Fields with your config (✔)
+* Synchronize your subscriber with a List (✔)
+* Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List (need test)
+* Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests (✔)
+* Register Webhooks (✔)
 
 ## Setup
 

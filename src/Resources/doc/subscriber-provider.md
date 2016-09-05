@@ -72,3 +72,12 @@ services:
         class: Welp\MailchimpBundle\Provider\FosSubscriberProvider
         arguments: [@fos_user.user_manager]
 ```
+
+After this, write the service key for your list into your `config.yml`:
+
+```yaml
+    ...
+    listId2:
+        subscriber_providers: 'yourapp.provider2'
+        ...
+```
