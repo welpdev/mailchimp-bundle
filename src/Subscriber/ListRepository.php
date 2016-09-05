@@ -323,10 +323,10 @@ class ListRepository
             'events' => [
                 'subscribe'   => true,
                 'unsubscribe' => true,
-                'profile'     => false,
+                'profile'     => true,
                 'cleaned'     => true,
-                'upemail'     => false,
-                'campaign'    => false
+                'upemail'     => true,
+                'campaign'    => true
             ],
             'sources' => [
                 'user'  => true,

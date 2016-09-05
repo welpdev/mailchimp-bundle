@@ -31,9 +31,13 @@ class WebhookCommand extends ContainerAwareCommand
         }
 
         foreach ($lists as $listId => $listParameters) {
+            $url = $listParameters['webhook_url'].'?hooksecret='.$listParameters['webhook_secret'];
             $this->getContainer()->get('welp_mailchimp.list_repository')
-                ->registerMainWebhook($listId, $listParameters['webhook_url']);
+                ->registerMainWebhook($listId, $url);
             ;
         }
+
+        $output->writeln('✔ done');
+
     }
 }
