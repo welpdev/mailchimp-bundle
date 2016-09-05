@@ -2,7 +2,7 @@
 
 namespace Welp\MailchimpBundle\Subscriber;
 
-use \DrewM\MailChimp\MailChimp;
+use DrewM\MailChimp\MailChimp;
 
 class ListRepository
 {

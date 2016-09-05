@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-use \DrewM\MailChimp\Webhook;
+use DrewM\MailChimp\Webhook;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
 /**
