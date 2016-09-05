@@ -22,12 +22,21 @@ class WebhookController extends Controller
     /**
      * Endpoint for the mailchimp list Webhook
      * https://apidocs.mailchimp.com/webhooks/
-     * @Route("/", name="webhook_index")
+     * @Route("/endpoint", name="webhook_index")
      * @Method({"POST", "GET"})
      */
     public function indexAction(Request $request)
     {
 
+        // For Mailchimp ping GET
+        if($request->isMethod('GET')){
+            return new JsonResponse([
+                'success' => true,
+                'ping' => 'pong',
+            ]);
+        }
+
+        // Handle POST request of Mailchimp
         $type = $request->request->get('type');
         $data = $request->request->get('data');
         /* Response example:

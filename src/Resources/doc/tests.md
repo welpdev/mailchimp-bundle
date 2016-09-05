@@ -3,12 +3,16 @@
 * <http://www.phpspec.net/>
 * <https://phpunit.de/>
 
-Unit tests:
+## Unit tests
 
     bin/phpspec run
 
-Integration tests:
+## Integration tests
 
     bin/phpunit -c .
 
 Look at the code, it works with a MailChimp account...
+
+## Webhook tests
+
+use ngrok and http://requestb.in/
