@@ -3,6 +3,7 @@
 namespace Welp\MailchimpBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,7 +14,7 @@ use DrewM\MailChimp\Webhook;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
 /**
- * @Route("/webhooks")
+ * @Route("/webhook")
  */
 class WebhookController extends Controller
 {
@@ -22,6 +23,7 @@ class WebhookController extends Controller
      * Endpoint for the mailchimp list Webhook
      * https://apidocs.mailchimp.com/webhooks/
      * @Route("/", name="webhook_index")
+     * @Method({"POST", "GET"})
      */
     public function indexAction(Request $request)
     {
@@ -40,6 +42,9 @@ class WebhookController extends Controller
             data[web_id]: 3375995
         */
         $hooksecret = $request->query->get('hooksecret');
+
+        if(empty($type) || empty($data) || empty($hooksecret) || !array_key_exists('list_id', $data))
+            throw new AccessDeniedHttpException('incorrect data format!');
 
         $listId = $data['list_id'];
         $lists = $this->getParameter('welp_mailchimp.lists');
@@ -89,7 +94,7 @@ class WebhookController extends Controller
         }
 
         return new JsonResponse([
-            'type' => $type
+            'type' => $type,
             'data' => $data,
         ]);
     }
