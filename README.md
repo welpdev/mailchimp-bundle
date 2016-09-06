@@ -61,3 +61,7 @@ More configuration on the [documentation](src/Resources/doc/configuration.md).
     * Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
 * [Webhook](src/Resources/doc/webhook.md)
     * Update User when subscribe/unsubscribe
+
+## Contributing
+
+If you want to contribute to this project, look at [over here](CONTRIBUTING.md)
