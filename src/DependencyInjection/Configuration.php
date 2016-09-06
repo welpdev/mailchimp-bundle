@@ -64,6 +64,7 @@ class Configuration implements ConfigurationInterface
                                                 ->scalarNode('date_format')
                                                 ->end()
                                                 ->arrayNode('choices')
+                                                    ->prototype('scalar')->end()
                                                 ->end()
                                                 ->integerNode('size')
                                                 ->end()
