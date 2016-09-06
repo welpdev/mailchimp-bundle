@@ -137,7 +137,7 @@ class ListRepositorySpec extends ObjectBehavior
         $mailchimp->get("lists/ba039c6198")->willReturn(['id' => 'ba039c6198', 'name' => 'myList']);
         $mailchimp->get("lists/notfound")->willReturn(null);
         // subscribe member
-        $mailchimp->post("lists/ba039c6198/members", [
+        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
                 'email_address' => 'charles@terrasse.fr',
                 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
                 'language' => 'fr',

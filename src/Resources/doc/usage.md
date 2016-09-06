@@ -120,6 +120,25 @@ Note: we can't change the address email of a user... It's a MailChimp API V3 [is
 
 The only workaround right now to change user address mail is to delete the old member and add a new one...
 
+### Change User's email address (WORKAROUND)
+
+If your User changes his email address, you can sync with MailChimp:
+
+```php
+<?php
+
+// ...
+
+public function changeEmailAddress(User $user)
+{
+    // ...
+    $this->container->get('welp_mailchimp.list_repository')->changeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');
+
+}
+```
+
+It's an UGLY WORKAROUND... Waiting for MailChimp API V3 to be able to properly change email address of a member...
+
 ### Delete a User
 
 And finally delete a User

@@ -55,6 +55,8 @@ More configuration on the [documentation](src/Resources/doc/configuration.md).
     * Unit synchronization with events
         * Subscribe new User
         * Unsubscribe a User
+        * Update a User
+        * Change User's email address (WORKAROUND)
         * Delete a User
     * Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
 * [Webhook](src/Resources/doc/webhook.md)

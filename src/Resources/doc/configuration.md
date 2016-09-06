@@ -16,7 +16,7 @@ welp_mailchimp:
             # webhook secret to secure webhook between MailChimp & your app
             webhook_secret: 'thisIsASecret'
             # The webhook url to be registered to the MailChimp list
-            webhook_url: 'https://myapp.com/mailchimp/webhooks/'
+            webhook_url: 'https://myapp.com/mailchimp/webhook/endpoint'
             # optional merge tags you want to synchronize
             merge_fields:
                 -

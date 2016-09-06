@@ -93,13 +93,35 @@ class ListRepository
     {
 
         $subscriberHash = $this->mailchimp->subscriberHash($oldEmailAddress);
-        $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", [
-            'email_address' => $newEmailAddress
-        ]);
-
+        $oldMember = $this->mailchimp->get("lists/$listId/members/$subscriberHash");
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
         }
+        // clean member
+        unset($oldMember['_links']);
+        unset($oldMember['id']);
+        unset($oldMember['stats']);
+        unset($oldMember['unique_email_id']);
+        unset($oldMember['member_rating']);
+        unset($oldMember['last_changed']);
+        unset($oldMember['email_client']);
+        unset($oldMember['list_id']);
+
+        $newMember = $oldMember;
+        $newMember['email_address'] = $newEmailAddress;
+
+        // delete the old Member
+        $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        // add the new member
+        $result = $this->mailchimp->post("lists/$listId/members", $newMember);
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
 
         return $result;
     }
