@@ -172,22 +172,23 @@ class ListRepository
      */
     public function batchSubscribe($listId, array $subscribers)
     {
-        $batchIds = [];
+        $batchResults = [];
         // as suggested in MailChimp API docs, we send multiple smaller requests instead of a bigger one
         $subscriberChunks = array_chunk($subscribers, self::SUBSCRIBER_BATCH_SIZE);
         foreach ($subscriberChunks as $subscriberChunk) {
             $Batch = $this->mailchimp->new_batch();
             foreach ($subscriberChunk as $index => $newsubscribers) {
-                $Batch->post("op$index", "lists/$listId/members", array_merge(
+                $subscriberHash = $this->mailchimp->subscriberHash($newsubscribers->getEmail());
+                $Batch->put("op$index", "lists/$listId/members/$subscriberHash", array_merge(
                     $newsubscribers->formatMailChimp(),
                     ['status' => 'subscribed']
                 ));
             }
             $Batch->execute();
             $currentBatch = $Batch->check_status();
-            array_push($batchIds, $currentBatch['id']);
+            array_push($batchResults, $currentBatch);
         }
-        return $batchIds;
+        return $batchResults;
     }
 
     /**

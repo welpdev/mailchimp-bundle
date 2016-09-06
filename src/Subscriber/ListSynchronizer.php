@@ -27,7 +27,7 @@ class ListSynchronizer
         // unsubscribe difference
         $this->unsubscribeDifference($list->getListId(), $subscribers);
         // subscribe the rest
-        $this->batchSubscribe($list->getListId(), $subscribers);
+        return $this->batchSubscribe($list->getListId(), $subscribers);
     }
 
     /**
@@ -38,7 +38,7 @@ class ListSynchronizer
      */
     protected function batchSubscribe($listId, array $subscribers = [])
     {
-        $this->listRepository->batchSubscribe($listId, $subscribers);
+        return $this->listRepository->batchSubscribe($listId, $subscribers);
     }
 
     /**

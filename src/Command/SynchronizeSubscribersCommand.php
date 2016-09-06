@@ -4,6 +4,7 @@ namespace Welp\MailchimpBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
@@ -12,15 +13,27 @@ use Welp\MailchimpBundle\Subscriber\SubscriberList;
 
 class SynchronizeSubscribersCommand extends ContainerAwareCommand
 {
+    /**
+     * @inheritDoc
+     */
     protected function configure()
     {
         $this
             ->setDescription('Synchronizing subscribers in MailChimp')
             ->setName('welp:mailchimp:synchronize-subscribers')
+            ->addOption(
+                'follow-sync',
+                null,
+                InputOption::VALUE_NONE,
+                'If you want to follow batches execution'
+            )
             // @TODO add params : listId, providerServiceKey
         ;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
@@ -36,7 +49,61 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
             $provider = $this->getProvider($providerServiceKey);
             $list = new SubscriberList($listId, $provider);
 
-            $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
+            $output->writeln(sprintf('Synchronize list %s', $listId));
+            $batchesResult = $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
+            if($input->getOption('follow-sync')){
+                while(!$this->batchesFinished($batchesResult)){
+                    $batchesResult = $this->refreshBatchesResult($batchesResult);
+                    foreach ($batchesResult as $key => $batch) {
+                        $output->writeln($this->displayBatchInfo($batch));
+                    }
+                    sleep(2);
+                }
+            }
+
+        }
+    }
+
+    /**
+     * Refresh all batch from MailChimp API
+     * @param Array $batchesResult
+     * @return Array
+     */
+    private function refreshBatchesResult($batchesResult){
+        $refreshedBatchsResults = [];
+        $mailchimp = $this->getContainer()->get('welp_mailchimp.mailchimp_master');
+        foreach ($batchesResult as $key => $batch) {
+            $batch = $mailchimp->get("batches/".$batch['id']);
+            array_push($refreshedBatchsResults, $batch);
+        }
+        return $refreshedBatchsResults;
+    }
+
+    /**
+     * Test if all batches are finished
+     * @param Array $batchesResult
+     * @return Boolean
+     */
+    private function batchesFinished($batchesResult){
+        $allfinished = true;
+        foreach ($batchesResult as $key => $batch) {
+            if($batch['status'] != 'finished'){
+                $allfinished = false;
+            }
+        }
+        return $allfinished;
+    }
+
+    /**
+     * Pretty display of batch info
+     * @param Object $batch
+     * @return String
+     */
+    private function displayBatchInfo($batch){
+        if($batch['status'] == 'finished'){
+            return sprintf('batch %s is finished, operations %d/%d with %d errors. http responses: %s', $batch['id'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations'], $batch['response_body_url']);
+        }else{
+            return sprintf('batch %s, current status %s, operations %d/%d with %d errors', $batch['id'], $batch['status'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations']);
         }
     }
 
@@ -45,7 +112,7 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
      * @param String $providerServiceKey
      * @return ProviderInterface $provider
      */
-    protected function getProvider($providerServiceKey)
+    private function getProvider($providerServiceKey)
     {
         try {
             $provider = $this->getContainer()->get($providerServiceKey);
