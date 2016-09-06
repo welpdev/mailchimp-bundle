@@ -241,6 +241,23 @@ class ListRepository
     }
 
     /**
+     * Get Members of a list
+     * @param String $listId
+     * @return Array
+     */
+    public function getMembers($listId)
+    {
+        $emails = [];
+        $result = $this->mailchimp->get("lists/$listId/members");
+
+        if(!$this->mailchimp->success()){
+            throw new \RuntimeException($this->mailchimp->getLastError());
+        }
+
+        return $result;
+    }
+
+    /**
      * Get an Array of subscribers emails from a list
      * @param String $listId
      * @return Array
