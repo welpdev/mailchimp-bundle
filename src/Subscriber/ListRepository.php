@@ -45,7 +45,8 @@ class ListRepository
      */
     public function subscribe($listId, Subscriber $subscriber)
     {
-        $result = $this->mailchimp->post("lists/$listId/members",
+        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash",
             array_merge(
                 $subscriber->formatMailChimp(),
                 ['status' => 'subscribed']

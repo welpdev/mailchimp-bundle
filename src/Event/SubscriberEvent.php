@@ -9,6 +9,7 @@ class SubscriberEvent extends Event
 {
     const EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
     const EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
+    const EVENT_UPDATE = 'welp.mailchimp.update';
     const EVENT_DELETE = 'welp.mailchimp.delete';
 
     protected $listId;

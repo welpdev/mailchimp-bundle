@@ -25,7 +25,12 @@ NOTE: you must have configure and create your own [subscriber provider](subscrib
 
 ## Unit synchronization with events
 
-If you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one.
+If you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one. You can fired these events to trigger sync with MailChimp:
+
+    SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
+    SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
+    SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
+    SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
 
 ### Subscribe new User
 
@@ -80,6 +85,40 @@ public function unsubscribeUser(User $user)
     );
 }
 ```
+
+### Update a User
+
+If your User changes his information, you can sync with MailChimp:
+
+```php
+<?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function updateUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user->getEmail(), [
+        'FIRSTNAME' => $user->getFirstname(),
+        'LASTNAME' => $user->getFirstname(),
+    ], [
+        'language' => 'en'
+    ]);
+
+    $this->container->get('event_dispatcher')->dispatch(
+        SubscriberEvent::EVENT_UPDATE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+```
+
+Note: we can't change the address email of a user... It's a MailChimp API V3 [issue](http://stackoverflow.com/questions/32224697/mailchimp-api-v3-0-change-subscriber-email?noredirect=1&lq=1). I already have contacted MailChimp, but you can contact them too.
+
+The only workaround right now to change user address mail is to delete the old member and add a new one...
 
 ### Delete a User
 

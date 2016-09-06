@@ -30,6 +30,14 @@ class SubscriberListener
         );
     }
 
+    public function onUpdate(SubscriberEvent $event)
+    {
+        $this->listRepository->update(
+            $event->getListId(),
+            $event->getSubscriber()
+        );
+    }
+
     public function onDelete(SubscriberEvent $event)
     {
         $this->listRepository->delete(
