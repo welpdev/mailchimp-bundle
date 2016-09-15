@@ -1,0 +1,19 @@
+site_name: MailChimp Bundle
+site_description: This bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.
+site_author: Titouan BENOIT
+copyright: MIT
+repo_url: https://github.com/welpdev/mailchimp-bundle
+docs_dir: 'src/Resources/doc'
+site_dir: "docs"
+pages:
+    - Home: index.md
+    - Setup: setup.md
+    - Configuration: configuration.md
+    - Subscriber Provider: subscriber-provider.md
+    - Usage: usage.md
+    - Webhook: webhook.md
+    - Tests: tests.md
+    - Subscriber Languages: subscriber-language.md
+    - MailChimp Doc: mailchimp-doc.md
+    - Contributing: CONTRIBUTING.md
+theme: readthedocs

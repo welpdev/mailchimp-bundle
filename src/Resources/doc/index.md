@@ -42,16 +42,14 @@ welp_mailchimp:
     api_key: YOURMAILCHIMPAPIKEY
 ```
 
-More configuration on the [documentation](https://welpdev.github.io/mailchimp-bundle/configuration/).
+More configuration on the [documentation](configuration.md).
 
-## Full Documentation
+## Documentation
 
-Look at the full documentation at <https://welpdev.github.io/mailchimp-bundle/>
-
-* Setup
-* Configuration
-* Subscriber Provider
-* Usage
+* [Setup](setup.md)
+* [Configuration](configuration.md)
+* [Subscriber Provider](subscriber-provider.md)
+* [Usage](usage.md)
     * Synchronize merge fields
     * Full synchronization with command
     * Unit synchronization with events
@@ -61,7 +59,7 @@ Look at the full documentation at <https://welpdev.github.io/mailchimp-bundle/>
         * Change User's email address (WORKAROUND)
         * Delete a User
     * Retrieve [MailChimp Object](https://github.com/drewm/mailchimp-api) to make custom MailChimp API V3 requests
-* Webhook
+* [Webhook](webhook.md)
     * Update User when subscribe/unsubscribe
 
 ## Contributing
