@@ -1,0 +1,254 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "mailchimp-bundle\n\n\n\n\n\n\n\n\n\n\nThis bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.\n\n\nFeatures\n\n\n\n\nUse your own userProvider (basic \nFosSubscriberProvider\n included to interface with FosUserBundle) (\u2714)\n\n\nSynchronize Merge Fields with your config (\u2714)\n\n\nSynchronize your subscriber with a List (\u2714)\n\n\nUse lifecycle event to subscribe/unsubscribe/delete subscriber from a List (\u2714)\n\n\nRetrieve \nMailChimp Object\n to make custom MailChimp API V3 requests (\u2714)\n\n\nRegister Webhooks (\u2714)\n\n\n\n\nSetup\n\n\nAdd bundle to your project:\n\n\ncomposer require welp/mailchimp-bundle\n\n\n\n\nAdd \nWelp\\MailchimpBundle\\WelpMailchimpBundle\n to your \nAppKernel.php\n:\n\n\n$bundles = [\n    // ...\n    new Welp\\MailchimpBundle\\WelpMailchimpBundle(),\n];\n\n\n\n\nMinimal Configuration\n\n\nIn your \nconfig.yml\n:\n\n\nwelp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY\n\n\n\n\nMore configuration on the \ndocumentation\n.\n\n\nDocumentation\n\n\n\n\nSetup\n\n\nConfiguration\n\n\nSubscriber Provider\n\n\nUsage\n\n\nSynchronize merge fields\n\n\nFull synchronization with command\n\n\nUnit synchronization with events\n\n\nSubscribe new User\n\n\nUnsubscribe a User\n\n\nUpdate a User\n\n\nChange User's email address (WORKAROUND)\n\n\nDelete a User\n\n\n\n\n\n\nRetrieve \nMailChimp Object\n to make custom MailChimp API V3 requests\n\n\n\n\n\n\nWebhook\n\n\nUpdate User when subscribe/unsubscribe\n\n\n\n\n\n\n\n\nContributing\n\n\nIf you want to contribute to this project, look at \nover here", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#mailchimp-bundle", 
+            "text": "This bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.", 
+            "title": "mailchimp-bundle"
+        }, 
+        {
+            "location": "/#features", 
+            "text": "Use your own userProvider (basic  FosSubscriberProvider  included to interface with FosUserBundle) (\u2714)  Synchronize Merge Fields with your config (\u2714)  Synchronize your subscriber with a List (\u2714)  Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List (\u2714)  Retrieve  MailChimp Object  to make custom MailChimp API V3 requests (\u2714)  Register Webhooks (\u2714)", 
+            "title": "Features"
+        }, 
+        {
+            "location": "/#setup", 
+            "text": "Add bundle to your project:  composer require welp/mailchimp-bundle  Add  Welp\\MailchimpBundle\\WelpMailchimpBundle  to your  AppKernel.php :  $bundles = [\n    // ...\n    new Welp\\MailchimpBundle\\WelpMailchimpBundle(),\n];", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/#minimal-configuration", 
+            "text": "In your  config.yml :  welp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY  More configuration on the  documentation .", 
+            "title": "Minimal Configuration"
+        }, 
+        {
+            "location": "/#documentation", 
+            "text": "Setup  Configuration  Subscriber Provider  Usage  Synchronize merge fields  Full synchronization with command  Unit synchronization with events  Subscribe new User  Unsubscribe a User  Update a User  Change User's email address (WORKAROUND)  Delete a User    Retrieve  MailChimp Object  to make custom MailChimp API V3 requests    Webhook  Update User when subscribe/unsubscribe", 
+            "title": "Documentation"
+        }, 
+        {
+            "location": "/#contributing", 
+            "text": "If you want to contribute to this project, look at  over here", 
+            "title": "Contributing"
+        }, 
+        {
+            "location": "/setup/", 
+            "text": "Setup\n\n\nInstallation\n\n\nAdd bundle to your project:\n\n\ncomposer require welp/mailchimp-bundle\n\n\n\n\nAdd \nWelp\\MailchimpBundle\\WelpMailchimpBundle\n to your \nAppKernel.php\n:\n\n\n$bundles = [\n    // ...\n    new Welp\\MailchimpBundle\\WelpMailchimpBundle(),\n];\n\n\n\n\nMinimal Configuration\n\n\nIn your \nconfig.yml\n:\n\n\nwelp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY\n\n\n\n\nMore configuration", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/setup/#setup", 
+            "text": "", 
+            "title": "Setup"
+        }, 
+        {
+            "location": "/setup/#installation", 
+            "text": "Add bundle to your project:  composer require welp/mailchimp-bundle  Add  Welp\\MailchimpBundle\\WelpMailchimpBundle  to your  AppKernel.php :  $bundles = [\n    // ...\n    new Welp\\MailchimpBundle\\WelpMailchimpBundle(),\n];", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/setup/#minimal-configuration", 
+            "text": "In your  config.yml :  welp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY  More configuration", 
+            "title": "Minimal Configuration"
+        }, 
+        {
+            "location": "/configuration/", 
+            "text": "Configuration\n\n\nYou need to add the list in MailChimp's backend first.\n\n\nconfig.yml\n\n\nFor each list you want to sync you must define a configuration in your \nconfig.yml\n:\n\n\nwelp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY\n    lists:\n        listId1:\n            # provider used in full synchronization\n            subscriber_providers: 'yourapp.provider1'\n            # webhook secret to secure webhook between MailChimp \n your app\n            webhook_secret: 'thisIsASecret'\n            # The webhook url to be registered to the MailChimp list\n            webhook_url: 'https://myapp.com/mailchimp/webhook/endpoint'\n            # optional merge tags you want to synchronize\n            merge_fields:\n                -\n                    tag: FNAME\n                    name: First Name\n                    type: text\n                    public: true\n                -\n                    tag: LNAME\n                    name: Last Name\n                    type: text\n                    public: true\n                -\n                    tag: FIRSTTAG\n                    name: My first tag\n                    type: text\n                    options:\n                        size: 5\n                        ...\n                -\n                    tag: SECONDTAG\n                    name: My second tag\n                    type: text\n                    public: true\n                    ...\n\n        listId2:\n            subscriber_providers: 'yourapp.provider2'\n            ...\n\n\n\n\nWhere \nlistIdX\n is the list id of your MailChimp lists, and \nyourapp.providerX\n is the key of your provider's service that will provide the subscribers that need to be synchronized in MailChimp. See the documentation on create \nyour own Subscriber provider\n.\n\n\nDefining lists and providers is only necessary if you use full synchronization with the command.\n\n\nDefining webhook_* is only necessary if you want to use webhook automation.\n\n\nMerge fields configuration\n\n\n\n\nMailChimp documentation\n\n\n\n\nYou can find all parameters in the MailChimp documentation.\n\n\nExample:\n\n\n    merge_fields:\n        -\n            tag: FIRSTTAG\n            name: My first tag\n            type: text\n            options:\n                size: 5\n                ...\n        -\n            tag: SECONDTAG\n            name: My second tag\n            type: text\n            public: true\n            ...\n        -\n            tag: FULLTEST\n            name: Full Test\n            type: text\n            required: true\n            default_value: test\n            public: false\n            display_order: 1\n            options:\n                default_country: 1546\n                phone_format: International\n                date_format: dd/mm/yyyy\n                choices:\n                    ...\n                size: 50\n            help_text: this is a full test\n\n\n\n\n\nNote: MailChimp provides two default merge fields (FNAME \n LNAME). You can use this config to handle them:\n\n\n    ...\n    merge_fields:\n        -\n            tag: FNAME\n            name: First Name\n            type: text\n            public: true\n        -\n            tag: LNAME\n            name: Last Name\n            type: text\n            public: true", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#configuration", 
+            "text": "You need to add the list in MailChimp's backend first.", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/configuration/#configyml", 
+            "text": "For each list you want to sync you must define a configuration in your  config.yml :  welp_mailchimp:\n    api_key: YOURMAILCHIMPAPIKEY\n    lists:\n        listId1:\n            # provider used in full synchronization\n            subscriber_providers: 'yourapp.provider1'\n            # webhook secret to secure webhook between MailChimp   your app\n            webhook_secret: 'thisIsASecret'\n            # The webhook url to be registered to the MailChimp list\n            webhook_url: 'https://myapp.com/mailchimp/webhook/endpoint'\n            # optional merge tags you want to synchronize\n            merge_fields:\n                -\n                    tag: FNAME\n                    name: First Name\n                    type: text\n                    public: true\n                -\n                    tag: LNAME\n                    name: Last Name\n                    type: text\n                    public: true\n                -\n                    tag: FIRSTTAG\n                    name: My first tag\n                    type: text\n                    options:\n                        size: 5\n                        ...\n                -\n                    tag: SECONDTAG\n                    name: My second tag\n                    type: text\n                    public: true\n                    ...\n\n        listId2:\n            subscriber_providers: 'yourapp.provider2'\n            ...  Where  listIdX  is the list id of your MailChimp lists, and  yourapp.providerX  is the key of your provider's service that will provide the subscribers that need to be synchronized in MailChimp. See the documentation on create  your own Subscriber provider .  Defining lists and providers is only necessary if you use full synchronization with the command.  Defining webhook_* is only necessary if you want to use webhook automation.", 
+            "title": "config.yml"
+        }, 
+        {
+            "location": "/configuration/#merge-fields-configuration", 
+            "text": "MailChimp documentation   You can find all parameters in the MailChimp documentation.  Example:      merge_fields:\n        -\n            tag: FIRSTTAG\n            name: My first tag\n            type: text\n            options:\n                size: 5\n                ...\n        -\n            tag: SECONDTAG\n            name: My second tag\n            type: text\n            public: true\n            ...\n        -\n            tag: FULLTEST\n            name: Full Test\n            type: text\n            required: true\n            default_value: test\n            public: false\n            display_order: 1\n            options:\n                default_country: 1546\n                phone_format: International\n                date_format: dd/mm/yyyy\n                choices:\n                    ...\n                size: 50\n            help_text: this is a full test  Note: MailChimp provides two default merge fields (FNAME   LNAME). You can use this config to handle them:      ...\n    merge_fields:\n        -\n            tag: FNAME\n            name: First Name\n            type: text\n            public: true\n        -\n            tag: LNAME\n            name: Last Name\n            type: text\n            public: true", 
+            "title": "Merge fields configuration"
+        }, 
+        {
+            "location": "/subscriber-provider/", 
+            "text": "Subscriber Provider\n\n\nAfter \nconfiguring your lists\n in \nconfig.yml\n, you need to create at least one \nProvider\n that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in \nsubscriber_providers\n in the configuration above):\n\n\nservices:\n    yourapp_mailchimp_subscriber_provider:\n        class: YourApp\\App\\Newsletter\\SubscriberProvider\n        arguments: [@yourapp_user_repository]\n\n\n\n\nIt should implement \nWelp\\MailChimpBundle\\Provider\\ProviderInterface\n and return an array of \nWelp\\MailChimpBundle\\Subscriber\\Subscriber\n objects. The first argument of the \nSubscriber\n object is its e-mail, the second argument is an array of merge fields values you need to add in MailChimp's backend in your list settings under \nList fields and *|MERGE|* tags\n (see this \nguide on MailChimp\n to add merge tags in your list) and the third is an array of options \nSee MailChimp Documentation\n.\n\n\n?php\n\nnamespace YourApp\\App\\Newsletter;\n\nuse Welp\\MailchimpBundle\\Provider\\ProviderInterface;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\nuse YourApp\\Model\\User\\UserRepository;\nuse YourApp\\Model\\User\\User;\n\nclass ExampleSubscriberProvider implements ProviderInterface\n{\n    // these tags should match the one you added in MailChimp's backend\n    const TAG_NICKNAME =           'NICKNAME';\n    const TAG_GENDER =             'GENDER';\n    const TAG_BIRTHDATE =          'BIRTHDATE';\n    const TAG_LAST_ACTIVITY_DATE = 'LASTACTIVI';\n    const TAG_REGISTRATION_DATE =  'REGISTRATI';\n    const TAG_CITY =               'CITY';\n\n    protected $userRepository;\n\n    public function __construct(UserRepository $userRepository)\n    {\n        $this-\nuserRepository = $userRepository;\n    }\n\n    public function getSubscribers()\n    {\n        $users = $this-\nuserRepository-\nfindSubscribers();\n\n        $subscribers = array_map(function(User $user) {\n            $subscriber = new Subscriber($user-\ngetEmail(), [\n                self::TAG_NICKNAME =\n $user-\ngetNickname(),\n                self::TAG_GENDER =\n $user-\ngetGender(),\n                self::TAG_BIRTHDATE =\n $user-\ngetBirthdate() ? $user-\ngetBirthdate()-\nformat('Y-m-d') : null,\n                self::TAG_CITY =\n $user-\ngetCity(),\n                self::TAG_LAST_ACTIVITY_DATE =\n $user-\ngetLastActivityDate() ? $user-\ngetLastActivityDate()-\nformat('Y-m-d') : null,\n                self::TAG_REGISTRATION_DATE =\n $user-\ngetRegistrationDate() ? $user-\ngetRegistrationDate()-\nformat('Y-m-d') : null,\n            ],[\n                'language'   =\n 'fr',\n                'email_type' =\n 'html'\n            ]);\n\n            return $subscriber;\n        }, $users);\n\n        return $subscribers;\n    }\n}\n\n\n\n\n\nWe also provide a ready to use provider for the FosUserBundle -\n FosSubscriberProvider. You just need to register the service into your app:\n\n\nservices:\n    yourapp_mailchimp_fos_subscriber_provider:\n        class: Welp\\MailchimpBundle\\Provider\\FosSubscriberProvider\n        arguments: [@fos_user.user_manager]\n\n\n\n\nAfter this, don't forget to add the service key for your list into your \nconfig.yml\n:\n\n\n    ...\n    listId2:\n        subscriber_providers: 'yourapp.provider2'\n        ...", 
+            "title": "Subscriber Provider"
+        }, 
+        {
+            "location": "/subscriber-provider/#subscriber-provider", 
+            "text": "After  configuring your lists  in  config.yml , you need to create at least one  Provider  that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in  subscriber_providers  in the configuration above):  services:\n    yourapp_mailchimp_subscriber_provider:\n        class: YourApp\\App\\Newsletter\\SubscriberProvider\n        arguments: [@yourapp_user_repository]  It should implement  Welp\\MailChimpBundle\\Provider\\ProviderInterface  and return an array of  Welp\\MailChimpBundle\\Subscriber\\Subscriber  objects. The first argument of the  Subscriber  object is its e-mail, the second argument is an array of merge fields values you need to add in MailChimp's backend in your list settings under  List fields and *|MERGE|* tags  (see this  guide on MailChimp  to add merge tags in your list) and the third is an array of options  See MailChimp Documentation .  ?php\n\nnamespace YourApp\\App\\Newsletter;\n\nuse Welp\\MailchimpBundle\\Provider\\ProviderInterface;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\nuse YourApp\\Model\\User\\UserRepository;\nuse YourApp\\Model\\User\\User;\n\nclass ExampleSubscriberProvider implements ProviderInterface\n{\n    // these tags should match the one you added in MailChimp's backend\n    const TAG_NICKNAME =           'NICKNAME';\n    const TAG_GENDER =             'GENDER';\n    const TAG_BIRTHDATE =          'BIRTHDATE';\n    const TAG_LAST_ACTIVITY_DATE = 'LASTACTIVI';\n    const TAG_REGISTRATION_DATE =  'REGISTRATI';\n    const TAG_CITY =               'CITY';\n\n    protected $userRepository;\n\n    public function __construct(UserRepository $userRepository)\n    {\n        $this- userRepository = $userRepository;\n    }\n\n    public function getSubscribers()\n    {\n        $users = $this- userRepository- findSubscribers();\n\n        $subscribers = array_map(function(User $user) {\n            $subscriber = new Subscriber($user- getEmail(), [\n                self::TAG_NICKNAME =  $user- getNickname(),\n                self::TAG_GENDER =  $user- getGender(),\n                self::TAG_BIRTHDATE =  $user- getBirthdate() ? $user- getBirthdate()- format('Y-m-d') : null,\n                self::TAG_CITY =  $user- getCity(),\n                self::TAG_LAST_ACTIVITY_DATE =  $user- getLastActivityDate() ? $user- getLastActivityDate()- format('Y-m-d') : null,\n                self::TAG_REGISTRATION_DATE =  $user- getRegistrationDate() ? $user- getRegistrationDate()- format('Y-m-d') : null,\n            ],[\n                'language'   =  'fr',\n                'email_type' =  'html'\n            ]);\n\n            return $subscriber;\n        }, $users);\n\n        return $subscribers;\n    }\n}  We also provide a ready to use provider for the FosUserBundle -  FosSubscriberProvider. You just need to register the service into your app:  services:\n    yourapp_mailchimp_fos_subscriber_provider:\n        class: Welp\\MailchimpBundle\\Provider\\FosSubscriberProvider\n        arguments: [@fos_user.user_manager]  After this, don't forget to add the service key for your list into your  config.yml :      ...\n    listId2:\n        subscriber_providers: 'yourapp.provider2'\n        ...", 
+            "title": "Subscriber Provider"
+        }, 
+        {
+            "location": "/usage/", 
+            "text": "Usage\n\n\nSynchronize merge fields\n\n\nMerge fields are values you can add to your subscribers (for example the firstname or birthdate of your user). You can then use these tags in your newsletters or create segments out of them.\n\n\nTo learn more about merge tags, please see this \nguide on MailChimp\n.\n\n\nTo synchronize you need to create your \nlists\n in MailChimp backend first. Then you need to add them in your \nconfig.yml\n as shown in the \nabove configuration\n. The \noptions\n you can provide are the same as the one found in \nMailChimp API\n.\n\n\nYou can then synchronize the merge fields using the \nphp app/console welp:mailchimp:synchronize-merge-fields\n command. Note that every tag that are present in MailChimp but are not defined in your configuration \nwill be deleted along with associated values\n.\n\n\nNOTE: MailChimp provide two default merge fields:\n\n\n\n\nFNAME: Firstname\n\n\nLNAME: Lastname\n\n\n\n\nFull synchronization with command\n\n\nYou can synchronize all subscribers of your project at once by calling the Symfony command \nphp app/console welp:mailchimp:synchronize-subscribers\n.\nYou can use the option \n--follow-sync\n to follow batches executions.\n\n\nIt will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.\n\n\nNOTE: you must have configure and create your own \nsubscriber provider\n.\n\n\nUnit synchronization with events\n\n\nIf you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one. You can fired these events to trigger sync with MailChimp:\n\n\nSubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';\nSubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';\nSubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';\nSubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';\n\n\n\nSubscribe new User\n\n\nHere is an example of a subscribe event dispatch:\n\n\n?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function newUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user-\ngetEmail(), [\n        'FIRSTNAME' =\n $user-\ngetFirstname(),\n    ], [\n        'language' =\n 'fr'\n    ]);\n\n    $this-\ncontainer-\nget('event_dispatcher')-\ndispatch(\n        SubscriberEvent::EVENT_SUBSCRIBE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}\n\n\n\n\nUnsubscribe a User\n\n\nUnsubscribe is simpler, you only need the email, all merge fields will be ignored:\n\n\n?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function unsubscribeUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user-\ngetEmail());\n\n    $this-\ncontainer-\nget('event_dispatcher')-\ndispatch(\n        SubscriberEvent::EVENT_UNSUBSCRIBE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}\n\n\n\n\nUpdate a User\n\n\nIf your User changes his information, you can sync with MailChimp:\n\n\n?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function updateUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user-\ngetEmail(), [\n        'FIRSTNAME' =\n $user-\ngetFirstname(),\n        'LASTNAME' =\n $user-\ngetFirstname(),\n    ], [\n        'language' =\n 'en'\n    ]);\n\n    $this-\ncontainer-\nget('event_dispatcher')-\ndispatch(\n        SubscriberEvent::EVENT_UPDATE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}\n\n\n\n\nNote: we can't change the address email of a user... It's a MailChimp API V3 \nissue\n. I already have contacted MailChimp, but you can contact them too.\n\n\nThe only workaround right now to change user address mail is to delete the old member and add a new one...\n\n\nChange User's email address (WORKAROUND)\n\n\nIf your User changes his email address, you can sync with MailChimp:\n\n\n?php\n\n// ...\n\npublic function changeEmailAddress(User $user)\n{\n    // ...\n    $this-\ncontainer-\nget('welp_mailchimp.list_repository')-\nchangeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');\n\n}\n\n\n\n\nIt's an UGLY WORKAROUND... Waiting for MailChimp API V3 to be able to properly change email address of a member...\n\n\nDelete a User\n\n\nAnd finally delete a User\n\n\nUnsubscribe is simpler, you only need the email, all merge fields will be ignored:\n\n\n?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function deleteUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user-\ngetEmail());\n\n    $this-\ncontainer-\nget('event_dispatcher')-\ndispatch(\n        SubscriberEvent::EVENT_DELETE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}\n\n\n\n\nRetrieve MailChimp Object to make custom MailChimp API V3 requests\n\n\nYou can also retrieve the MailChimp Object which comes from the library \ndrewm/mailchimp-api\n.\n\n\nThe service key is \nwelp_mailchimp.mailchimp_master\n.\n\n\nExample:\n\n\n?php\n// in any controller action...\n    ...\n    $MailChimp = $this-\ncontainer-\nget('welp_mailchimp.mailchimp_master');\n    $list_id = 'b1234346';\n\n    $result = $MailChimp-\npost(\nlists/$list_id/members\n, [\n                    'email_address' =\n 'davy@example.com',\n                    'status'        =\n 'subscribed',\n                ]);\n\n    if ($MailChimp-\nsuccess()) {\n        print_r($result);   \n    } else {\n        echo $MailChimp-\ngetLastError();\n    }", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/usage/#usage", 
+            "text": "", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/usage/#synchronize-merge-fields", 
+            "text": "Merge fields are values you can add to your subscribers (for example the firstname or birthdate of your user). You can then use these tags in your newsletters or create segments out of them.  To learn more about merge tags, please see this  guide on MailChimp .  To synchronize you need to create your  lists  in MailChimp backend first. Then you need to add them in your  config.yml  as shown in the  above configuration . The  options  you can provide are the same as the one found in  MailChimp API .  You can then synchronize the merge fields using the  php app/console welp:mailchimp:synchronize-merge-fields  command. Note that every tag that are present in MailChimp but are not defined in your configuration  will be deleted along with associated values .  NOTE: MailChimp provide two default merge fields:   FNAME: Firstname  LNAME: Lastname", 
+            "title": "Synchronize merge fields"
+        }, 
+        {
+            "location": "/usage/#full-synchronization-with-command", 
+            "text": "You can synchronize all subscribers of your project at once by calling the Symfony command  php app/console welp:mailchimp:synchronize-subscribers .\nYou can use the option  --follow-sync  to follow batches executions.  It will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.  NOTE: you must have configure and create your own  subscriber provider .", 
+            "title": "Full synchronization with command"
+        }, 
+        {
+            "location": "/usage/#unit-synchronization-with-events", 
+            "text": "If you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one. You can fired these events to trigger sync with MailChimp:  SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';\nSubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';\nSubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';\nSubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';", 
+            "title": "Unit synchronization with events"
+        }, 
+        {
+            "location": "/usage/#subscribe-new-user", 
+            "text": "Here is an example of a subscribe event dispatch:  ?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function newUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user- getEmail(), [\n        'FIRSTNAME' =  $user- getFirstname(),\n    ], [\n        'language' =  'fr'\n    ]);\n\n    $this- container- get('event_dispatcher')- dispatch(\n        SubscriberEvent::EVENT_SUBSCRIBE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}", 
+            "title": "Subscribe new User"
+        }, 
+        {
+            "location": "/usage/#unsubscribe-a-user", 
+            "text": "Unsubscribe is simpler, you only need the email, all merge fields will be ignored:  ?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function unsubscribeUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user- getEmail());\n\n    $this- container- get('event_dispatcher')- dispatch(\n        SubscriberEvent::EVENT_UNSUBSCRIBE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}", 
+            "title": "Unsubscribe a User"
+        }, 
+        {
+            "location": "/usage/#update-a-user", 
+            "text": "If your User changes his information, you can sync with MailChimp:  ?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function updateUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user- getEmail(), [\n        'FIRSTNAME' =  $user- getFirstname(),\n        'LASTNAME' =  $user- getFirstname(),\n    ], [\n        'language' =  'en'\n    ]);\n\n    $this- container- get('event_dispatcher')- dispatch(\n        SubscriberEvent::EVENT_UPDATE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}  Note: we can't change the address email of a user... It's a MailChimp API V3  issue . I already have contacted MailChimp, but you can contact them too.  The only workaround right now to change user address mail is to delete the old member and add a new one...", 
+            "title": "Update a User"
+        }, 
+        {
+            "location": "/usage/#change-users-email-address-workaround", 
+            "text": "If your User changes his email address, you can sync with MailChimp:  ?php\n\n// ...\n\npublic function changeEmailAddress(User $user)\n{\n    // ...\n    $this- container- get('welp_mailchimp.list_repository')- changeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');\n\n}  It's an UGLY WORKAROUND... Waiting for MailChimp API V3 to be able to properly change email address of a member...", 
+            "title": "Change User's email address (WORKAROUND)"
+        }, 
+        {
+            "location": "/usage/#delete-a-user", 
+            "text": "And finally delete a User  Unsubscribe is simpler, you only need the email, all merge fields will be ignored:  ?php\n\nuse Welp\\MailchimpBundle\\Event\\SubscriberEvent;\nuse Welp\\MailchimpBundle\\Subscriber\\Subscriber;\n\n// ...\n\npublic function deleteUser(User $user)\n{\n    // ...\n\n    $subscriber = new Subscriber($user- getEmail());\n\n    $this- container- get('event_dispatcher')- dispatch(\n        SubscriberEvent::EVENT_DELETE,\n        new SubscriberEvent('your_list_id', $subscriber)\n    );\n}", 
+            "title": "Delete a User"
+        }, 
+        {
+            "location": "/usage/#retrieve-mailchimp-object-to-make-custom-mailchimp-api-v3-requests", 
+            "text": "You can also retrieve the MailChimp Object which comes from the library  drewm/mailchimp-api .  The service key is  welp_mailchimp.mailchimp_master .  Example:  ?php\n// in any controller action...\n    ...\n    $MailChimp = $this- container- get('welp_mailchimp.mailchimp_master');\n    $list_id = 'b1234346';\n\n    $result = $MailChimp- post( lists/$list_id/members , [\n                    'email_address' =  'davy@example.com',\n                    'status'        =  'subscribed',\n                ]);\n\n    if ($MailChimp- success()) {\n        print_r($result);   \n    } else {\n        echo $MailChimp- getLastError();\n    }", 
+            "title": "Retrieve MailChimp Object to make custom MailChimp API V3 requests"
+        }, 
+        {
+            "location": "/webhook/", 
+            "text": "Webhook\n\n\n\n\nDocumentation\n\n\nHow to set up webhooks\n\n\nWebhooks API V3\n\n\n\n\nWebhooks will be triggered when an event occured in MailChimp, and it will call our webhook url and fired Webhook Events in our Symfony App. We will listen to these events in order to add our logic/workflow.\n\n\nConfiguration\n\n\nYou need to add the webhook routing to your app routing:\n\n\napp/routing.yml\n\n\nmyapp_mailchimp_webhook:\n    resource: \"@WelpMailchimpBundle/Resources/config/routing.yml\"\n    prefix:   /mailchimp\n\n\n\nNote: you can change the prefix as you like.\n\n\nThis will generate an url to the webhook like this: \nhttp://domain.com/mailchimp/webhook/endpoint\n\n\nAlso, MailChimp recommand to protect webhook url with a token parameter. So you need to add the secret token to your list in your config.yml\n\n\nconfig.yml\n\n\nwelp_mailchimp:\n    api_key: 3419ca97412af7c2893b89894275b415-us14\n    lists:\n        ba039c6198:\n            webhook_secret: thisisTheSecretPass\n            ...\n\n\n\nNote: To access properly to the webhook function you will have to use the url with the secret parameter: \nhttp://domain.com/mailchimp/webhook/endpoint?hooksecret=thisisTheSecretPass\n\n\nRegister the webhook manually\n\n\nSee \nHow to set up webhooks\n.\n\n\nAnd the webhook url you have to register is: \nhttp://domain.com/mailchimp/webhook/endpoint?hooksecret=thisisTheSecretPass\n\n\nCommand to automatically register webhook to lists\n\n\nThere is a command to automatically register webhook to lists\n\n\nBefore using it, you have to add the webhook_url into lists in \nconfig.yml\n\n\nconfig.yml\n\n\nwelp_mailchimp:\n    api_key: 3419ca97412af7c2893b89894275b415-us14\n    lists:\n        ba039c6198:\n            webhook_secret: thisisTheSecretPass\n            webhook_url: http://domain.com/mailchimp/webhook/endpoint\n\n\n\nNext in your terminal use this command \nphp app/console welp:mailchimp:webhook\n. You can verify in your MailChimp List that the webhook has been added.\n\n\nEvents to listen\n\n\nIn order to integrate MailChimp into your app workflow, you can listen to different Event.\n\n\nEvent you can listen:\n\n\nWebhookEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.webhook.subscribe';\nWebhookEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.webhook.unsubscribe';\nWebhookEvent::EVENT_PROFILE = 'welp.mailchimp.webhook.profile';\nWebhookEvent::EVENT_CLEANED = 'welp.mailchimp.webhook.cleaned';\nWebhookEvent::EVENT_UPEMAIL = 'welp.mailchimp.webhook.upemail';\nWebhookEvent::EVENT_CAMPAIGN = 'welp.mailchimp.webhook.campaign';\n\n\n\nExample:\n\n\n1- Create listener\n\n\n    \n?php\n\n    namespace AppBundle\\Listener;\n\n    use Symfony\\Component\\EventDispatcher\\EventSubscriberInterface;\n\n    use Welp\\MailchimpBundle\\Event\\WebhookEvent;\n\n\n\n    class MailchimpEventListener implements EventSubscriberInterface\n    {\n\n        protected $container;\n\n\n        public function __construct($container)\n        {\n            $this-\ncontainer = $container;\n        }\n\n        public static function getSubscribedEvents()\n        {\n            return [\n                WebhookEvent::EVENT_SUBSCRIBE =\n 'subscribe',\n                WebhookEvent::EVENT_UNSUBSCRIBE =\n 'unsubscribe',\n                WebhookEvent::EVENT_PROFILE =\n 'profile',\n                WebhookEvent::EVENT_CLEANED =\n 'cleaned',\n                WebhookEvent::EVENT_UPEMAIL =\n 'upemail',\n                WebhookEvent::EVENT_CAMPAIGN =\n 'campaign'\n            ];\n        }\n\n        public function subscribe(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('Subscribe Event:', $event-\ngetData());\n        }\n\n        public function unsubscribe(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('Unsubscribe Event:', $event-\ngetData());\n        }\n\n        public function profile(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('Profile Event:', $event-\ngetData());\n        }\n\n        public function cleaned(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('Cleaned Event:', $event-\ngetData());\n        }\n\n        public function upemail(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('Upemail Event:', $event-\ngetData());\n        }\n\n        public function campaign(WebhookEvent $event){\n            $logger = $this-\ncontainer-\nget('logger');\n            $logger-\ninfo('campaign Event:', $event-\ngetData());\n        }\n\n\n    }\n\n\n\n\n2- Register the listener into services.yml\n\n\nservices:\n    app.listener.mailchimp.webhook:\n        class: AppBundle\\Listener\\MailchimpEventListener\n        tags:\n            - { name: kernel.event_subscriber }\n        arguments:\n            - @service_container\n\n\n\n3- Test with ngrok (or other localhost tunnel) and you will see the result in app log:\n\n\n...\n[2016-09-05 11:55:48] app.INFO: Unsubscribe Event: {\"reason\":\"manual\",\"id\":\"5c1b5a7c1e\",\"email\":\"tztz@gmail.com\",\"email_type\":\"html\",\"web_id\":\"3375995\",\"merges\":{\"EMAIL\":\"tztz@gmail.com\",\"FNAME\":\"Tztz\",\"LNAME\":\"TZST\"},\"list_id\":\"ba039c6198\"} []", 
+            "title": "Webhook"
+        }, 
+        {
+            "location": "/webhook/#webhook", 
+            "text": "Documentation  How to set up webhooks  Webhooks API V3   Webhooks will be triggered when an event occured in MailChimp, and it will call our webhook url and fired Webhook Events in our Symfony App. We will listen to these events in order to add our logic/workflow.", 
+            "title": "Webhook"
+        }, 
+        {
+            "location": "/webhook/#configuration", 
+            "text": "You need to add the webhook routing to your app routing:  app/routing.yml  myapp_mailchimp_webhook:\n    resource: \"@WelpMailchimpBundle/Resources/config/routing.yml\"\n    prefix:   /mailchimp  Note: you can change the prefix as you like.  This will generate an url to the webhook like this:  http://domain.com/mailchimp/webhook/endpoint  Also, MailChimp recommand to protect webhook url with a token parameter. So you need to add the secret token to your list in your config.yml  config.yml  welp_mailchimp:\n    api_key: 3419ca97412af7c2893b89894275b415-us14\n    lists:\n        ba039c6198:\n            webhook_secret: thisisTheSecretPass\n            ...  Note: To access properly to the webhook function you will have to use the url with the secret parameter:  http://domain.com/mailchimp/webhook/endpoint?hooksecret=thisisTheSecretPass", 
+            "title": "Configuration"
+        }, 
+        {
+            "location": "/webhook/#register-the-webhook-manually", 
+            "text": "See  How to set up webhooks .  And the webhook url you have to register is:  http://domain.com/mailchimp/webhook/endpoint?hooksecret=thisisTheSecretPass", 
+            "title": "Register the webhook manually"
+        }, 
+        {
+            "location": "/webhook/#command-to-automatically-register-webhook-to-lists", 
+            "text": "There is a command to automatically register webhook to lists  Before using it, you have to add the webhook_url into lists in  config.yml  config.yml  welp_mailchimp:\n    api_key: 3419ca97412af7c2893b89894275b415-us14\n    lists:\n        ba039c6198:\n            webhook_secret: thisisTheSecretPass\n            webhook_url: http://domain.com/mailchimp/webhook/endpoint  Next in your terminal use this command  php app/console welp:mailchimp:webhook . You can verify in your MailChimp List that the webhook has been added.", 
+            "title": "Command to automatically register webhook to lists"
+        }, 
+        {
+            "location": "/webhook/#events-to-listen", 
+            "text": "In order to integrate MailChimp into your app workflow, you can listen to different Event.  Event you can listen:  WebhookEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.webhook.subscribe';\nWebhookEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.webhook.unsubscribe';\nWebhookEvent::EVENT_PROFILE = 'welp.mailchimp.webhook.profile';\nWebhookEvent::EVENT_CLEANED = 'welp.mailchimp.webhook.cleaned';\nWebhookEvent::EVENT_UPEMAIL = 'welp.mailchimp.webhook.upemail';\nWebhookEvent::EVENT_CAMPAIGN = 'welp.mailchimp.webhook.campaign';  Example:", 
+            "title": "Events to listen"
+        }, 
+        {
+            "location": "/webhook/#1-create-listener", 
+            "text": "?php\n\n    namespace AppBundle\\Listener;\n\n    use Symfony\\Component\\EventDispatcher\\EventSubscriberInterface;\n\n    use Welp\\MailchimpBundle\\Event\\WebhookEvent;\n\n\n\n    class MailchimpEventListener implements EventSubscriberInterface\n    {\n\n        protected $container;\n\n\n        public function __construct($container)\n        {\n            $this- container = $container;\n        }\n\n        public static function getSubscribedEvents()\n        {\n            return [\n                WebhookEvent::EVENT_SUBSCRIBE =  'subscribe',\n                WebhookEvent::EVENT_UNSUBSCRIBE =  'unsubscribe',\n                WebhookEvent::EVENT_PROFILE =  'profile',\n                WebhookEvent::EVENT_CLEANED =  'cleaned',\n                WebhookEvent::EVENT_UPEMAIL =  'upemail',\n                WebhookEvent::EVENT_CAMPAIGN =  'campaign'\n            ];\n        }\n\n        public function subscribe(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('Subscribe Event:', $event- getData());\n        }\n\n        public function unsubscribe(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('Unsubscribe Event:', $event- getData());\n        }\n\n        public function profile(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('Profile Event:', $event- getData());\n        }\n\n        public function cleaned(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('Cleaned Event:', $event- getData());\n        }\n\n        public function upemail(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('Upemail Event:', $event- getData());\n        }\n\n        public function campaign(WebhookEvent $event){\n            $logger = $this- container- get('logger');\n            $logger- info('campaign Event:', $event- getData());\n        }\n\n\n    }", 
+            "title": "1- Create listener"
+        }, 
+        {
+            "location": "/webhook/#2-register-the-listener-into-servicesyml", 
+            "text": "services:\n    app.listener.mailchimp.webhook:\n        class: AppBundle\\Listener\\MailchimpEventListener\n        tags:\n            - { name: kernel.event_subscriber }\n        arguments:\n            - @service_container", 
+            "title": "2- Register the listener into services.yml"
+        }, 
+        {
+            "location": "/webhook/#3-test-with-ngrok-or-other-localhost-tunnel-and-you-will-see-the-result-in-app-log", 
+            "text": "...\n[2016-09-05 11:55:48] app.INFO: Unsubscribe Event: {\"reason\":\"manual\",\"id\":\"5c1b5a7c1e\",\"email\":\"tztz@gmail.com\",\"email_type\":\"html\",\"web_id\":\"3375995\",\"merges\":{\"EMAIL\":\"tztz@gmail.com\",\"FNAME\":\"Tztz\",\"LNAME\":\"TZST\"},\"list_id\":\"ba039c6198\"} []", 
+            "title": "3- Test with ngrok (or other localhost tunnel) and you will see the result in app log:"
+        }, 
+        {
+            "location": "/tests/", 
+            "text": "Tests\n\n\n\n\nhttp://www.phpspec.net/\n\n\nhttps://phpunit.de/\n\n\n\n\nUnit tests\n\n\nbin/phpspec run\n\n\n\nIntegration tests\n\n\nbin/phpunit -c .\n\n\n\nLook at the code, it works with a MailChimp account...\n\n\nWebhook tests\n\n\nuse ngrok and http://requestb.in/", 
+            "title": "Tests"
+        }, 
+        {
+            "location": "/tests/#tests", 
+            "text": "http://www.phpspec.net/  https://phpunit.de/", 
+            "title": "Tests"
+        }, 
+        {
+            "location": "/tests/#unit-tests", 
+            "text": "bin/phpspec run", 
+            "title": "Unit tests"
+        }, 
+        {
+            "location": "/tests/#integration-tests", 
+            "text": "bin/phpunit -c .  Look at the code, it works with a MailChimp account...", 
+            "title": "Integration tests"
+        }, 
+        {
+            "location": "/tests/#webhook-tests", 
+            "text": "use ngrok and http://requestb.in/", 
+            "title": "Webhook tests"
+        }, 
+        {
+            "location": "/subscriber-language/", 
+            "text": "Subscriber Language\n\n\n\n\nMailChimp Doc\n\n\n\n\nLanguage codes\n\n\n\n\nEnglish = en\n\n\nArabic = ar\n\n\nAfrikaans = af\n\n\nBelarusian = be\n\n\nBulgarian = bg\n\n\nCatalan = ca\n\n\nChinese = zh\n\n\nCroatian = hr\n\n\nCzech = cs\n\n\nDanish = da\n\n\nDutch = nl\n\n\nEstonian = et\n\n\nFarsi = fa\n\n\nFinnish = fi\n\n\nFrench (France) = fr\n\n\nFrench (Canada) = fr_CA\n\n\nGerman = de\n\n\nGreek = el\n\n\nHebrew = he\n\n\nHindi = hi\n\n\nHungarian = hu\n\n\nIcelandic = is\n\n\nIndonesian = id\n\n\nIrish = ga\n\n\nItalian = it\n\n\nJapanese = ja\n\n\nKhmer = km\n\n\nKorean = ko\n\n\nLatvian = lv\n\n\nLithuanian = lt\n\n\nMaltese = mt\n\n\nMalay = ms\n\n\nMacedonian = mk\n\n\nNorwegian = no\n\n\nPolish = pl\n\n\nPortuguese (Brazil) = pt\n\n\nPortuguese (Portugal) = pt_PT\n\n\nRomanian = ro\n\n\nRussian = ru\n\n\nSerbian = sr\n\n\nSlovak = sk\n\n\nSlovenian = sl\n\n\nSpanish (Mexico) = es\n\n\nSpanish (Spain) = es_ES\n\n\nSwahili = sw\n\n\nSwedish = sv\n\n\nTamil = ta\n\n\nThai = th\n\n\nTurkish = tr\n\n\nUkrainian = uk\n\n\nVietnamese = vi", 
+            "title": "Subscriber Languages"
+        }, 
+        {
+            "location": "/subscriber-language/#subscriber-language", 
+            "text": "MailChimp Doc", 
+            "title": "Subscriber Language"
+        }, 
+        {
+            "location": "/subscriber-language/#language-codes", 
+            "text": "English = en  Arabic = ar  Afrikaans = af  Belarusian = be  Bulgarian = bg  Catalan = ca  Chinese = zh  Croatian = hr  Czech = cs  Danish = da  Dutch = nl  Estonian = et  Farsi = fa  Finnish = fi  French (France) = fr  French (Canada) = fr_CA  German = de  Greek = el  Hebrew = he  Hindi = hi  Hungarian = hu  Icelandic = is  Indonesian = id  Irish = ga  Italian = it  Japanese = ja  Khmer = km  Korean = ko  Latvian = lv  Lithuanian = lt  Maltese = mt  Malay = ms  Macedonian = mk  Norwegian = no  Polish = pl  Portuguese (Brazil) = pt  Portuguese (Portugal) = pt_PT  Romanian = ro  Russian = ru  Serbian = sr  Slovak = sk  Slovenian = sl  Spanish (Mexico) = es  Spanish (Spain) = es_ES  Swahili = sw  Swedish = sv  Tamil = ta  Thai = th  Turkish = tr  Ukrainian = uk  Vietnamese = vi", 
+            "title": "Language codes"
+        }, 
+        {
+            "location": "/mailchimp-doc/", 
+            "text": "MailChimp Documentation and usefull links\n\n\n\n\nhttp://developer.mailchimp.com/documentation/mailchimp/reference/overview/\n\n\nhttps://github.com/drewm/mailchimp-api\n\n\nhttps://apidocs.mailchimp.com/webhooks/\n\n\nhttp://requestb.in/\n\n\nhttps://ngrok.com/", 
+            "title": "MailChimp Doc"
+        }, 
+        {
+            "location": "/CONTRIBUTING/", 
+            "text": "CONTRIBUTING\n\n\n\n\nContributing to Open Source guide\n\n\n\n\nSteps\n\n\n\n\nCreate an Issue\n\n\nPull Request\n\n\nMerge \\o/\n\n\n\n\nToDo\n\n\n\u2610 Moar unit tests!!\n\u2610 Debug mode/dev mode don't send queries to MailChimp API\n\u2610 Fix workaround to update User's email address (waiting for MailChimp API V3 update)\n\u2610 Commands options for full sync, merge fields sync, webhook register (listId, ...)\n\u2610 Compatibility with Symfony 3\n\u2610 Spec documentation (http://phpdox.de/)", 
+            "title": "Contributing"
+        }, 
+        {
+            "location": "/CONTRIBUTING/#contributing", 
+            "text": "Contributing to Open Source guide", 
+            "title": "CONTRIBUTING"
+        }, 
+        {
+            "location": "/CONTRIBUTING/#steps", 
+            "text": "Create an Issue  Pull Request  Merge \\o/", 
+            "title": "Steps"
+        }, 
+        {
+            "location": "/CONTRIBUTING/#todo", 
+            "text": "\u2610 Moar unit tests!!\n\u2610 Debug mode/dev mode don't send queries to MailChimp API\n\u2610 Fix workaround to update User's email address (waiting for MailChimp API V3 update)\n\u2610 Commands options for full sync, merge fields sync, webhook register (listId, ...)\n\u2610 Compatibility with Symfony 3\n\u2610 Spec documentation (http://phpdox.de/)", 
+            "title": "ToDo"
+        }
+    ]
+}

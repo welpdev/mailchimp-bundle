@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Titouan BENOIT">
+  
+  <title>Usage - MailChimp Bundle</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Usage";
+    var mkdocs_page_input_path = "usage.md";
+    var mkdocs_page_url = "/usage/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> MailChimp Bundle</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../setup/">Setup</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../configuration/">Configuration</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../subscriber-provider/">Subscriber Provider</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Usage</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#usage">Usage</a></li>
+                
+                    <li><a class="toctree-l4" href="#synchronize-merge-fields">Synchronize merge fields</a></li>
+                
+                    <li><a class="toctree-l4" href="#full-synchronization-with-command">Full synchronization with command</a></li>
+                
+                    <li><a class="toctree-l4" href="#unit-synchronization-with-events">Unit synchronization with events</a></li>
+                
+                    <li><a class="toctree-l4" href="#retrieve-mailchimp-object-to-make-custom-mailchimp-api-v3-requests">Retrieve MailChimp Object to make custom MailChimp API V3 requests</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../webhook/">Webhook</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../tests/">Tests</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../subscriber-language/">Subscriber Languages</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../mailchimp-doc/">MailChimp Doc</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../CONTRIBUTING/">Contributing</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">MailChimp Bundle</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Usage</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="usage">Usage</h1>
+<h2 id="synchronize-merge-fields">Synchronize merge fields</h2>
+<p>Merge fields are values you can add to your subscribers (for example the firstname or birthdate of your user). You can then use these tags in your newsletters or create segments out of them.</p>
+<p>To learn more about merge tags, please see this <a href="http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags">guide on MailChimp</a>.</p>
+<p>To synchronize you need to create your <strong>lists</strong> in MailChimp backend first. Then you need to add them in your <code>config.yml</code> as shown in the <a href="../configuration/">above configuration</a>. The <code>options</code> you can provide are the same as the one found in <a href="http://developer.mailchimp.com/documentation/mailchimp/reference/lists/merge-fields/">MailChimp API</a>.</p>
+<p>You can then synchronize the merge fields using the <code>php app/console welp:mailchimp:synchronize-merge-fields</code> command. Note that every tag that are present in MailChimp but are not defined in your configuration <strong>will be deleted along with associated values</strong>.</p>
+<p>NOTE: MailChimp provide two default merge fields:</p>
+<ul>
+<li>FNAME: Firstname</li>
+<li>LNAME: Lastname</li>
+</ul>
+<h2 id="full-synchronization-with-command">Full synchronization with command</h2>
+<p>You can synchronize all subscribers of your project at once by calling the Symfony command <code>php app/console welp:mailchimp:synchronize-subscribers</code>.
+You can use the option <code>--follow-sync</code> to follow batches executions.</p>
+<p>It will first fetch all the subscribers already present in MailChimp and unsubscribe any subscribers that are not in your projet (they might have been deleted on the project side), it will then send all your subscribers to MailChimp, new subscribers will be added and existing subscribers will be updated.</p>
+<p>NOTE: you must have configure and create your own <a href="../subscriber-provider/">subscriber provider</a>.</p>
+<h2 id="unit-synchronization-with-events">Unit synchronization with events</h2>
+<p>If you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one. You can fired these events to trigger sync with MailChimp:</p>
+<pre><code>SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
+SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
+SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
+SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
+</code></pre>
+<h3 id="subscribe-new-user">Subscribe new User</h3>
+<p>Here is an example of a subscribe event dispatch:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function newUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail(), [
+        'FIRSTNAME' =&gt; $user-&gt;getFirstname(),
+    ], [
+        'language' =&gt; 'fr'
+    ]);
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_SUBSCRIBE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<h3 id="unsubscribe-a-user">Unsubscribe a User</h3>
+<p>Unsubscribe is simpler, you only need the email, all merge fields will be ignored:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function unsubscribeUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail());
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_UNSUBSCRIBE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<h3 id="update-a-user">Update a User</h3>
+<p>If your User changes his information, you can sync with MailChimp:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function updateUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail(), [
+        'FIRSTNAME' =&gt; $user-&gt;getFirstname(),
+        'LASTNAME' =&gt; $user-&gt;getFirstname(),
+    ], [
+        'language' =&gt; 'en'
+    ]);
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_UPDATE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<p>Note: we can't change the address email of a user... It's a MailChimp API V3 <a href="http://stackoverflow.com/questions/32224697/mailchimp-api-v3-0-change-subscriber-email?noredirect=1&amp;lq=1">issue</a>. I already have contacted MailChimp, but you can contact them too.</p>
+<p>The only workaround right now to change user address mail is to delete the old member and add a new one...</p>
+<h3 id="change-users-email-address-workaround">Change User's email address (WORKAROUND)</h3>
+<p>If your User changes his email address, you can sync with MailChimp:</p>
+<pre><code class="php">&lt;?php
+
+// ...
+
+public function changeEmailAddress(User $user)
+{
+    // ...
+    $this-&gt;container-&gt;get('welp_mailchimp.list_repository')-&gt;changeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');
+
+}
+</code></pre>
+
+<p>It's an UGLY WORKAROUND... Waiting for MailChimp API V3 to be able to properly change email address of a member...</p>
+<h3 id="delete-a-user">Delete a User</h3>
+<p>And finally delete a User</p>
+<p>Unsubscribe is simpler, you only need the email, all merge fields will be ignored:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function deleteUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail());
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_DELETE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<h2 id="retrieve-mailchimp-object-to-make-custom-mailchimp-api-v3-requests">Retrieve MailChimp Object to make custom MailChimp API V3 requests</h2>
+<p>You can also retrieve the MailChimp Object which comes from the library <a href="https://github.com/drewm/mailchimp-api">drewm/mailchimp-api</a>.</p>
+<p>The service key is <code>welp_mailchimp.mailchimp_master</code>.</p>
+<p>Example:</p>
+<pre><code class="php">&lt;?php
+// in any controller action...
+    ...
+    $MailChimp = $this-&gt;container-&gt;get('welp_mailchimp.mailchimp_master');
+    $list_id = 'b1234346';
+
+    $result = $MailChimp-&gt;post(&quot;lists/$list_id/members&quot;, [
+                    'email_address' =&gt; 'davy@example.com',
+                    'status'        =&gt; 'subscribed',
+                ]);
+
+    if ($MailChimp-&gt;success()) {
+        print_r($result);   
+    } else {
+        echo $MailChimp-&gt;getLastError();
+    }
+
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../webhook/" class="btn btn-neutral float-right" title="Webhook">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../subscriber-provider/" class="btn btn-neutral" title="Subscriber Provider"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+      <p>MIT</p>
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../subscriber-provider/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../webhook/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
