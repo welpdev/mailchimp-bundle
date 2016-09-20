@@ -1,7 +1,7 @@
 {
     "name": "welp/mailchimp-bundle",
     "description": "MailChimp API V3 Symfony Bundle",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "type": "symfony-bundle",
     "homepage": "https://github.com/welpdev/mailchimp-bundle",
     "license": "MIT",
