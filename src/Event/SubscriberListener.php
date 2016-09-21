@@ -38,6 +38,15 @@ class SubscriberListener
         );
     }
 
+    public function onChangeEmail(SubscriberEvent $event)
+    {
+        $this->listRepository->changeEmailAddress(
+            $event->getListId(),
+            $event->getOldEmail(),
+            $event->getSubscriber()->getEmail()
+        );
+    }
+
     public function onDelete(SubscriberEvent $event)
     {
         $this->listRepository->delete(

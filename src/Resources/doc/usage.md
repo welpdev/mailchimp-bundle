@@ -31,6 +31,7 @@ If you want realtime synchronization, you can dispatch custom events on your con
     SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
     SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
     SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
+    SubscriberEvent::EVENT_CHANGE_EMAIL = 'welp.mailchimp.change_email';
     SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
 
 ### Subscribe new User
@@ -130,10 +131,15 @@ If your User changes his email address, you can sync with MailChimp:
 
 // ...
 
-public function changeEmailAddress(User $user)
+public function changeEmailAddress($oldEmail, $newEmail)
 {
     // ...
-    $this->container->get('welp_mailchimp.list_repository')->changeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');
+    $subscriber = new Subscriber($newEmail);
+
+    $this->container->get('event_dispatcher')->dispatch(
+        SubscriberEvent::EVENT_CHANGE_EMAIL,
+        new SubscriberEvent('your_list_id', $subscriber, $oldEmail)
+    );
 
 }
 ```

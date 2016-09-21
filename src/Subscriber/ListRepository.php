@@ -372,7 +372,7 @@ class ListRepository
             'sources' => [
                 'user'  => true,
                 'admin' => true,
-                'api'   => true
+                'api'   => false // to avoid double (infinite loop) update (update an subscriber with the API and the webhook reupdate the user, ...)
             ]
         ];
 
