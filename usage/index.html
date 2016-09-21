@@ -196,6 +196,7 @@ You can use the option <code>--follow-sync</code> to follow batches executions.<
 <pre><code>SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
 SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
 SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
+SubscriberEvent::EVENT_CHANGE_EMAIL = 'welp.mailchimp.change_email';
 SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
 </code></pre>
 <h3 id="subscribe-new-user">Subscribe new User</h3>
@@ -281,10 +282,15 @@ public function updateUser(User $user)
 
 // ...
 
-public function changeEmailAddress(User $user)
+public function changeEmailAddress($oldEmail, $newEmail)
 {
     // ...
-    $this-&gt;container-&gt;get('welp_mailchimp.list_repository')-&gt;changeEmailAddress('your_list_id', 'controller@free.fr', 'action@free.fr');
+    $subscriber = new Subscriber($newEmail);
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_CHANGE_EMAIL,
+        new SubscriberEvent('your_list_id', $subscriber, $oldEmail)
+    );
 
 }
 </code></pre>
