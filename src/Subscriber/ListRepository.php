@@ -94,6 +94,7 @@ class ListRepository
         # @NOTE handle special cases:
         #       1. new email address already exists in List
         #       2. old email address not exists in list
+        #       3. old or new email address doesn't exists in list
 
         $subscriberHash = $this->mailchimp->subscriberHash($oldEmailAddress);
         $oldMember = $this->mailchimp->get("lists/$listId/members/$subscriberHash");
@@ -101,6 +102,7 @@ class ListRepository
             // problem with the oldSubcriber (doest not exist, ...)
             // np we will take the new Subscriber
             $newMember = $newSubscriber->formatMailChimp();
+            $newMember['status'] = 'subscribed';
         }else{
             // clean member
             unset($oldMember['_links']);
@@ -114,6 +116,7 @@ class ListRepository
 
             $newMember = $oldMember;
             $newMember['email_address'] = $newSubscriber->getEmail();
+            $newMember['status'] = 'subscribed';
 
             // delete the old Member
             $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
