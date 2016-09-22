@@ -86,42 +86,48 @@ class ListRepository
      * Change email address
      * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/#edit-put_lists_list_id_members_subscriber_hash
      * @param String $listId
+     * @param Subscriber $newSubscriber
      * @param String $oldEmailAddress
-     * @param String $newEmailAddress
      */
-    public function changeEmailAddress($listId, $oldEmailAddress, $newEmailAddress)
+    public function changeEmailAddress($listId, Subscriber $newSubscriber, $oldEmailAddress)
     {
+        # @NOTE handle special cases:
+        #       1. new email address already exists in List
+        #       2. old email address not exists in list
 
         $subscriberHash = $this->mailchimp->subscriberHash($oldEmailAddress);
         $oldMember = $this->mailchimp->get("lists/$listId/members/$subscriberHash");
         if(!$this->mailchimp->success()){
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            // problem with the oldSubcriber (doest not exist, ...)
+            // np we will take the new Subscriber
+            $newMember = $newSubscriber->formatMailChimp();
+        }else{
+            // clean member
+            unset($oldMember['_links']);
+            unset($oldMember['id']);
+            unset($oldMember['stats']);
+            unset($oldMember['unique_email_id']);
+            unset($oldMember['member_rating']);
+            unset($oldMember['last_changed']);
+            unset($oldMember['email_client']);
+            unset($oldMember['list_id']);
+
+            $newMember = $oldMember;
+            $newMember['email_address'] = $newSubscriber->getEmail();
+
+            // delete the old Member
+            $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
+            if(!$this->mailchimp->success()){
+                throw new \RuntimeException($this->mailchimp->getLastError());
+            }
         }
-        // clean member
-        unset($oldMember['_links']);
-        unset($oldMember['id']);
-        unset($oldMember['stats']);
-        unset($oldMember['unique_email_id']);
-        unset($oldMember['member_rating']);
-        unset($oldMember['last_changed']);
-        unset($oldMember['email_client']);
-        unset($oldMember['list_id']);
 
-        $newMember = $oldMember;
-        $newMember['email_address'] = $newEmailAddress;
-
-        // delete the old Member
-        $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
+        // add/update the new member
+        $subscriberHash = $this->mailchimp->subscriberHash($newSubscriber->getEmail());
+        $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", $newMember);
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
         }
-
-        // add the new member
-        $result = $this->mailchimp->post("lists/$listId/members", $newMember);
-        if(!$this->mailchimp->success()){
-            throw new \RuntimeException($this->mailchimp->getLastError());
-        }
-
 
         return $result;
     }
