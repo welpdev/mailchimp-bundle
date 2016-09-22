@@ -42,8 +42,8 @@ class SubscriberListener
     {
         $this->listRepository->changeEmailAddress(
             $event->getListId(),
-            $event->getOldEmail(),
-            $event->getSubscriber()->getEmail()
+            $event->getSubscriber(),
+            $event->getOldEmail()
         );
     }
 
