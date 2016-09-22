@@ -102,7 +102,7 @@ class ListRepository
             // problem with the oldSubcriber (doest not exist, ...)
             // np we will take the new Subscriber
             $newMember = $newSubscriber->formatMailChimp();
-            $newMember['status'] = 'subscribed';
+            $newMember['status_if_new'] = 'subscribed';
         }else{
             // clean member
             unset($oldMember['_links']);
@@ -116,7 +116,7 @@ class ListRepository
 
             $newMember = $oldMember;
             $newMember['email_address'] = $newSubscriber->getEmail();
-            $newMember['status'] = 'subscribed';
+            $newMember['status_if_new'] = 'subscribed';
 
             // delete the old Member
             $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
