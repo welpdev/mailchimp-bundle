@@ -31,7 +31,7 @@
     "require-dev": {
         "phpspec/phpspec": "~2@dev",
         "phpunit/phpunit": "~5",
-        "symfony/symfony": "~2.7"
+        "symfony/symfony": "~2.7 | ~3.0"
     },
     "config": {
         "bin-dir": "bin"
