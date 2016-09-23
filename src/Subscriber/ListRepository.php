@@ -289,7 +289,7 @@ class ListRepository
 
         while($offset < $totalItems){
             $offset+=$maxresult;
-            $result = $MailChimp->get("lists/$listId/members", [
+            $result = $this->mailchimp->get("lists/$listId/members", [
                         'count'         => $maxresult,
                         'offset'        => $offset
                     ]);
