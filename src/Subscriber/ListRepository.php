@@ -275,13 +275,31 @@ class ListRepository
     public function getSubscriberEmails($listId)
     {
         $emails = [];
-        $result = $this->mailchimp->get("lists/$listId/members");
+        $members = [];
+        $offset=0;
+        $result = $this->mailchimp->get("lists/$listId/members",['count'=> 200]);
 
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
         }
 
-        foreach ($result['members'] as $key => $member) {
+        $totalItems = $result['total_items'];
+        $members = array_merge($members,$result['members']);
+
+        while($offset < $totalItems){
+            $offset+=500;
+            $result = $MailChimp->get("lists/$listId/members", [
+                        'count'         => 200,
+                        'offset'        => $offset
+                    ]);
+
+            if(!$this->mailchimp->success()){
+                throw new \RuntimeException($this->mailchimp->getLastError());
+            }
+            $members = array_merge($members,$result['members']);
+        };
+
+        foreach ($members as $key => $member) {
             array_push($emails, $member['email_address']);
         }
 
