@@ -277,7 +277,8 @@ class ListRepository
         $emails = [];
         $members = [];
         $offset=0;
-        $result = $this->mailchimp->get("lists/$listId/members",['count'=> 200]);
+        $maxresult = 200;
+        $result = $this->mailchimp->get("lists/$listId/members",['count'=> $maxresult]);
 
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
@@ -287,9 +288,9 @@ class ListRepository
         $members = array_merge($members,$result['members']);
 
         while($offset < $totalItems){
-            $offset+=500;
+            $offset+=$maxresult;
             $result = $MailChimp->get("lists/$listId/members", [
-                        'count'         => 200,
+                        'count'         => $maxresult,
                         'offset'        => $offset
                     ]);
 
