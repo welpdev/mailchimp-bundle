@@ -23,10 +23,16 @@ class Subscriber
      * @return array
      */
     public function formatMailChimp(){
+        $options = $this->options;
+        if (!empty($this->getMergeFields())) {
+            $options = array_merge([
+                'merge_fields' => $this->getMergeFields()
+            ], $options);
+        }
+
         return array_merge([
-            'email_address' => $this->getEmail(),
-            'merge_fields'  => $this->getMergeFields()
-        ], $this->options);
+            'email_address' => $this->getEmail()
+        ], $options);
     }
 
     /**
