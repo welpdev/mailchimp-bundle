@@ -28,4 +28,10 @@ class SubscriberEventSpec extends ObjectBehavior
     {
         $this->getSubscriber()->shouldReturn($subscriber);
     }
+
+    function it_has_old_email($subscriber){
+        $this->beConstructedWith('1337', $subscriber, 'oldemail@free.fr');
+        $this->getOldEmail('oldemail@free.fr');
+
+    }
 }
