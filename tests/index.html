@@ -3,10 +3,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <meta name="author" content="Titouan BENOIT">
   
   <title>Tests - MailChimp Bundle</title>
   
@@ -24,8 +21,6 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Tests";
-    var mkdocs_page_input_path = "tests.md";
-    var mkdocs_page_url = "/tests/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -110,6 +105,8 @@
                 
                     <li><a class="toctree-l4" href="#webhook-tests">Webhook tests</a></li>
                 
+                    <li><a class="toctree-l4" href="#debugdev-mode">Debug/dev mode</a></li>
+                
             
             </ul>
         
@@ -187,6 +184,9 @@
 <p>Look at the code, it works with a MailChimp account...</p>
 <h2 id="webhook-tests">Webhook tests</h2>
 <p>use ngrok and http://requestb.in/</p>
+<h2 id="debugdev-mode">Debug/dev mode</h2>
+<p>The best solution to debug or dev environment is to create a free MailChimp account and use the API key of this free "debug/dev" MailChimp account.</p>
+<p>We are waiting for a sandbox from MailChimp developer in order to implements a pretty debug/dev mode.</p>
               
             </div>
           </div>
@@ -194,7 +194,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../subscriber-language/" class="btn btn-neutral float-right" title="Subscriber Languages">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../subscriber-language/" class="btn btn-neutral float-right" title="Subscriber Languages"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../webhook/" class="btn btn-neutral" title="Webhook"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -224,7 +224,7 @@
 <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../webhook/" style="color: #fcfcfc;">&laquo; Previous</a></span>
