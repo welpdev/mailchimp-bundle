@@ -3,7 +3,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Titouan BENOIT">
   
   <title>Configuration - MailChimp Bundle</title>
   
@@ -21,6 +24,8 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Configuration";
+    var mkdocs_page_input_path = "configuration.md";
+    var mkdocs_page_url = "/configuration/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -175,7 +180,7 @@
     lists:
         listId1:
             # provider used in full synchronization
-            subscriber_providers: 'yourapp.provider1'
+            subscriber_provider: 'yourapp.provider1'
             # webhook secret to secure webhook between MailChimp &amp; your app
             webhook_secret: 'thisIsASecret'
             # The webhook url to be registered to the MailChimp list
@@ -207,7 +212,7 @@
                     ...
 
         listId2:
-            subscriber_providers: 'yourapp.provider2'
+            subscriber_provider: 'yourapp.provider2'
             ...
 </code></pre>
 
@@ -274,7 +279,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../subscriber-provider/" class="btn btn-neutral float-right" title="Subscriber Provider"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../subscriber-provider/" class="btn btn-neutral float-right" title="Subscriber Provider">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../setup/" class="btn btn-neutral" title="Setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -304,7 +309,7 @@
 <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../setup/" style="color: #fcfcfc;">&laquo; Previous</a></span>

@@ -3,7 +3,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Titouan BENOIT">
   
   <title>Subscriber Provider - MailChimp Bundle</title>
   
@@ -21,6 +24,8 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Subscriber Provider";
+    var mkdocs_page_input_path = "subscriber-provider.md";
+    var mkdocs_page_url = "/subscriber-provider/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -163,7 +168,7 @@
             <div class="section">
               
                 <h1 id="subscriber-provider">Subscriber Provider</h1>
-<p>After <a href="../configuration/">configuring your lists</a> in <code>config.yml</code>, you need to create at least one <code>Provider</code> that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in <code>subscriber_providers</code> in the configuration above):</p>
+<p>After <a href="../configuration/">configuring your lists</a> in <code>config.yml</code>, you need to create at least one <code>Provider</code> that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in <code>subscriber_provider</code> in the configuration above):</p>
 <pre><code class="yaml">services:
     yourapp_mailchimp_subscriber_provider:
         class: YourApp\App\Newsletter\SubscriberProvider
@@ -233,7 +238,7 @@ class ExampleSubscriberProvider implements ProviderInterface
 <p>After this, don't forget to add the service key for your list into your <code>config.yml</code>:</p>
 <pre><code class="yaml">    ...
     listId2:
-        subscriber_providers: 'yourapp.provider2'
+        subscriber_provider: 'yourapp.provider2'
         ...
 </code></pre>
               
@@ -243,7 +248,7 @@ class ExampleSubscriberProvider implements ProviderInterface
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../usage/" class="btn btn-neutral float-right" title="Usage"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../usage/" class="btn btn-neutral float-right" title="Usage">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../configuration/" class="btn btn-neutral" title="Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -273,7 +278,7 @@ class ExampleSubscriberProvider implements ProviderInterface
 <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../configuration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
