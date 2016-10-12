@@ -33,10 +33,9 @@ class SubscriberSpec extends ObjectBehavior
         $this->getMergeFields()->shouldReturn($tags);
     }
 
-    function it_can_have_merge_fields_options()
+    function it_can_have_options()
     {
         $this->beConstructedWith('charles@terrasse.fr', $tags = ['FIRSTNAME' => 'Charles'], $options = ['language' => "fr"]);
-        $this->getMergeFields()->shouldReturn($tags);
         $this->getOptions()->shouldReturn($options);
     }
 
@@ -49,4 +48,24 @@ class SubscriberSpec extends ObjectBehavior
             'language' => "fr"
         ]);
     }
+
+    function it_format_for_mailchimp_without_mergetags()
+    {
+        $this->beConstructedWith('charles@terrasse.fr', [], $options = ['language' => "fr"]);
+        $this->formatMailChimp()->shouldReturn([
+            'email_address' => 'charles@terrasse.fr',
+            'language' => "fr"
+        ]);
+
+    }
+
+    function it_format_for_mailchimp_without_options()
+    {
+        $this->beConstructedWith('charles@terrasse.fr', [], []);
+        $this->formatMailChimp()->shouldReturn([
+            'email_address' => 'charles@terrasse.fr'
+        ]);
+
+    }
+
 }
