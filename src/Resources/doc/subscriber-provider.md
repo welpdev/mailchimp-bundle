@@ -1,6 +1,6 @@
 # Subscriber Provider
 
-After [configuring your lists](configuration.md) in `config.yml`, you need to create at least one `Provider` that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in `subscriber_providers` in the configuration above):
+After [configuring your lists](configuration.md) in `config.yml`, you need to create at least one `Provider` that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in `subscriber_provider` in the configuration above):
 
 ```yaml
 services:
@@ -78,6 +78,6 @@ After this, don't forget to add the service key for your list into your `config.
 ```yaml
     ...
     listId2:
-        subscriber_providers: 'yourapp.provider2'
+        subscriber_provider: 'yourapp.provider2'
         ...
 ```

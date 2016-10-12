@@ -12,7 +12,7 @@ welp_mailchimp:
     lists:
         listId1:
             # provider used in full synchronization
-            subscriber_providers: 'yourapp.provider1'
+            subscriber_provider: 'yourapp.provider1'
             # webhook secret to secure webhook between MailChimp & your app
             webhook_secret: 'thisIsASecret'
             # The webhook url to be registered to the MailChimp list
@@ -44,7 +44,7 @@ welp_mailchimp:
                     ...
 
         listId2:
-            subscriber_providers: 'yourapp.provider2'
+            subscriber_provider: 'yourapp.provider2'
             ...
 ```
 
