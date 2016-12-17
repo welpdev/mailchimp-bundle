@@ -15,6 +15,10 @@ NOTE: MailChimp provide two default merge fields:
 * FNAME: Firstname
 * LNAME: Lastname
 
+**Known issues with MailChimp API V3 - 17/12/2016**
+
+* When you try to synchronize merge fields with choice type, the API doesn't handle update of choice fields... It returns an error 400. Workaround: you have to remove all your choice type merge fields from your list throught the MailChimp Admin panel and retry synchronize with the command.
+
 ## Full synchronization with command
 
 You can synchronize all subscribers of your project at once by calling the Symfony command `php app/console welp:mailchimp:synchronize-subscribers`.
