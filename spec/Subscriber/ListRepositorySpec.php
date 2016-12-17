@@ -84,10 +84,66 @@ class ListRepositorySpec extends ObjectBehavior
                     'merge_fields' => [
                         ['tag' => 'EMAIL', 'name' => 'email'],
                         ['tag' => 'FOO', 'name' => 'Bar'],
-                ]
+                    ],
+                    'total_items' => 2
             ]);
 
         $this->getMergeFields(123)->shouldReturn([['tag' => 'EMAIL', 'name' => 'email'], ['tag' => 'FOO', 'name' => 'Bar']]);
+    }
+
+    function it_finds_merge_tags_more_than_10(MailChimp $mailchimp)
+    {
+        $mailchimp
+            ->get("lists/123/merge-fields")
+            ->willReturn(
+                [
+                    'merge_fields' => [
+                        ['tag' => 'FOO1', 'name' => 'Bar'],
+                        ['tag' => 'FOO2', 'name' => 'Bar'],
+                        ['tag' => 'FOO3', 'name' => 'Bar'],
+                        ['tag' => 'FOO4', 'name' => 'Bar'],
+                        ['tag' => 'FOO5', 'name' => 'Bar'],
+                        ['tag' => 'FOO6', 'name' => 'Bar'],
+                        ['tag' => 'FOO8', 'name' => 'Bar'],
+                        ['tag' => 'FOO9', 'name' => 'Bar'],
+                        ['tag' => 'FOO10', 'name' => 'Bar'],
+                    ],
+                    'total_items' => 13
+            ]);
+
+            $mailchimp
+                ->get("lists/123/merge-fields", array("count" => 13))
+                ->willReturn(
+                    [
+                        'merge_fields' => [
+                            ['tag' => 'FOO1', 'name' => 'Bar'],
+                            ['tag' => 'FOO2', 'name' => 'Bar'],
+                            ['tag' => 'FOO3', 'name' => 'Bar'],
+                            ['tag' => 'FOO4', 'name' => 'Bar'],
+                            ['tag' => 'FOO5', 'name' => 'Bar'],
+                            ['tag' => 'FOO6', 'name' => 'Bar'],
+                            ['tag' => 'FOO8', 'name' => 'Bar'],
+                            ['tag' => 'FOO9', 'name' => 'Bar'],
+                            ['tag' => 'FOO10', 'name' => 'Bar'],
+                            ['tag' => 'FOO12', 'name' => 'Bar'],
+                            ['tag' => 'FOO13', 'name' => 'Bar'],
+                        ],
+                        'total_items' => 13
+                ]);
+
+        $this->getMergeFields(123)->shouldReturn([
+            ['tag' => 'FOO1', 'name' => 'Bar'],
+            ['tag' => 'FOO2', 'name' => 'Bar'],
+            ['tag' => 'FOO3', 'name' => 'Bar'],
+            ['tag' => 'FOO4', 'name' => 'Bar'],
+            ['tag' => 'FOO5', 'name' => 'Bar'],
+            ['tag' => 'FOO6', 'name' => 'Bar'],
+            ['tag' => 'FOO8', 'name' => 'Bar'],
+            ['tag' => 'FOO9', 'name' => 'Bar'],
+            ['tag' => 'FOO10', 'name' => 'Bar'],
+            ['tag' => 'FOO12', 'name' => 'Bar'],
+            ['tag' => 'FOO13', 'name' => 'Bar'],
+        ]);
     }
 
     function it_deletes_a_merge_tag(MailChimp $mailchimp)

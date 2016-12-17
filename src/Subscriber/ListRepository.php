@@ -7,6 +7,7 @@ use DrewM\MailChimp\MailChimp;
 class ListRepository
 {
     const SUBSCRIBER_BATCH_SIZE = 300;
+    const MAILCHIMP_DEFAULT_COUNT_LIMIT = 10;
 
     public function __construct(MailChimp $mailchimp)
     {
@@ -316,6 +317,11 @@ class ListRepository
     public function getMergeFields($listId)
     {
         $result = $this->mailchimp->get("lists/$listId/merge-fields");
+
+        # Handle mailchimp default count limit
+        if($result['total_items'] > self::MAILCHIMP_DEFAULT_COUNT_LIMIT){
+            $result = $this->mailchimp->get("lists/$listId/merge-fields", array("count" => $result['total_items']));
+        }
 
         if(!$this->mailchimp->success()){
             throw new \RuntimeException($this->mailchimp->getLastError());
