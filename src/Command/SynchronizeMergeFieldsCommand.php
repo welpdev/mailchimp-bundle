@@ -5,10 +5,6 @@ namespace Welp\MailchimpBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-
-use Welp\MailchimpBundle\Provider\ProviderInterface;
-use Welp\MailchimpBundle\Subscriber\SubscriberList;
 
 class SynchronizeMergeFieldsCommand extends ContainerAwareCommand
 {

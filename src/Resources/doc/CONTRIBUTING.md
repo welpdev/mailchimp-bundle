@@ -13,5 +13,4 @@
     ☐ Moar unit tests!!
     ☐ Fix workaround to update User's email address (waiting for MailChimp API V3 update)
     ☐ Commands options for full sync, merge fields sync, webhook register (listId, ...)
-    ☐ Compatibility with Symfony 3
     ☐ Spec documentation (http://phpdox.de/)

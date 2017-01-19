@@ -24,11 +24,14 @@ class ExampleSubscriberProvider implements ProviderInterface
         $this->userRepository = $userRepository;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSubscribers()
     {
         $users = $this->userRepository->findSubscribers();
 
-        $subscribers = array_map(function(User $user) {
+        $subscribers = array_map(function (User $user) {
             $subscriber = new Subscriber($user->getEmail(), [
                 self::TAG_NICKNAME => $user->getNickname(),
                 self::TAG_GENDER => $user->getGender(),
@@ -36,7 +39,7 @@ class ExampleSubscriberProvider implements ProviderInterface
                 self::TAG_CITY => $user->getCity(),
                 self::TAG_LAST_ACTIVITY_DATE => $user->getLastActivityDate() ? $user->getLastActivityDate()->format('Y-m-d') : null,
                 self::TAG_REGISTRATION_DATE => $user->getRegistrationDate() ? $user->getRegistrationDate()->format('Y-m-d') : null,
-            ],[
+            ], [
                 'language'   => 'fr',
                 'email_type' => 'html'
             ]);

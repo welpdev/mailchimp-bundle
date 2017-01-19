@@ -51,8 +51,8 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('Synchronize list %s', $listId));
             $batchesResult = $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
-            if($input->getOption('follow-sync')){
-                while(!$this->batchesFinished($batchesResult)){
+            if ($input->getOption('follow-sync')) {
+                while (!$this->batchesFinished($batchesResult)) {
                     $batchesResult = $this->refreshBatchesResult($batchesResult);
                     foreach ($batchesResult as $key => $batch) {
                         $output->writeln($this->displayBatchInfo($batch));
@@ -60,16 +60,16 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
                     sleep(2);
                 }
             }
-
         }
     }
 
     /**
      * Refresh all batch from MailChimp API
-     * @param Array $batchesResult
-     * @return Array
+     * @param array $batchesResult
+     * @return array
      */
-    private function refreshBatchesResult($batchesResult){
+    private function refreshBatchesResult($batchesResult)
+    {
         $refreshedBatchsResults = [];
         $mailchimp = $this->getContainer()->get('welp_mailchimp.mailchimp_master');
         foreach ($batchesResult as $key => $batch) {
@@ -81,13 +81,14 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
 
     /**
      * Test if all batches are finished
-     * @param Array $batchesResult
-     * @return Boolean
+     * @param array $batchesResult
+     * @return bool
      */
-    private function batchesFinished($batchesResult){
+    private function batchesFinished($batchesResult)
+    {
         $allfinished = true;
         foreach ($batchesResult as $key => $batch) {
-            if($batch['status'] != 'finished'){
+            if ($batch['status'] != 'finished') {
                 $allfinished = false;
             }
         }
@@ -96,20 +97,21 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
 
     /**
      * Pretty display of batch info
-     * @param Object $batch
-     * @return String
+     * @param array $batch
+     * @return string
      */
-    private function displayBatchInfo($batch){
-        if($batch['status'] == 'finished'){
+    private function displayBatchInfo($batch)
+    {
+        if ($batch['status'] == 'finished') {
             return sprintf('batch %s is finished, operations %d/%d with %d errors. http responses: %s', $batch['id'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations'], $batch['response_body_url']);
-        }else{
+        } else {
             return sprintf('batch %s, current status %s, operations %d/%d with %d errors', $batch['id'], $batch['status'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations']);
         }
     }
 
     /**
      * Get subscriber provider
-     * @param String $providerServiceKey
+     * @param string $providerServiceKey
      * @return ProviderInterface $provider
      */
     private function getProvider($providerServiceKey)

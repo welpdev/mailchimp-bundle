@@ -22,13 +22,16 @@ class FosSubscriberProvider implements ProviderInterface
         $this->userManager = $userManager;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSubscribers()
     {
         $users = $this->userManager->findUsers();
         // or find only enabled users :
         // $users = $this->userManager->findUserBy(array('enabled' => true));
 
-        $subscribers = array_map(function(User $user) {
+        $subscribers = array_map(function (User $user) {
             $subscriber = new Subscriber($user->getEmail(), [
                 self::TAG_USERNAME => $user->getUsername(),
                 self::TAG_ENABLED => $user->isEnabled(),

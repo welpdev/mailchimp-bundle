@@ -2,11 +2,19 @@
 
 namespace Welp\MailchimpBundle\Subscriber;
 
-
+/**
+ * Handle Synchronization between SubscriberList and specific MailChimp List
+ */
 class ListSynchronizer
 {
+    /**
+     * @var ListRepository
+     */
     protected $listRepository;
 
+    /**
+     * @param ListRepository $listRepository
+     */
     public function __construct(ListRepository $listRepository)
     {
         $this->listRepository = $listRepository;
@@ -32,8 +40,8 @@ class ListSynchronizer
 
     /**
      * Subscribe a batch of user
-     * @param String $listId
-     * @param Array $subscribers
+     * @param string $listId
+     * @param array $subscribers
      * @return void
      */
     protected function batchSubscribe($listId, array $subscribers = [])
@@ -43,14 +51,14 @@ class ListSynchronizer
 
     /**
      * Unsubscribe the difference between the array subscriber an user
-     * @param String $listId
+     * @param string $listId
      * @param array $subscribers
      * @return void
      */
     protected function unsubscribeDifference($listId, array $subscribers)
     {
         $mailchimpEmails = $this->listRepository->getSubscriberEmails($listId);
-        $internalEmails = array_map(function(Subscriber $subscriber) {
+        $internalEmails = array_map(function (Subscriber $subscriber) {
             return $subscriber->getEmail();
         }, $subscribers);
 
@@ -65,8 +73,8 @@ class ListSynchronizer
 
     /**
      * Synchronize Merge fields of a list and the array $mergeFields
-     * @param String $listId
-     * @param Array $mergeFields
+     * @param string $listId
+     * @param array $mergeFields
      * @return void
      */
     public function synchronizeMergeFields($listId, array $mergeFields = [])
@@ -92,15 +100,15 @@ class ListSynchronizer
 
     /**
     * Test if the merge field Tag exists in an array
-    * @param String $tagName
-    * @param Array $tags
-    * @return Mixed (Boolean true|false) or $tag['merge_id']
+    * @param string $tagName
+    * @param array $tags
+    * @return mixed (Boolean true|false) or $tag['merge_id']
     */
     protected function tagExists($tagName, array $tags)
     {
         foreach ($tags as $tag) {
             if ($tag['tag'] == $tagName) {
-                if(array_key_exists('merge_id', $tag)){
+                if (array_key_exists('merge_id', $tag)) {
                     return $tag['merge_id'];
                 }
                 return true;

@@ -5,12 +5,10 @@ namespace Welp\MailchimpBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
-use DrewM\MailChimp\Webhook;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
 /**
@@ -24,12 +22,15 @@ class WebhookController extends Controller
      * https://apidocs.mailchimp.com/webhooks/
      * @Route("/endpoint", name="webhook_index")
      * @Method({"POST", "GET"})
+     * @param Request $request
+     * @throws AccessDeniedHttpException
+     * @return JsonResponse
      */
     public function indexAction(Request $request)
     {
 
         // For Mailchimp ping GET
-        if($request->isMethod('GET')){
+        if ($request->isMethod('GET')) {
             return new JsonResponse([
                 'success' => true,
                 'ping' => 'pong',
@@ -52,8 +53,9 @@ class WebhookController extends Controller
         */
         $hooksecret = $request->query->get('hooksecret');
 
-        if(empty($type) || empty($data) || empty($hooksecret) || !array_key_exists('list_id', $data))
+        if (empty($type) || empty($data) || empty($hooksecret) || !array_key_exists('list_id', $data)) {
             throw new AccessDeniedHttpException('incorrect data format!');
+        }
 
         $listId = $data['list_id'];
         $lists = $this->getParameter('welp_mailchimp.lists');
@@ -61,15 +63,16 @@ class WebhookController extends Controller
         // Check the webhook_secret
         $authorized = false;
         foreach ($lists as $id => $listParameters) {
-            if($listId ==  $id){
-                if($listParameters['webhook_secret'] == $hooksecret){
+            if ($listId ==  $id) {
+                if ($listParameters['webhook_secret'] == $hooksecret) {
                     $authorized = true;
                 }
             }
         }
 
-        if(!$authorized)
+        if (!$authorized) {
             throw new AccessDeniedHttpException('Webhook secret mismatch!');
+        }
 
         // Trigger the right event
         switch ($type) {
@@ -107,5 +110,4 @@ class WebhookController extends Controller
             'data' => $data,
         ]);
     }
-
 }
