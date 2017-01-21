@@ -15,7 +15,7 @@ Look at the code, it works with a MailChimp account...
 
 ## Webhook tests
 
-use ngrok and http://requestb.in/
+use [ngrok](https://ngrok.com/) and <http://requestb.in/>
 
 ## Debug/dev mode
 
