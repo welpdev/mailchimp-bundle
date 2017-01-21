@@ -70,8 +70,8 @@ class ListRepository
         $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash",
             array_merge(
-                $subscriber->formatMailChimp(),
-                ['status' => 'subscribed']
+                ['status' => 'subscribed'],
+                $subscriber->formatMailChimp()
             )
         );
 
