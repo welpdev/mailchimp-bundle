@@ -60,18 +60,22 @@ class ListRepository
     }
 
     /**
-     * Subscribe a Subscriber to a list
+     * core function to put (add or edit) subscriber to a list
      * @param string $listId
      * @param Subscriber $subscriber
+     * @param string $status
      * @return array
      */
-    public function subscribe($listId, Subscriber $subscriber)
+    protected function putSubscriberInList($listId, Subscriber $subscriber, $status)
     {
+        if(!in_array($status, ['subscribed', 'unsubscribed', 'cleaned', 'pending', 'transactional'])){
+            throw new \RuntimeException('$status must be one of these values: subscribed, unsubscribed, cleaned, pending, transactional');
+        }
         $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash",
             array_merge(
                 $subscriber->formatMailChimp(),
-                ['status' => 'subscribed']
+                ['status' => $status]
             )
         );
 
@@ -80,6 +84,57 @@ class ListRepository
         }
 
         return $result;
+    }
+
+    /**
+     * Subscribe a Subscriber to a list
+     * @param string $listId
+     * @param Subscriber $subscriber
+     * @return array
+     */
+    public function subscribe($listId, Subscriber $subscriber)
+    {
+        return $this->putSubscriberInList($listId, $subscriber, 'subscribed');
+    }
+
+    /**
+     * Subscribe a Subscriber to a list
+     * @param string $listId
+     * @param Subscriber $subscriber
+     */
+    public function unsubscribe($listId, Subscriber $subscriber)
+    {
+        return $this->putSubscriberInList($listId, $subscriber, 'unsubscribed');
+    }
+
+    /**
+     * Clean a Subscriber to a list
+     * @param string $listId
+     * @param Subscriber $subscriber
+     */
+    public function clean($listId, Subscriber $subscriber)
+    {
+        return $this->putSubscriberInList($listId, $subscriber, 'cleaned');
+    }
+
+    /**
+     * Add/set pending a Subscriber to a list
+     * @param string $listId
+     * @param Subscriber $subscriber
+     */
+    public function pending($listId, Subscriber $subscriber)
+    {
+        return $this->putSubscriberInList($listId, $subscriber, 'pending');
+    }
+
+    /**
+     * set transactional a Subscriber to a list
+     * @param string $listId
+     * @param Subscriber $subscriber
+     */
+    public function transactional($listId, Subscriber $subscriber)
+    {
+        return $this->putSubscriberInList($listId, $subscriber, 'transactional');
     }
 
     /**
@@ -149,25 +204,6 @@ class ListRepository
         // add/update the new member
         $subscriberHash = $this->mailchimp->subscriberHash($newSubscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", $newMember);
-        if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
-        }
-
-        return $result;
-    }
-
-    /**
-     * Subscribe a Subscriber to a list
-     * @param string $listId
-     * @param Subscriber $subscriber
-     */
-    public function unsubscribe($listId, Subscriber $subscriber)
-    {
-        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
-        $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", [
-                'status'  => 'unsubscribed'
-            ]);
-
         if (!$this->mailchimp->success()) {
             throw new \RuntimeException($this->mailchimp->getLastError());
         }

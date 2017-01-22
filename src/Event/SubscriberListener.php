@@ -50,6 +50,32 @@ class SubscriberListener
     }
 
     /**
+     * Action when a User is pending
+     * @param  SubscriberEvent $event
+     * @return void
+     */
+    public function onPending(SubscriberEvent $event)
+    {
+        $this->listRepository->pending(
+            $event->getListId(),
+            $event->getSubscriber()
+        );
+    }
+
+    /**
+     * Action when a User is cleaned
+     * @param  SubscriberEvent $event
+     * @return void
+     */
+    public function onClean(SubscriberEvent $event)
+    {
+        $this->listRepository->clean(
+            $event->getListId(),
+            $event->getSubscriber()
+        );
+    }
+
+    /**
      * Action when a User update its info
      * @param  SubscriberEvent $event
      * @return void

@@ -27,6 +27,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: welp.mailchimp.subscribe, method: onSubscribe }
             - { name: kernel.event_listener, event: welp.mailchimp.unsubscribe, method: onUnsubscribe }
+            - { name: kernel.event_listener, event: welp.mailchimp.pending, method: onPending }
+            - { name: kernel.event_listener, event: welp.mailchimp.clean, method: onClean }
             - { name: kernel.event_listener, event: welp.mailchimp.update, method: onUpdate }
             - { name: kernel.event_listener, event: welp.mailchimp.change_email, method: onChangeEmail }
             - { name: kernel.event_listener, event: welp.mailchimp.delete, method: onDelete }

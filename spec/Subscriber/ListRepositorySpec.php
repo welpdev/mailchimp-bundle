@@ -54,11 +54,20 @@ class ListRepositorySpec extends ObjectBehavior
 
     function it_unsubscribe_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $mailchimp->patch("lists/ba039c6198/members/md5ofthesubscribermail", [
-                'status'  => 'unsubscribed'
-            ])->willReturn('unsubscribed');
 
         $this->unsubscribe('ba039c6198', $subscriber)->shouldReturn('unsubscribed');
+    }
+
+    function it_pending_a_subscriber(MailChimp $mailchimp, $subscriber)
+    {
+
+        $this->pending('ba039c6198', $subscriber)->shouldReturn('pending');
+    }
+
+    function it_clean_a_subscriber(MailChimp $mailchimp, $subscriber)
+    {
+
+        $this->clean('ba039c6198', $subscriber)->shouldReturn('cleaned');
     }
 
     function it_delete_a_subscriber(MailChimp $mailchimp, $subscriber)
@@ -206,6 +215,30 @@ class ListRepositorySpec extends ObjectBehavior
                 'email_type'    => 'html',
                 'status'        => 'subscribed'
             ]);
+
+        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+                'email_address' => 'charles@terrasse.fr',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
+                'email_type'    => 'html',
+                'status'  => 'unsubscribed'
+            ])->willReturn('unsubscribed');
+
+        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+                'email_address' => 'charles@terrasse.fr',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
+                'email_type'    => 'html',
+                'status'  => 'pending'
+            ])->willReturn('pending');
+
+        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+                'email_address' => 'charles@terrasse.fr',
+                'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
+                'language' => 'fr',
+                'email_type'    => 'html',
+                'status'  => 'cleaned'
+            ])->willReturn('cleaned');
     }
 
     protected function getSubscriberChunk($count, $offset)

@@ -23,6 +23,18 @@ class SubscriberEvent extends Event
     const EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
 
     /**
+     * Event to pending a User
+     * @var string
+     */
+    const EVENT_PENDING = 'welp.mailchimp.pending';
+
+    /**
+     * Event to clean a User
+     * @var string
+     */
+    const EVENT_CLEAN = 'welp.mailchimp.clean';
+
+    /**
      * Event to update a User
      * @var string
      */

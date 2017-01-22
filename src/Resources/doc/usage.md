@@ -34,6 +34,8 @@ If you want realtime synchronization, you can dispatch custom events on your con
 
     SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
     SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
+    SubscriberEvent::EVENT_PENDING = 'welp.mailchimp.pending';
+    SubscriberEvent::EVENT_CLEAN = 'welp.mailchimp.clean';
     SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
     SubscriberEvent::EVENT_CHANGE_EMAIL = 'welp.mailchimp.change_email';
     SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
@@ -69,7 +71,7 @@ public function newUser(User $user)
 
 ### Unsubscribe a User
 
-Unsubscribe is simpler, you only need the email, all merge fields will be ignored:
+Here is an example of unsubscribe event dispatch:
 
 ```php
 <?php
@@ -87,6 +89,64 @@ public function unsubscribeUser(User $user)
 
     $this->container->get('event_dispatcher')->dispatch(
         SubscriberEvent::EVENT_UNSUBSCRIBE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+```
+
+### Pending a User
+
+Here is an example of pending event dispatch:
+
+```php
+<?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function pendingUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user->getEmail(), [
+		'FIRSTNAME' => $user->getFirstname(),
+	], [
+        'language' => 'fr'
+    ]);
+
+	$this->container->get('event_dispatcher')->dispatch(
+        SubscriberEvent::EVENT_PENDING,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+```
+
+### Clean a User
+
+Here is an example of clean event dispatch:
+
+```php
+<?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function cleanUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user->getEmail(), [
+		'FIRSTNAME' => $user->getFirstname(),
+	], [
+        'language' => 'fr'
+    ]);
+
+	$this->container->get('event_dispatcher')->dispatch(
+        SubscriberEvent::EVENT_CLEAN,
         new SubscriberEvent('your_list_id', $subscriber)
     );
 }
