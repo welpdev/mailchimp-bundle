@@ -190,6 +190,8 @@ You can use the option <code>--follow-sync</code> to follow batches executions.<
 <p>If you want realtime synchronization, you can dispatch custom events on your controllers (or anywhere). The subscribe event can be used both for adding a new subscriber or updating an existing one. You can fired these events to trigger sync with MailChimp:</p>
 <pre><code>SubscriberEvent::EVENT_SUBSCRIBE = 'welp.mailchimp.subscribe';
 SubscriberEvent::EVENT_UNSUBSCRIBE = 'welp.mailchimp.unsubscribe';
+SubscriberEvent::EVENT_PENDING = 'welp.mailchimp.pending';
+SubscriberEvent::EVENT_CLEAN = 'welp.mailchimp.clean';
 SubscriberEvent::EVENT_UPDATE = 'welp.mailchimp.update';
 SubscriberEvent::EVENT_CHANGE_EMAIL = 'welp.mailchimp.change_email';
 SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
@@ -221,7 +223,7 @@ public function newUser(User $user)
 </code></pre>
 
 <h3 id="unsubscribe-a-user">Unsubscribe a User</h3>
-<p>Unsubscribe is simpler, you only need the email, all merge fields will be ignored:</p>
+<p>Here is an example of unsubscribe event dispatch:</p>
 <pre><code class="php">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
@@ -237,6 +239,58 @@ public function unsubscribeUser(User $user)
 
     $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
         SubscriberEvent::EVENT_UNSUBSCRIBE,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<h3 id="pending-a-user">Pending a User</h3>
+<p>Here is an example of pending event dispatch:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function pendingUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail(), [
+        'FIRSTNAME' =&gt; $user-&gt;getFirstname(),
+    ], [
+        'language' =&gt; 'fr'
+    ]);
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_PENDING,
+        new SubscriberEvent('your_list_id', $subscriber)
+    );
+}
+</code></pre>
+
+<h3 id="clean-a-user">Clean a User</h3>
+<p>Here is an example of clean event dispatch:</p>
+<pre><code class="php">&lt;?php
+
+use Welp\MailchimpBundle\Event\SubscriberEvent;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+
+// ...
+
+public function cleanUser(User $user)
+{
+    // ...
+
+    $subscriber = new Subscriber($user-&gt;getEmail(), [
+        'FIRSTNAME' =&gt; $user-&gt;getFirstname(),
+    ], [
+        'language' =&gt; 'fr'
+    ]);
+
+    $this-&gt;container-&gt;get('event_dispatcher')-&gt;dispatch(
+        SubscriberEvent::EVENT_CLEAN,
         new SubscriberEvent('your_list_id', $subscriber)
     );
 }
