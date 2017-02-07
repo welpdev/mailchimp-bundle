@@ -67,11 +67,37 @@ class Subscriber
     }
 
     /**
+     * Set mergefields
+     * @param array $mergeFields
+     * @return array ['TAGKEY' => value, ...]
+     */
+    public function setMergeFields(array $mergeFields)
+    {
+        // since fev2017, MailChimp API doesn't handle null value en throw 400
+        // errors when you try to add subscriber with a mergefields value to null
+        foreach ($mergeFields as $key => $value) {
+            if ($value == null) {
+                unset($mergeFields[$key]);
+            }
+        }
+        $this->mergeFields = $mergeFields;
+
+        return $this->mergeFields;
+    }
+
+    /**
      * Correspond to merge_fields in MailChimp request
      * @return array ['TAGKEY' => value, ...]
      */
     public function getMergeFields()
     {
+        // since fev2017, MailChimp API doesn't handle null value en throw 400
+        // errors when you try to add subscriber with a mergefields value to null
+        foreach ($this->mergeFields as $key => $value) {
+            if ($value == null) {
+                unset($this->mergeFields[$key]);
+            }
+        }
         return $this->mergeFields;
     }
 

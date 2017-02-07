@@ -3,6 +3,8 @@
 namespace Welp\MailchimpBundle\Subscriber;
 
 use DrewM\MailChimp\MailChimp;
+use phpDocumentor\Reflection\Types\Void_;
+use Welp\MailchimpBundle\Exception\MailchimpException;
 
 /**
  * Handle action on MailChimp List
@@ -54,7 +56,7 @@ class ListRepository
         $listData = $this->mailchimp->get("lists/$listId");
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
         return $listData;
     }
@@ -68,7 +70,7 @@ class ListRepository
      */
     protected function putSubscriberInList($listId, Subscriber $subscriber, $status)
     {
-        if(!in_array($status, ['subscribed', 'unsubscribed', 'cleaned', 'pending', 'transactional'])){
+        if (!in_array($status, ['subscribed', 'unsubscribed', 'cleaned', 'pending', 'transactional'])) {
             throw new \RuntimeException('$status must be one of these values: subscribed, unsubscribed, cleaned, pending, transactional');
         }
         $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
@@ -80,7 +82,7 @@ class ListRepository
         );
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -149,7 +151,7 @@ class ListRepository
         $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", $subscriber->formatMailChimp());
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -197,7 +199,7 @@ class ListRepository
             // delete the old Member
             $deleteOld = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
             if (!$this->mailchimp->success()) {
-                throw new \RuntimeException($this->mailchimp->getLastError());
+                $this->throwMailchimpError($this->mailchimp->getLastResponse());
             }
         }
 
@@ -205,7 +207,7 @@ class ListRepository
         $subscriberHash = $this->mailchimp->subscriberHash($newSubscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", $newMember);
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -222,7 +224,7 @@ class ListRepository
         $result = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -316,7 +318,7 @@ class ListRepository
         $result = $this->mailchimp->get("lists/$listId/members");
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -336,7 +338,7 @@ class ListRepository
         $result = $this->mailchimp->get("lists/$listId/members", ['count'=> $maxresult]);
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         $totalItems = $result['total_items'];
@@ -350,7 +352,7 @@ class ListRepository
                     ]);
 
             if (!$this->mailchimp->success()) {
-                throw new \RuntimeException($this->mailchimp->getLastError());
+                $this->throwMailchimpError($this->mailchimp->getLastResponse());
             }
             $members = array_merge($members, $result['members']);
         };
@@ -378,7 +380,7 @@ class ListRepository
         }
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result['merge_fields'];
@@ -396,7 +398,7 @@ class ListRepository
         $result = $this->mailchimp->post("lists/$listId/merge-fields", $mergeData);
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -415,7 +417,7 @@ class ListRepository
         $result = $this->mailchimp->patch("lists/$listId/merge-fields/$mergeId", $mergeData);
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -433,7 +435,7 @@ class ListRepository
         $result = $this->mailchimp->delete("lists/$listId/merge-fields/$mergeId");
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -480,7 +482,7 @@ class ListRepository
         $result = $this->mailchimp->post("lists/$listId/webhooks", $webhookData);
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
@@ -497,9 +499,38 @@ class ListRepository
         $result = $this->mailchimp->get("lists/$listId/webhooks");
 
         if (!$this->mailchimp->success()) {
-            throw new \RuntimeException($this->mailchimp->getLastError());
+            $this->throwMailchimpError($this->mailchimp->getLastResponse());
         }
 
         return $result;
+    }
+
+    /**
+     * [throwMailchimpError description]
+     * @param  array  $errorResponse [description]
+     * @return void
+     * @throws MailchimpException [description]
+     */
+    private function throwMailchimpError(array $errorResponse)
+    {
+        if (array_key_exists('errors', $errorResponse)) {
+            throw new MailchimpException(
+                $errorResponse['status'],
+                $errorResponse['detail'],
+                $errorResponse['type'],
+                $errorResponse['title'],
+                $errorResponse['errors'],
+                $errorResponse['instance']
+            );
+        } else {
+            throw new MailchimpException(
+                $errorResponse['status'],
+                $errorResponse['detail'],
+                $errorResponse['type'],
+                $errorResponse['title'],
+                null,
+                $errorResponse['instance']
+            );
+        }
     }
 }
