@@ -513,23 +513,24 @@ class ListRepository
      */
     private function throwMailchimpError(array $errorResponse)
     {
-        if (array_key_exists('errors', $errorResponse)) {
+        $errorArray = json_decode($errorResponse['body'], true);
+        if (array_key_exists('errors', $errorArray)) {
             throw new MailchimpException(
-                $errorResponse['status'],
-                $errorResponse['detail'],
-                $errorResponse['type'],
-                $errorResponse['title'],
-                $errorResponse['errors'],
-                $errorResponse['instance']
+                $errorArray['status'],
+                $errorArray['detail'],
+                $errorArray['type'],
+                $errorArray['title'],
+                $errorArray['errors'],
+                $errorArray['instance']
             );
         } else {
             throw new MailchimpException(
-                $errorResponse['status'],
-                $errorResponse['detail'],
-                $errorResponse['type'],
-                $errorResponse['title'],
+                $errorArray['status'],
+                $errorArray['detail'],
+                $errorArray['type'],
+                $errorArray['title'],
                 null,
-                $errorResponse['instance']
+                $errorArray['instance']
             );
         }
     }
