@@ -37,11 +37,8 @@ class ListRepositorySpec extends ObjectBehavior
     {
         $mailchimp->success()->willReturn(false);
         $mailchimp->getLastResponse()->willReturn([
-            "type" => "http://developer.mailchimp.com/documentation/mailchimp/guides/error-glossary/",
-            "title" => "Invalid Resource",
-            "status" => 404,
-            "detail" => "The requested resource could not be found.",
-            "instance" => ""
+            "headers" => [],
+            "body" => '{"type":"http://developer.mailchimp.com/documentation/mailchimp/guides/error-glossary/","title":"Invalid Resource","status":404,"detail":"The requested resource could not be found.","instance":""}'
         ]);
 
         $this->shouldThrow(new MailchimpException(404, 'The requested resource could not be found.', "http://developer.mailchimp.com/documentation/mailchimp/guides/error-glossary/", "Invalid Resource", null, ''))
