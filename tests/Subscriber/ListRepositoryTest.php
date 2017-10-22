@@ -1,8 +1,11 @@
 <?php
+
+namespace Tests\Subscriber;
+
 use PHPUnit\Framework\TestCase;
 use Welp\MailchimpBundle\Subscriber\ListRepository;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
-use \DrewM\MailChimp\MailChimp;
+use DrewM\MailChimp\MailChimp;
 
 /**
  * These integration tests work with a test MailChimp account
@@ -10,14 +13,14 @@ use \DrewM\MailChimp\MailChimp;
  */
 class ListRepositoryTest extends TestCase
 {
-
     const MAILCHIMP_API_KEY = '3419ca97412af7c2893b89894275b415-us14';
-    const LIST_ID = 'ba039c6198';
+    const LIST_ID           = 'ba039c6198';
 
     protected $listRepository = null;
 
-    public function setUp(){
-        $mailchimp = new MailChimp(self::MAILCHIMP_API_KEY);
+    public function setUp()
+    {
+        $mailchimp            = new MailChimp(self::MAILCHIMP_API_KEY);
         $this->listRepository = new ListRepository($mailchimp);
     }
 
@@ -33,27 +36,27 @@ class ListRepositoryTest extends TestCase
     {
         // /!\ if toto already exist, this test will throw an error...
         $subscriber = new Subscriber('toto@gmail.com', ['FNAME' => 'Toto', 'LNAME' => 'TEST'], ['language' => 'fr']);
-        $result = $this->listRepository->subscribe(self::LIST_ID, $subscriber);
+        $result     = $this->listRepository->subscribe(self::LIST_ID, $subscriber);
         //var_dump($result);
         $this->assertNotEmpty($result);
         $this->assertEquals($result['email_address'], 'toto@gmail.com');
-        $this->assertEquals($result['status'], "subscribed");
+        $this->assertEquals($result['status'], 'subscribed');
     }
 
     public function testUnsubscribe()
     {
         $subscriber = new Subscriber('toto@gmail.com', ['FNAME' => 'Toto', 'LNAME' => 'TEST'], ['language' => 'fr']);
-        $result = $this->listRepository->unsubscribe(self::LIST_ID, $subscriber);
+        $result     = $this->listRepository->unsubscribe(self::LIST_ID, $subscriber);
         //var_dump($result);
         $this->assertNotEmpty($result);
         $this->assertEquals($result['email_address'], 'toto@gmail.com');
-        $this->assertEquals($result['status'], "unsubscribed");
+        $this->assertEquals($result['status'], 'unsubscribed');
     }
 
     public function testDelete()
     {
         $subscriber = new Subscriber('toto@gmail.com', ['FNAME' => 'Toto', 'LNAME' => 'TEST'], ['language' => 'fr']);
-        $result = $this->listRepository->delete(self::LIST_ID, $subscriber);
+        $result     = $this->listRepository->delete(self::LIST_ID, $subscriber);
         $this->assertEmpty($result);
     }
 
@@ -80,7 +83,7 @@ class ListRepositoryTest extends TestCase
         $emails = [
             'tata@gmail.com',
             'tete@gmail.com',
-            'tztz@gmail.com'
+            'tztz@gmail.com',
         ];
 
         $result = $this->listRepository->batchUnsubscribe(self::LIST_ID, $emails);
@@ -95,7 +98,7 @@ class ListRepositoryTest extends TestCase
             'tata@gmail.com',
             'tete@gmail.com',
             'tztz@gmail.com',
-            'trtr@gmail.com'
+            'trtr@gmail.com',
         ];
 
         $result = $this->listRepository->batchDelete(self::LIST_ID, $emails);
@@ -120,11 +123,11 @@ class ListRepositoryTest extends TestCase
 
     public function testMergeTags()
     {
-        $result = $this->listRepository->addMergeField(self::LIST_ID, ["name" => "Test", "type" => "text", "tag" => "MYTEST"]);
+        $result = $this->listRepository->addMergeField(self::LIST_ID, ['name' => 'Test', 'type' => 'text', 'tag' => 'MYTEST']);
         //var_dump($result);
         $this->assertNotEmpty($result);
         $this->assertEquals($result['tag'], 'MYTEST');
-        $result2 = $this->listRepository->updateMergeField(self::LIST_ID, $result['merge_id'], ["tag" => "SECONDTEST"]);
+        $result2 = $this->listRepository->updateMergeField(self::LIST_ID, $result['merge_id'], ['tag' => 'SECONDTEST']);
         //var_dump($result2);
         $this->assertNotEmpty($result2);
         $this->assertEquals($result2['tag'], 'SECONDTEST');
@@ -134,12 +137,9 @@ class ListRepositoryTest extends TestCase
 
     public function testWebhook()
     {
-
         //$result = $this->listRepository->registerMainWebhook(self::LIST_ID, 'http://requestb.in/rkhf26rk');
 
         //var_dump($result);
         //$this->assertNotEmpty($result);
     }
-
 }
-?>

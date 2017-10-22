@@ -1,11 +1,12 @@
 <?php
+
 // tests/AppBundle/Command/CreateUserCommandTest.php
-namespace Tests\AppBundle\Command;
+
+namespace Tests\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Tester\CommandTester;
-
 use Welp\MailchimpBundle\Command\SynchronizeSubscribersCommand;
 
 // @TODO make this test work...
@@ -37,5 +38,3 @@ class SynchronizeSubscribersCommandTest extends KernelTestCase
         */
     }
 }
-
-?>
