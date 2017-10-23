@@ -23,6 +23,11 @@
             "Welp\\MailchimpBundle\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=5.6",
         "drewm/mailchimp-api": "^2.2"
