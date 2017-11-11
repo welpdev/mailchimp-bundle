@@ -12,4 +12,10 @@ interface ListProviderInterface
      * @return array of SubscriberList
      */
     public function getLists();
+
+    /**
+     * Get one Mailchimp list by id
+     * @return SubscriberList
+     */
+    public function getList($listId);
 }
