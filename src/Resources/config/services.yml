@@ -2,6 +2,8 @@ parameters:
     welp_mailchimp.list_synchronizer_class: Welp\MailchimpBundle\Subscriber\ListSynchronizer
     welp_mailchimp.list_repository_class: Welp\MailchimpBundle\Subscriber\ListRepository
     welp_mailchimp.subscriber_listener_class: Welp\MailchimpBundle\Event\SubscriberListener
+    welp_mailchimp.provider_factory_class: Welp\MailchimpBundle\Provider\ProviderFactory
+    welp_mailchimp.config_list_provider_class: Welp\MailchimpBundle\Provider\ConfigListProvider
 
 services:
     # MailChimp
@@ -18,6 +20,17 @@ services:
         class: "%welp_mailchimp.list_synchronizer_class%"
         arguments:
             - '@welp_mailchimp.list_repository'
+    
+    welp_mailchimp.provider.factory:
+        class: "%welp_mailchimp.provider_factory_class%"
+        arguments:
+            - '@service_container'
+
+    welp_mailchimp.list_provider:
+        class: "%welp_mailchimp.config_list_provider_class%"
+        arguments:
+            - '@welp_mailchimp.provider.factory'
+            - '%welp_mailchimp.lists%'
 
     # Events
     welp_mailchimp.subscriber_listener:
