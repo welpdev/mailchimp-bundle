@@ -44,8 +44,7 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
 
         if (!$listProvider instanceof ListProviderInterface) {
             throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
-        }
-        
+        }       
 
         $lists = $listProvider->getLists();
         
