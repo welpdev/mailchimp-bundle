@@ -30,7 +30,7 @@ class ConfigListProvider implements ListProviderInterface
             $providerServiceKey = $listParameters['subscriber_provider'];
 
             $provider = $this->providerFactory->create($providerServiceKey);
-            $lists[] = new SubscriberList($listId, $provider);           
+            $lists[] = new SubscriberList($listId, $provider, $listParameters['merge_fields']);           
         }
 
         return $lists;
