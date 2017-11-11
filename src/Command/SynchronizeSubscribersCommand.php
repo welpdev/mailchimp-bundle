@@ -7,9 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-
-use Welp\MailchimpBundle\Provider\ProviderInterface;
-use Welp\MailchimpBundle\Subscriber\SubscriberList;
+use Welp\MailchimpBundle\Provider\ListProviderInterface;
 
 class SynchronizeSubscribersCommand extends ContainerAwareCommand
 {
@@ -37,19 +35,23 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
-
-        $lists = $this->getContainer()->getParameter('welp_mailchimp.lists');
-        if (sizeof($lists) == 0) {
-            throw new \RuntimeException("No Mailchimp list has been defined. Check the your config.yml file based on MailchimpBundle's README.md");
+        $listProviderKey = $this->getContainer()->getParameter('welp_mailchimp.list_provider');
+        try {
+            $listProvider = $this->getContainer()->get($listProviderKey); 
+        } catch (ServiceNotFoundException $e) {
+            throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
         }
 
-        foreach ($lists as $listId => $listParameters) {
-            $providerServiceKey = $listParameters['subscriber_provider'];
+        if (!$listProvider instanceof ListProviderInterface) {
+            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
+        }
+        
 
-            $provider = $this->getProvider($providerServiceKey);
-            $list = new SubscriberList($listId, $provider);
-
-            $output->writeln(sprintf('Synchronize list %s', $listId));
+        $lists = $listProvider->getLists();
+        
+        foreach ($lists as $list) {           
+            
+            $output->writeln(sprintf('Synchronize list %s', $list->getListId()));
             $batchesResult = $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
             if ($input->getOption('follow-sync')) {
                 while (!$this->batchesFinished($batchesResult)) {
@@ -107,25 +109,5 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
         } else {
             return sprintf('batch %s, current status %s, operations %d/%d with %d errors', $batch['id'], $batch['status'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations']);
         }
-    }
-
-    /**
-     * Get subscriber provider
-     * @param string $providerServiceKey
-     * @return ProviderInterface $provider
-     */
-    private function getProvider($providerServiceKey)
-    {
-        try {
-            $provider = $this->getContainer()->get($providerServiceKey);
-        } catch (ServiceNotFoundException $e) {
-            throw new \InvalidArgumentException(sprintf('Provider "%s" should be defined as a service.', $providerServiceKey), $e->getCode(), $e);
-        }
-
-        if (!$provider instanceof ProviderInterface) {
-            throw new \InvalidArgumentException(sprintf('Provider "%s" should implement Welp\MailchimpBundle\Provider\ProviderInterface.', $providerServiceKey));
-        }
-
-        return $provider;
     }
 }
