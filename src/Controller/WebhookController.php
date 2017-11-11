@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
+use Welp\MailchimpBundle\Provider\ListProviderInterface;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
 /**
@@ -58,16 +59,24 @@ class WebhookController extends Controller
         }
 
         $listId = $data['list_id'];
-        $lists = $this->getParameter('welp_mailchimp.lists');
+
+        $listProviderKey = $this->getParameter('welp_mailchimp.list_provider');
+        try {
+            $listProvider = $this->get($listProviderKey); 
+        } catch (ServiceNotFoundException $e) {
+            throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
+        }
+
+        if (!$listProvider instanceof ListProviderInterface) {
+            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
+        }
+
+        $list = $listProvider->getList($listId);
 
         // Check the webhook_secret
         $authorized = false;
-        foreach ($lists as $id => $listParameters) {
-            if ($listId ==  $id) {
-                if ($listParameters['webhook_secret'] == $hooksecret) {
-                    $authorized = true;
-                }
-            }
+        if($list != null && $list->getWebhookSecret() == $hooksecret) {
+            $authorized = true;                           
         }
 
         if (!$authorized) {
