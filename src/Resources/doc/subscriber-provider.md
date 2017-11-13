@@ -81,3 +81,72 @@ After this, don't forget to add the service key for your list into your `config.
         subscriber_provider: 'yourapp.provider2'
         ...
 ```
+
+## Dynamic Subscriber Provider
+
+If you want to create a reusable provider for multiple list without defining a service for each one, you can make use of the `Welp\MailChimpBundle\Provider\DynamicProviderInterface`. It works exactly the same as the `ProviderInterface` except it has one setter method that is used to set the current list in the synchronisation process.
+
+Example implementation:
+
+```php
+<?php
+
+namespace YourApp\App\Newsletter;
+
+use Welp\MailchimpBundle\Provider\DynamicProviderInterface;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+use YourApp\Model\User\UserRepository;
+use YourApp\Model\User\User;
+
+class DynamicProvider implements DynamicProviderInterface
+{
+    
+    // these tags should match the one you added in MailChimp's backend
+    const TAG_NICKNAME =           'NICKNAME';
+    const TAG_GENDER =             'GENDER';
+    const TAG_BIRTHDATE =          'BIRTHDATE';
+    const TAG_LAST_ACTIVITY_DATE = 'LASTACTIVI';
+    const TAG_REGISTRATION_DATE =  'REGISTRATI';
+    const TAG_CITY =               'CITY';
+
+    protected $userRepository;
+    protected $listId;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
+    // List id is set for each list in the synchronisation process
+    public function setListId(string $listId)
+    {
+        $this->listId = $listId;
+    }
+
+    public function getSubscribers()
+    {
+        //now make use of the list id when querying for users
+        $users = $this->userRepository->findSubscribersByListId($this->listId);
+
+        $subscribers = array_map(function(User $user) {
+            $subscriber = new Subscriber($user->getEmail(), [
+                self::TAG_NICKNAME => $user->getNickname(),
+                self::TAG_GENDER => $user->getGender(),
+                self::TAG_BIRTHDATE => $user->getBirthdate() ? $user->getBirthdate()->format('Y-m-d') : null,
+                self::TAG_CITY => $user->getCity(),
+                self::TAG_LAST_ACTIVITY_DATE => $user->getLastActivityDate() ? $user->getLastActivityDate()->format('Y-m-d') : null,
+                self::TAG_REGISTRATION_DATE => $user->getRegistrationDate() ? $user->getRegistrationDate()->format('Y-m-d') : null,
+            ],[
+                'language'   => 'fr',
+                'email_type' => 'html'
+            ]);
+
+            return $subscriber;
+        }, $users);
+
+        return $subscribers;
+    }
+}
+
+
+``` 
