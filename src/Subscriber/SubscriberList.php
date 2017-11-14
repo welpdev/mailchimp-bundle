@@ -3,6 +3,7 @@
 namespace Welp\MailchimpBundle\Subscriber;
 
 use Welp\MailchimpBundle\Provider\ProviderInterface;
+use Welp\MailchimpBundle\Provider\DynamicProviderInterface;
 
 /**
  * SubscriberList linked a MailChimpList with a SubscriberProvider
@@ -30,6 +31,10 @@ class SubscriberList
     {
         $this->listId = $listId;
         $this->provider = $provider;
+        //If the provider implements DynamicProviderInterface, set the list id in the provider
+        if ($this->provider instanceof DynamicProviderInterface) {
+            $this->provider->setListId($this->listId);
+        }
     }
 
     /**
