@@ -8,7 +8,7 @@ use Welp\MailchimpBundle\Provider\DynamicProviderInterface;
 /**
  * SubscriberList linked a MailChimpList with a SubscriberProvider
  */
-class SubscriberList
+class SubscriberList implements SubscriberListInterface
 {
     /**
      * MailChimp ListId

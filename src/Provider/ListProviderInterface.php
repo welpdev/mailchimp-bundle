@@ -3,19 +3,19 @@
 namespace Welp\MailchimpBundle\Provider;
 
 /**
- * Subscriber provider interface
+ * List provider interface
  */
 interface ListProviderInterface
 {
     /**
      * Get all the available Mailchimp lists
-     * @return array of SubscriberList
+     * @return array of SubscriberListInterface
      */
     public function getLists();
 
     /**
      * Get one Mailchimp list by id
-     * @return SubscriberList
+     * @return SubscriberListInterface
      */
     public function getList($listId);
 }
