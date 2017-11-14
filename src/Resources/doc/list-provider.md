@@ -36,20 +36,20 @@ namespace YourApp\App\Provider;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Welp\MailchimpBundle\Provider\ListProviderInterface;
-use Welp\MailchimpBundle\Subscriber\SubscriberListInterface;
+use Welp\MailchimpBundle\Provider\ProviderInterface;
 
 class DoctrineListProvider implements ListProviderInterface
 {
 
     private $em;
     private $listEntity;
-    private $userProvider;
+    private $subscriberProvider;
 
-    public function __construct(EntityManagerInterface $entityManager, SubscriberListInterface $listEntity, $userProvider)
+    public function __construct(EntityManagerInterface $entityManager, $listEntity, ProviderInterface $subscriberProvider)
     {
         $this->em = $entityManager;
         $this->listEntity = $listEntity;
-        $this->userProvider = $userProvider;
+        $this->subscriberProvider = $subscriberProvider;
     }
     
     /**
@@ -58,35 +58,39 @@ class DoctrineListProvider implements ListProviderInterface
     public function getList($listId)
     {
         $list = $this->em->getRepository($this->listEntity)->findOneByListId($listId);
-        $list->setProvider($this->userProvider);
+        $list->setProvider($this->subscriberProvider);
         return $list;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAll()
+    public function getLists()
     {
         $lists = $this->em->getRepository($this->listEntity)->findAll();
         foreach($lists as $list)
         {
             //add the provider to the list
-            $list->setProvider($this->userProvider);
+            $list->setProvider($this->subscriberProvider);
         }
         return $lists;
     }   
 }
 
 ```
+*Got your SubscriberProvider service key saved as a string with your list config ? <br>
+Make use of the `ProviderFactory` to get the the service:<br>
+`$provider = $this->providerFactory->create($providerServiceKey);`*
 
 Define your List provider as a service:
 
 ```yaml
 doctrine.list.provider:
+    class: YourApp\App\Provider\DoctrineListProvider
     public: true
     arguments:
         - '@doctrine.orm.entity_manager'
-        - 'Welp\MailchimpBundle\Subscriber\SubscriberList'
+        - 'YourApp\App\Entity\SubscriberList'
         - '@example_user_provider'
 ```
 
