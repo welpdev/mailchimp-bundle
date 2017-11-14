@@ -9,6 +9,7 @@ For each list you want to sync you must define a configuration in your `config.y
 ```yaml
 welp_mailchimp:
     api_key: YOURMAILCHIMPAPIKEY
+    list_provider: 'welp_mailchimp.list_provider'
     lists:
         listId1:
             # provider used in full synchronization
