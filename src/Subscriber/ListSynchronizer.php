@@ -22,10 +22,10 @@ class ListSynchronizer
 
     /**
      * Synchronise user from provider with MailChimp List
-     * @param SubscriberList $list
+     * @param SubscriberListInterface $list
      * @return void
      */
-    public function synchronize(SubscriberList $list)
+    public function synchronize(SubscriberListInterface $list)
     {
         $listData = $this->listRepository->findById($list->getListId());
 

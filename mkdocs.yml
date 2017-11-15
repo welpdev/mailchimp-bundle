@@ -10,6 +10,7 @@ pages:
     - Setup: setup.md
     - Configuration: configuration.md
     - Subscriber Provider: subscriber-provider.md
+    - List Provider: list-provider.md
     - Usage: usage.md
     - Webhook: webhook.md
     - Tests: tests.md

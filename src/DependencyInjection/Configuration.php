@@ -25,6 +25,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('api_key')
                     ->isRequired()
                 ->end()
+                ->scalarNode('list_provider')
+                    ->defaultValue('welp_mailchimp.list_provider')
+                ->end()
                 // lists
                 ->arrayNode('lists')
                     ->useAttributeAsKey('listId')
