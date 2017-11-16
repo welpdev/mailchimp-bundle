@@ -11,6 +11,7 @@ This bundle will help you synchronise your project's newsletter subscribers into
 ## Features
 
 * [x] Use your own userProvider (basic `FosSubscriberProvider` included to interface with FosUserBundle)
+* [x] Use your own listProvider (`DoctrineListProvider` included to retrieve your list from a database)
 * [x] Synchronize Merge Fields with your config
 * [x] Synchronize your subscriber with a List
 * [x] Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List
@@ -52,6 +53,7 @@ Look at the full documentation at <https://welpdev.github.io/mailchimp-bundle/>
 * Setup
 * Configuration
 * Subscriber Provider
+* List Provider
 * Usage
     * Synchronize merge fields
     * Full synchronization with command

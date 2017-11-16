@@ -18,3 +18,5 @@ pages:
     - MailChimp Doc: mailchimp-doc.md
     - Contributing: CONTRIBUTING.md
 theme: readthedocs
+markdown_extensions:
+    - pymdownx.github
