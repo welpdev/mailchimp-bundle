@@ -87,6 +87,13 @@
           
             <li>
     <li class="toctree-l1 ">
+        <a class="" href="../list-provider/">List Provider</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
         <a class="" href="../usage/">Usage</a>
         
     </li>
@@ -166,8 +173,9 @@
 <p>You need to add the list in MailChimp's backend first.</p>
 <h2 id="configyml">config.yml</h2>
 <p>For each list you want to sync you must define a configuration in your <code>config.yml</code>:</p>
-<pre><code class="yaml">welp_mailchimp:
+<pre class="highlight"><code class="language-yaml linenums">welp_mailchimp:
     api_key: YOURMAILCHIMPAPIKEY
+    list_provider: 'welp_mailchimp.list_provider'
     lists:
         listId1:
             # provider used in full synchronization
@@ -204,8 +212,7 @@
 
         listId2:
             subscriber_provider: 'yourapp.provider2'
-            ...
-</code></pre>
+            ...</code></pre>
 
 <p>Where <code>listIdX</code> is the list id of your MailChimp lists, and <code>yourapp.providerX</code> is the key of your provider's service that will provide the subscribers that need to be synchronized in MailChimp. See the documentation on create <a href="../subscriber-provider/">your own Subscriber provider</a>.</p>
 <p>Defining lists and providers is only necessary if you use full synchronization with the command.</p>
@@ -216,7 +223,7 @@
 </ul>
 <p>You can find all parameters in the MailChimp documentation.</p>
 <p>Example:</p>
-<pre><code class="yaml">    merge_fields:
+<pre class="highlight"><code class="language-yaml linenums">    merge_fields:
         -
             tag: FIRSTTAG
             name: My first tag
@@ -246,11 +253,10 @@
                     ...
                 size: 50
             help_text: this is a full test
-
 </code></pre>
 
 <p>Note: MailChimp provides two default merge fields (FNAME &amp; LNAME). You can use this config to handle them:</p>
-<pre><code class="yaml">    ...
+<pre class="highlight"><code class="language-yaml linenums">    ...
     merge_fields:
         -
             tag: FNAME
@@ -261,8 +267,7 @@
             tag: LNAME
             name: Last Name
             type: text
-            public: true
-</code></pre>
+            public: true</code></pre>
               
             </div>
           </div>

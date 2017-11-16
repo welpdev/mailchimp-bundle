@@ -87,6 +87,13 @@
           
             <li>
     <li class="toctree-l1 ">
+        <a class="" href="../list-provider/">List Provider</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
         <a class="" href="../usage/">Usage</a>
         
     </li>
@@ -165,21 +172,18 @@
                 <h1 id="setup">Setup</h1>
 <h2 id="installation">Installation</h2>
 <p>Add bundle to your project:</p>
-<pre><code class="bash">composer require welp/mailchimp-bundle
-</code></pre>
+<pre class="highlight"><code class="language-bash linenums">composer require welp/mailchimp-bundle</code></pre>
 
 <p>Add <code>Welp\MailchimpBundle\WelpMailchimpBundle</code> to your <code>AppKernel.php</code>:</p>
-<pre><code class="php">$bundles = [
+<pre class="highlight"><code class="language-php linenums">$bundles = [
     // ...
     new Welp\MailchimpBundle\WelpMailchimpBundle(),
-];
-</code></pre>
+];</code></pre>
 
 <h2 id="minimal-configuration">Minimal Configuration</h2>
 <p>In your <code>config.yml</code>:</p>
-<pre><code class="yaml">welp_mailchimp:
-    api_key: YOURMAILCHIMPAPIKEY
-</code></pre>
+<pre class="highlight"><code class="language-yaml linenums">welp_mailchimp:
+    api_key: YOURMAILCHIMPAPIKEY</code></pre>
 
 <p><a href="../configuration/">More configuration</a></p>
               

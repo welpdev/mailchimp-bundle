@@ -8,7 +8,7 @@
   
   <meta name="author" content="Titouan BENOIT">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Subscriber Languages - MailChimp Bundle</title>
+  <title>List Provider - MailChimp Bundle</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -17,9 +17,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Subscriber Languages";
-    var mkdocs_page_input_path = "subscriber-language.md";
-    var mkdocs_page_url = "/subscriber-language/";
+    var mkdocs_page_name = "List Provider";
+    var mkdocs_page_input_path = "list-provider.md";
+    var mkdocs_page_url = "/list-provider/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -75,8 +75,15 @@
 <li>
           
             <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../list-provider/">List Provider</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">List Provider</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#list-provider">List Provider</a></li>
+                
+            
+            </ul>
         
     </li>
 <li>
@@ -103,17 +110,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Subscriber Languages</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#subscriber-language">Subscriber Language</a></li>
-                
-                    <li><a class="toctree-l4" href="#language-codes">Language codes</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../subscriber-language/">Subscriber Languages</a>
         
     </li>
 <li>
@@ -154,10 +152,10 @@
     
       
     
-    <li>Subscriber Languages</li>
+    <li>List Provider</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="https://github.com/welpdev/mailchimp-bundle/edit/master/docs/subscriber-language.md"
+        <a href="https://github.com/welpdev/mailchimp-bundle/edit/master/docs/list-provider.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -167,64 +165,96 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="subscriber-language">Subscriber Language</h1>
-<ul>
-<li><a href="http://kb.mailchimp.com/lists/managing-subscribers/view-and-edit-subscriber-languages">MailChimp Doc</a></li>
-</ul>
-<h2 id="language-codes">Language codes</h2>
-<ul>
-<li>English = en</li>
-<li>Arabic = ar</li>
-<li>Afrikaans = af</li>
-<li>Belarusian = be</li>
-<li>Bulgarian = bg</li>
-<li>Catalan = ca</li>
-<li>Chinese = zh</li>
-<li>Croatian = hr</li>
-<li>Czech = cs</li>
-<li>Danish = da</li>
-<li>Dutch = nl</li>
-<li>Estonian = et</li>
-<li>Farsi = fa</li>
-<li>Finnish = fi</li>
-<li>French (France) = fr</li>
-<li>French (Canada) = fr_CA</li>
-<li>German = de</li>
-<li>Greek = el</li>
-<li>Hebrew = he</li>
-<li>Hindi = hi</li>
-<li>Hungarian = hu</li>
-<li>Icelandic = is</li>
-<li>Indonesian = id</li>
-<li>Irish = ga</li>
-<li>Italian = it</li>
-<li>Japanese = ja</li>
-<li>Khmer = km</li>
-<li>Korean = ko</li>
-<li>Latvian = lv</li>
-<li>Lithuanian = lt</li>
-<li>Maltese = mt</li>
-<li>Malay = ms</li>
-<li>Macedonian = mk</li>
-<li>Norwegian = no</li>
-<li>Polish = pl</li>
-<li>Portuguese (Brazil) = pt</li>
-<li>Portuguese (Portugal) = pt_PT</li>
-<li>Romanian = ro</li>
-<li>Russian = ru</li>
-<li>Serbian = sr</li>
-<li>Slovak = sk</li>
-<li>Slovenian = sl</li>
-<li>Spanish (Mexico) = es</li>
-<li>Spanish (Spain) = es_ES</li>
-<li>Swahili = sw</li>
-<li>Swedish = sv</li>
-<li>Tamil = ta</li>
-<li>Thai = th</li>
-<li>Turkish = tr</li>
-<li>Ukrainian = uk</li>
-<li>Vietnamese = vi</li>
-</ul>
+                <h1 id="list-provider">List Provider</h1>
+<p>By default the list configuration is read from the <code>config.yml</code> when correctly defined according to <a href="../configuration/">configuring your lists</a>. This is done by the default list provider (<code>ConfigListProvider</code>). If you want to use a diffrent source for your list config you can create your own List Provider that should implement <code>Welp\MailChimpBundle\Provider\ListProviderInterface</code>.</p>
+<pre class="highlight"><code class="language-php linenums">&lt;?php
+
+namespace Welp\MailchimpBundle\Provider;
+
+/**
+ * List provider interface
+ */
+interface ListProviderInterface
+{
+    /**
+     * Get all the available Mailchimp lists
+     * @return array of SubscriberListInterface
+     */
+    public function getLists();
+
+    /**
+     * Get one Mailchimp list by id
+     * @return SubscriberListInterface
+     */
+    public function getList($listId);
+}</code></pre>
+
+<p>With your own implementation you could for example fetch your list configuration from Doctrine. 
+Example implementation:</p>
+<p><pre class="highlight"><code class="language-php linenums">&lt;?php
+
+namespace YourApp\App\Provider;
+
+use Doctrine\ORM\EntityManagerInterface;
+use Welp\MailchimpBundle\Provider\ListProviderInterface;
+use Welp\MailchimpBundle\Provider\ProviderInterface;
+
+class DoctrineListProvider implements ListProviderInterface
+{
+
+    private $em;
+    private $listEntity;
+    private $subscriberProvider;
+
+    public function __construct(EntityManagerInterface $entityManager, $listEntity, ProviderInterface $subscriberProvider)
+    {
+        $this-&gt;em = $entityManager;
+        $this-&gt;listEntity = $listEntity;
+        $this-&gt;subscriberProvider = $subscriberProvider;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getList($listId)
+    {
+        $list = $this-&gt;em-&gt;getRepository($this-&gt;listEntity)-&gt;findOneByListId($listId);
+        $list-&gt;setProvider($this-&gt;subscriberProvider);
+        return $list;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLists()
+    {
+        $lists = $this-&gt;em-&gt;getRepository($this-&gt;listEntity)-&gt;findAll();
+        foreach($lists as $list)
+        {
+            //add the provider to the list
+            $list-&gt;setProvider($this-&gt;subscriberProvider);
+        }
+        return $lists;
+    }   
+}
+</code></pre>
+<em>Got your SubscriberProvider service key saved as a string with your list config ? <br>
+Make use of the <code>ProviderFactory</code> to get the the service:<br>
+<code>$provider = $this-&gt;providerFactory-&gt;create($providerServiceKey);</code></em></p>
+<p>Define your List provider as a service:</p>
+<pre class="highlight"><code class="language-yaml linenums">doctrine.list.provider:
+    class: YourApp\App\Provider\DoctrineListProvider
+    public: true
+    arguments:
+        - '@doctrine.orm.entity_manager'
+        - 'YourApp\App\Entity\SubscriberList'
+        - '@example_user_provider'</code></pre>
+
+<p>After this, don't forget to add the service key for your provider into your <code>config.yml</code>:</p>
+<pre class="highlight"><code class="language-yaml linenums">    welp_mailchimp:
+        api_key: ...
+        list_provider: 'doctrine.list.provider'
+        ...</code></pre>
               
             </div>
           </div>
@@ -232,10 +262,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../mailchimp-doc/" class="btn btn-neutral float-right" title="MailChimp Doc">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../usage/" class="btn btn-neutral float-right" title="Usage">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../tests/" class="btn btn-neutral" title="Tests"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../subscriber-provider/" class="btn btn-neutral" title="Subscriber Provider"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -265,10 +295,10 @@
           <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../tests/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../subscriber-provider/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../mailchimp-doc/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../usage/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

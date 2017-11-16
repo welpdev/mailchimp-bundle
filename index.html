@@ -93,6 +93,13 @@
           
             <li>
     <li class="toctree-l1 ">
+        <a class="" href="list-provider/">List Provider</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
         <a class="" href="usage/">Usage</a>
         
     </li>
@@ -173,33 +180,31 @@
 <a href="https://packagist.org/packages/welp/mailchimp-bundle"><img alt="Packagist" src="https://img.shields.io/packagist/v/welp/mailchimp-bundle.svg" /></a>
 <a href="https://packagist.org/packages/welp/mailchimp-bundle"><img alt="Packagist" src="https://img.shields.io/packagist/dt/welp/mailchimp-bundle.svg" /></a>
 <a href="https://raw.githubusercontent.com/welpdev/mailchimp-bundle/master/LICENSE.md"><img alt="GitHub license" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a></p>
-<p>This bundle will help you synchronise your project's newsletter subscribers into MailChimp throught MailChimp API V3.</p>
+<p>This bundle will help you synchronise your project's newsletter subscribers into MailChimp through MailChimp API V3.</p>
 <h2 id="features">Features</h2>
-<ul>
-<li>[x] Use your own userProvider (basic <code>FosSubscriberProvider</code> included to interface with FosUserBundle)</li>
-<li>[x] Synchronize Merge Fields with your config</li>
-<li>[x] Synchronize your subscriber with a List</li>
-<li>[x] Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List</li>
-<li>[x] Retrieve <a href="https://github.com/drewm/mailchimp-api">MailChimp Object</a> to make custom MailChimp API V3 requests</li>
-<li>[x] Register Webhooks</li>
+<ul class="task-list">
+<li class="task-list-item"><input type="checkbox" disabled checked> Use your own userProvider (basic <code>FosSubscriberProvider</code> included to interface with FosUserBundle)</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Use your own listProvider (<code>DoctrineListProvider</code> included to retrieve your list from a database)</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Synchronize Merge Fields with your config</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Synchronize your subscriber with a List</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Use lifecycle event to subscribe/unsubscribe/delete subscriber from a List</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Retrieve <a href="https://github.com/drewm/mailchimp-api">MailChimp Object</a> to make custom MailChimp API V3 requests</li>
+<li class="task-list-item"><input type="checkbox" disabled checked> Register Webhooks</li>
 </ul>
 <h2 id="setup">Setup</h2>
 <p>Add bundle to your project:</p>
-<pre><code class="bash">composer require welp/mailchimp-bundle
-</code></pre>
+<pre class="highlight"><code class="language-bash linenums">composer require welp/mailchimp-bundle</code></pre>
 
 <p>Add <code>Welp\MailchimpBundle\WelpMailchimpBundle</code> to your <code>AppKernel.php</code>:</p>
-<pre><code class="php">$bundles = [
+<pre class="highlight"><code class="language-php linenums">$bundles = [
     // ...
     new Welp\MailchimpBundle\WelpMailchimpBundle(),
-];
-</code></pre>
+];</code></pre>
 
 <h2 id="minimal-configuration">Minimal Configuration</h2>
 <p>In your <code>config.yml</code>:</p>
-<pre><code class="yaml">welp_mailchimp:
-    api_key: YOURMAILCHIMPAPIKEY
-</code></pre>
+<pre class="highlight"><code class="language-yaml linenums">welp_mailchimp:
+    api_key: YOURMAILCHIMPAPIKEY</code></pre>
 
 <p>More configuration on the <a href="configuration/">documentation</a>.</p>
 <h2 id="documentation">Documentation</h2>
@@ -207,6 +212,7 @@
 <li><a href="setup/">Setup</a></li>
 <li><a href="configuration/">Configuration</a></li>
 <li><a href="subscriber-provider/">Subscriber Provider</a></li>
+<li><a href="list-provider/">List Provider</a></li>
 <li><a href="usage/">Usage</a><ul>
 <li>Synchronize merge fields</li>
 <li>Full synchronization with command</li>
@@ -277,6 +283,6 @@
 </html>
 
 <!--
-MkDocs version : 0.16.1
-Build Date UTC : 2017-01-22 18:17:43
+MkDocs version : 0.16.0
+Build Date UTC : 2017-11-16 10:51:34
 -->

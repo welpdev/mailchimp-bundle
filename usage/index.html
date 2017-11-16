@@ -75,6 +75,13 @@
 <li>
           
             <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../list-provider/">List Provider</a>
+        
+    </li>
+<li>
+          
+            <li>
     <li class="toctree-l1 current">
         <a class="current" href="./">Usage</a>
         
@@ -198,7 +205,7 @@ SubscriberEvent::EVENT_DELETE = 'welp.mailchimp.delete';
 </code></pre>
 <h3 id="subscribe-new-user">Subscribe new User</h3>
 <p>Here is an example of a subscribe event dispatch:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -219,12 +226,11 @@ public function newUser(User $user)
         SubscriberEvent::EVENT_SUBSCRIBE,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <h3 id="unsubscribe-a-user">Unsubscribe a User</h3>
 <p>Here is an example of unsubscribe event dispatch:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -241,12 +247,11 @@ public function unsubscribeUser(User $user)
         SubscriberEvent::EVENT_UNSUBSCRIBE,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <h3 id="pending-a-user">Pending a User</h3>
 <p>Here is an example of pending event dispatch:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -267,12 +272,11 @@ public function pendingUser(User $user)
         SubscriberEvent::EVENT_PENDING,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <h3 id="clean-a-user">Clean a User</h3>
 <p>Here is an example of clean event dispatch:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -293,12 +297,11 @@ public function cleanUser(User $user)
         SubscriberEvent::EVENT_CLEAN,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <h3 id="update-a-user">Update a User</h3>
 <p>If your User changes his information, you can sync with MailChimp:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -320,14 +323,13 @@ public function updateUser(User $user)
         SubscriberEvent::EVENT_UPDATE,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <p>Note: we can't change the address email of a user... It's a MailChimp API V3 <a href="http://stackoverflow.com/questions/32224697/mailchimp-api-v3-0-change-subscriber-email?noredirect=1&amp;lq=1">issue</a>. I already have contacted MailChimp, but you can contact them too.</p>
 <p>The only workaround right now to change user address mail is to delete the old member and add a new one...</p>
 <h3 id="change-users-email-address-workaround">Change User's email address (WORKAROUND)</h3>
 <p>If your User changes his email address, you can sync with MailChimp:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 // ...
 
@@ -341,14 +343,13 @@ public function changeEmailAddress($oldEmail, $newEmail)
         new SubscriberEvent('your_list_id', $subscriber, $oldEmail)
     );
 
-}
-</code></pre>
+}</code></pre>
 
 <p>It's an UGLY WORKAROUND... Waiting for MailChimp API V3 to be able to properly change email address of a member...</p>
 <h3 id="delete-a-user">Delete a User</h3>
 <p>And finally delete a User</p>
 <p>Unsubscribe is simpler, you only need the email, all merge fields will be ignored:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 use Welp\MailchimpBundle\Event\SubscriberEvent;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
@@ -365,14 +366,13 @@ public function deleteUser(User $user)
         SubscriberEvent::EVENT_DELETE,
         new SubscriberEvent('your_list_id', $subscriber)
     );
-}
-</code></pre>
+}</code></pre>
 
 <h2 id="retrieve-mailchimp-object-to-make-custom-mailchimp-api-v3-requests">Retrieve MailChimp Object to make custom MailChimp API V3 requests</h2>
 <p>You can also retrieve the MailChimp Object which comes from the library <a href="https://github.com/drewm/mailchimp-api">drewm/mailchimp-api</a>.</p>
 <p>The service key is <code>welp_mailchimp.mailchimp_master</code>.</p>
 <p>Example:</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 // in any controller action...
     ...
     $MailChimp = $this-&gt;container-&gt;get('welp_mailchimp.mailchimp_master');
@@ -388,7 +388,6 @@ public function deleteUser(User $user)
     } else {
         echo $MailChimp-&gt;getLastError();
     }
-
 </code></pre>
               
             </div>
@@ -400,7 +399,7 @@ public function deleteUser(User $user)
         <a href="../webhook/" class="btn btn-neutral float-right" title="Webhook">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../subscriber-provider/" class="btn btn-neutral" title="Subscriber Provider"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../list-provider/" class="btn btn-neutral" title="List Provider"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -430,7 +429,7 @@ public function deleteUser(User $user)
           <a href="https://github.com/welpdev/mailchimp-bundle" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../subscriber-provider/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../list-provider/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../webhook/" style="color: #fcfcfc">Next &raquo;</a></span>

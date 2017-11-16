@@ -75,8 +75,17 @@
             
                 <li class="toctree-l3"><a href="#subscriber-provider">Subscriber Provider</a></li>
                 
+                    <li><a class="toctree-l4" href="#dynamic-subscriber-provider">Dynamic Subscriber Provider</a></li>
+                
             
             </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../list-provider/">List Provider</a>
         
     </li>
 <li>
@@ -160,14 +169,13 @@
               
                 <h1 id="subscriber-provider">Subscriber Provider</h1>
 <p>After <a href="../configuration/">configuring your lists</a> in <code>config.yml</code>, you need to create at least one <code>Provider</code> that will be used by the Symfony command. Your provider should be accessible via a service key (the same you reference in <code>subscriber_provider</code> in the configuration above):</p>
-<pre><code class="yaml">services:
+<pre class="highlight"><code class="language-yaml linenums">services:
     yourapp_mailchimp_subscriber_provider:
         class: YourApp\App\Newsletter\SubscriberProvider
-        arguments: [@yourapp_user_repository]
-</code></pre>
+        arguments: [@yourapp_user_repository]</code></pre>
 
 <p>It should implement <code>Welp\MailChimpBundle\Provider\ProviderInterface</code> and return an array of <code>Welp\MailChimpBundle\Subscriber\Subscriber</code> objects. The first argument of the <code>Subscriber</code> object is its e-mail, the second argument is an array of merge fields values you need to add in MailChimp's backend in your list settings under <code>List fields and *|MERGE|* tags</code> (see this <a href="http://kb.mailchimp.com/merge-tags/using/getting-started-with-merge-tags">guide on MailChimp</a> to add merge tags in your list) and the third is an array of options <a href="http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/">See MailChimp Documentation</a>.</p>
-<pre><code class="php">&lt;?php
+<pre class="highlight"><code class="language-php linenums">&lt;?php
 
 namespace YourApp\App\Newsletter;
 
@@ -216,21 +224,82 @@ class ExampleSubscriberProvider implements ProviderInterface
         return $subscribers;
     }
 }
-
 </code></pre>
 
 <p>We also provide a ready to use provider for the FosUserBundle -&gt; FosSubscriberProvider. You just need to register the service into your app:</p>
-<pre><code class="yaml">services:
+<pre class="highlight"><code class="language-yaml linenums">services:
     yourapp_mailchimp_fos_subscriber_provider:
         class: Welp\MailchimpBundle\Provider\FosSubscriberProvider
-        arguments: [@fos_user.user_manager]
-</code></pre>
+        arguments: [@fos_user.user_manager]</code></pre>
 
 <p>After this, don't forget to add the service key for your list into your <code>config.yml</code>:</p>
-<pre><code class="yaml">    ...
+<pre class="highlight"><code class="language-yaml linenums">    ...
     listId2:
         subscriber_provider: 'yourapp.provider2'
-        ...
+        ...</code></pre>
+
+<h2 id="dynamic-subscriber-provider">Dynamic Subscriber Provider</h2>
+<p>If you want to create a reusable provider for multiple list without defining a service for each one, you can make use of the <code>Welp\MailChimpBundle\Provider\DynamicProviderInterface</code>. It works exactly the same as the <code>ProviderInterface</code> except it has one setter method that is used to set the current list in the synchronisation process.</p>
+<p>Example implementation:</p>
+<pre class="highlight"><code class="language-php linenums">&lt;?php
+
+namespace YourApp\App\Newsletter;
+
+use Welp\MailchimpBundle\Provider\DynamicProviderInterface;
+use Welp\MailchimpBundle\Subscriber\Subscriber;
+use YourApp\Model\User\UserRepository;
+use YourApp\Model\User\User;
+
+class DynamicProvider implements DynamicProviderInterface
+{
+
+    // these tags should match the one you added in MailChimp's backend
+    const TAG_NICKNAME =           'NICKNAME';
+    const TAG_GENDER =             'GENDER';
+    const TAG_BIRTHDATE =          'BIRTHDATE';
+    const TAG_LAST_ACTIVITY_DATE = 'LASTACTIVI';
+    const TAG_REGISTRATION_DATE =  'REGISTRATI';
+    const TAG_CITY =               'CITY';
+
+    protected $userRepository;
+    protected $listId;
+
+    public function __construct(UserRepository $userRepository)
+    {
+        $this-&gt;userRepository = $userRepository;
+    }
+
+    // List id is set for each list in the synchronisation process
+    public function setListId(string $listId)
+    {
+        $this-&gt;listId = $listId;
+    }
+
+    public function getSubscribers()
+    {
+        //now make use of the list id when querying for users
+        $users = $this-&gt;userRepository-&gt;findSubscribersByListId($this-&gt;listId);
+
+        $subscribers = array_map(function(User $user) {
+            $subscriber = new Subscriber($user-&gt;getEmail(), [
+                self::TAG_NICKNAME =&gt; $user-&gt;getNickname(),
+                self::TAG_GENDER =&gt; $user-&gt;getGender(),
+                self::TAG_BIRTHDATE =&gt; $user-&gt;getBirthdate() ? $user-&gt;getBirthdate()-&gt;format('Y-m-d') : null,
+                self::TAG_CITY =&gt; $user-&gt;getCity(),
+                self::TAG_LAST_ACTIVITY_DATE =&gt; $user-&gt;getLastActivityDate() ? $user-&gt;getLastActivityDate()-&gt;format('Y-m-d') : null,
+                self::TAG_REGISTRATION_DATE =&gt; $user-&gt;getRegistrationDate() ? $user-&gt;getRegistrationDate()-&gt;format('Y-m-d') : null,
+            ],[
+                'language'   =&gt; 'fr',
+                'email_type' =&gt; 'html'
+            ]);
+
+            return $subscriber;
+        }, $users);
+
+        return $subscribers;
+    }
+}
+
 </code></pre>
               
             </div>
@@ -239,7 +308,7 @@ class ExampleSubscriberProvider implements ProviderInterface
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../usage/" class="btn btn-neutral float-right" title="Usage">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../list-provider/" class="btn btn-neutral float-right" title="List Provider">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../configuration/" class="btn btn-neutral" title="Configuration"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -275,7 +344,7 @@ class ExampleSubscriberProvider implements ProviderInterface
         <span><a href="../configuration/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../usage/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../list-provider/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
