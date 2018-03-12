@@ -9,25 +9,30 @@ services:
     # MailChimp
     welp_mailchimp.mailchimp_master:
         class: DrewM\MailChimp\MailChimp
+        public: true
         arguments: ['%welp_mailchimp.api_key%']
 
     welp_mailchimp.list_repository:
         class: "%welp_mailchimp.list_repository_class%"
+        public: true
         arguments:
             - '@welp_mailchimp.mailchimp_master'
 
     welp_mailchimp.list_synchronizer:
         class: "%welp_mailchimp.list_synchronizer_class%"
+        public: true
         arguments:
             - '@welp_mailchimp.list_repository'
     
     welp_mailchimp.provider.factory:
         class: "%welp_mailchimp.provider_factory_class%"
+        public: true
         arguments:
             - '@service_container'
 
     welp_mailchimp.list_provider:
         class: "%welp_mailchimp.config_list_provider_class%"
+        public: true
         arguments:
             - '@welp_mailchimp.provider.factory'
             - '%welp_mailchimp.lists%'
@@ -45,3 +50,16 @@ services:
             - { name: kernel.event_listener, event: welp.mailchimp.update, method: onUpdate }
             - { name: kernel.event_listener, event: welp.mailchimp.change_email, method: onChangeEmail }
             - { name: kernel.event_listener, event: welp.mailchimp.delete, method: onDelete }
+
+    # Commands
+    Welp\MailchimpBundle\Command\SynchronizeMergeFieldsCommand:
+        tags:
+            - { name: 'console.command', command: 'welp:mailchimp:synchronize-merge-fields' }   
+       
+    Welp\MailchimpBundle\Command\SynchronizeSubscribersCommand:
+        tags:
+            - { name: 'console.command', command: 'welp:mailchimp:synchronize-subscribers' }   
+
+    Welp\MailchimpBundle\Command\WebhookCommand:
+        tags:
+            - { name: 'console.command', command: 'welp:mailchimp:webhook' }
