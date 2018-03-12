@@ -76,7 +76,7 @@ class Subscriber
         // since fev2017, MailChimp API doesn't handle null value en throw 400
         // errors when you try to add subscriber with a mergefields value to null
         foreach ($mergeFields as $key => $value) {
-            if ($value == null) {
+            if ($value === null) {
                 unset($mergeFields[$key]);
             }
         }
@@ -94,7 +94,7 @@ class Subscriber
         // since fev2017, MailChimp API doesn't handle null value en throw 400
         // errors when you try to add subscriber with a mergefields value to null
         foreach ($this->mergeFields as $key => $value) {
-            if ($value == null) {
+            if ($value === null) {
                 unset($this->mergeFields[$key]);
             }
         }
