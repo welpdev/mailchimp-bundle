@@ -52,14 +52,17 @@ services:
             - { name: kernel.event_listener, event: welp.mailchimp.delete, method: onDelete }
 
     # Commands
-    Welp\MailchimpBundle\Command\SynchronizeMergeFieldsCommand:
+    welp_mailchimp.command.synchronize_merge_fields:
+        class: Welp\MailchimpBundle\Command\SynchronizeMergeFieldsCommand
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:synchronize-merge-fields' }   
        
-    Welp\MailchimpBundle\Command\SynchronizeSubscribersCommand:
+    welp_mailchimp.command.synchronize_subscribers:
+        class: Welp\MailchimpBundle\Command\SynchronizeSubscribersCommand
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:synchronize-subscribers' }   
 
-    Welp\MailchimpBundle\Command\WebhookCommand:
+    welp_mailchimp.command.webhook:
+        class: Welp\MailchimpBundle\Command\WebhookCommand
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:webhook' }

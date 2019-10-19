@@ -57,7 +57,7 @@ class ListRepositoryTest extends TestCase
     {
         $subscriber = new Subscriber('toto@gmail.com', ['FNAME' => 'Toto', 'LNAME' => 'TEST'], ['language' => 'fr']);
         $result     = $this->listRepository->delete(self::LIST_ID, $subscriber);
-        $this->assertEmpty($result);
+        $this->assertTrue($result);
     }
 
     public function testBatchSubscribe()
@@ -132,7 +132,7 @@ class ListRepositoryTest extends TestCase
         $this->assertNotEmpty($result2);
         $this->assertEquals($result2['tag'], 'SECONDTEST');
         $result3 = $this->listRepository->deleteMergeField(self::LIST_ID, $result2['merge_id']);
-        $this->assertEmpty($result3);
+        $this->assertTrue($result3);
     }
 
     public function testWebhook()
