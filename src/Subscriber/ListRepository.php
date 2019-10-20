@@ -73,7 +73,7 @@ class ListRepository
         if (!in_array($status, ['subscribed', 'unsubscribed', 'cleaned', 'pending', 'transactional'])) {
             throw new \RuntimeException('$status must be one of these values: subscribed, unsubscribed, cleaned, pending, transactional');
         }
-        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $subscriberHash = MailChimp::subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash",
             array_merge(
                 $subscriber->formatMailChimp(),
@@ -147,7 +147,7 @@ class ListRepository
      */
     public function update($listId, Subscriber $subscriber)
     {
-        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $subscriberHash = MailChimp::subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->patch("lists/$listId/members/$subscriberHash", $subscriber->formatMailChimp());
 
         if (!$this->mailchimp->success()) {
@@ -174,7 +174,7 @@ class ListRepository
         #       2. old email address not exists in list
         #       3. old or new email address doesn't exists in list
 
-        $subscriberHash = $this->mailchimp->subscriberHash($oldEmailAddress);
+        $subscriberHash = MailChimp::subscriberHash($oldEmailAddress);
         $oldMember = $this->mailchimp->get("lists/$listId/members/$subscriberHash");
         if (!$this->mailchimp->success()) {
             // problem with the oldSubcriber (doest not exist, ...)
@@ -204,7 +204,7 @@ class ListRepository
         }
 
         // add/update the new member
-        $subscriberHash = $this->mailchimp->subscriberHash($newSubscriber->getEmail());
+        $subscriberHash = MailChimp::subscriberHash($newSubscriber->getEmail());
         $result = $this->mailchimp->put("lists/$listId/members/$subscriberHash", $newMember);
         if (!$this->mailchimp->success()) {
             $this->throwMailchimpError($this->mailchimp->getLastResponse());
@@ -220,7 +220,7 @@ class ListRepository
      */
     public function delete($listId, Subscriber $subscriber)
     {
-        $subscriberHash = $this->mailchimp->subscriberHash($subscriber->getEmail());
+        $subscriberHash = MailChimp::subscriberHash($subscriber->getEmail());
         $result = $this->mailchimp->delete("lists/$listId/members/$subscriberHash");
 
         if (!$this->mailchimp->success()) {
@@ -244,7 +244,7 @@ class ListRepository
         foreach ($subscriberChunks as $subscriberChunk) {
             $Batch = $this->mailchimp->new_batch();
             foreach ($subscriberChunk as $index => $newsubscribers) {
-                $subscriberHash = $this->mailchimp->subscriberHash($newsubscribers->getEmail());
+                $subscriberHash = MailChimp::subscriberHash($newsubscribers->getEmail());
                 $Batch->put("op$index", "lists/$listId/members/$subscriberHash", array_merge(
                     $newsubscribers->formatMailChimp(),
                     ['status' => 'subscribed']
@@ -271,7 +271,7 @@ class ListRepository
         foreach ($emailsChunks as $emailsChunk) {
             $Batch = $this->mailchimp->new_batch();
             foreach ($emailsChunk as $index => $email) {
-                $emailHash = $this->mailchimp->subscriberHash($email);
+                $emailHash = MailChimp::subscriberHash($email);
                 $Batch->patch("op$index", "lists/$listId/members/$emailHash", [
                     'status' => 'unsubscribed'
                 ]);
@@ -297,7 +297,7 @@ class ListRepository
         foreach ($emailsChunks as $emailsChunk) {
             $Batch = $this->mailchimp->new_batch();
             foreach ($emailsChunk as $index => $email) {
-                $emailHash = $this->mailchimp->subscriberHash($email);
+                $emailHash = MailChimp::subscriberHash($email);
                 $Batch->delete("op$index", "lists/$listId/members/$emailHash");
             }
             $result = $Batch->execute();

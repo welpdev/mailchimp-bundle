@@ -13,8 +13,8 @@ class ListRepositorySpec extends ObjectBehavior
     public function let(MailChimp $mailchimp, Subscriber $subscriber)
     {
         $this->prepareSubscriber($subscriber);
-        $this->prepareMailchimpLists($mailchimp);
-
+        $this->prepareMailchimpLists($mailchimp);      
+          
         $this->beConstructedWith($mailchimp);
     }
 
@@ -73,14 +73,14 @@ class ListRepositorySpec extends ObjectBehavior
 
     public function it_delete_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $mailchimp->delete("lists/ba039c6198/members/md5ofthesubscribermail")->willReturn('deleted');
+        $mailchimp->delete("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691")->willReturn('deleted');
 
         $this->delete('ba039c6198', $subscriber)->shouldReturn('deleted');
     }
 
     public function it_update_a_subscriber(MailChimp $mailchimp, $subscriber)
     {
-        $mailchimp->patch("lists/ba039c6198/members/md5ofthesubscribermail", ["email_address" => "charles@terrasse.fr", "merge_fields" => ["FNAME" => "Charles", "LNAME" => "Terrasse"], "language" => "fr", "email_type" => "html"])->willReturn('update');
+        $mailchimp->patch("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691", ["email_address" => "charles@terrasse.fr", "merge_fields" => ["FNAME" => "Charles", "LNAME" => "Terrasse"], "language" => "fr", "email_type" => "html"])->willReturn('update');
 
         $this->update('ba039c6198', $subscriber)->shouldReturn('update');
     }
@@ -194,16 +194,14 @@ class ListRepositorySpec extends ObjectBehavior
     }
 
     protected function prepareMailchimpLists(MailChimp $mailchimp)
-    {
-        // subscriber hash
-        $mailchimp->subscriberHash('charles@terrasse.fr')->willReturn('md5ofthesubscribermail');
+    {       
         // success
         $mailchimp->success()->willReturn(true);
         // get the list
         $mailchimp->get("lists/ba039c6198")->willReturn(['id' => 'ba039c6198', 'name' => 'myList']);
         $mailchimp->get("lists/notfound")->willReturn(null);
         // subscribe member
-        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+        $mailchimp->put("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691", [
                 'email_address' => 'charles@terrasse.fr',
                 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
                 'language' => 'fr',
@@ -217,7 +215,7 @@ class ListRepositorySpec extends ObjectBehavior
                 'status'        => 'subscribed'
             ]);
 
-        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+        $mailchimp->put("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691", [
                 'email_address' => 'charles@terrasse.fr',
                 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
                 'language' => 'fr',
@@ -225,7 +223,7 @@ class ListRepositorySpec extends ObjectBehavior
                 'status'  => 'unsubscribed'
             ])->willReturn('unsubscribed');
 
-        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+        $mailchimp->put("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691", [
                 'email_address' => 'charles@terrasse.fr',
                 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
                 'language' => 'fr',
@@ -233,7 +231,7 @@ class ListRepositorySpec extends ObjectBehavior
                 'status'  => 'pending'
             ])->willReturn('pending');
 
-        $mailchimp->put("lists/ba039c6198/members/md5ofthesubscribermail", [
+        $mailchimp->put("lists/ba039c6198/members/b1a29fd58778c40c7f15f06a334dc691", [
                 'email_address' => 'charles@terrasse.fr',
                 'merge_fields'  => ['FNAME' => 'Charles', 'LNAME' => 'Terrasse'],
                 'language' => 'fr',
