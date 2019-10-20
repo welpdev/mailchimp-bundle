@@ -2,14 +2,36 @@
 
 namespace Welp\MailchimpBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Welp\MailchimpBundle\Provider\ListProviderInterface;
+use Welp\MailchimpBundle\Subscriber\ListRepository;
 
-class WebhookCommand extends ContainerAwareCommand
+class WebhookCommand extends Command
 {
+    /**
+     * The configured list provider.
+     *
+     * @var ListProviderInterface
+     */
+    private $listProvider;
+
+    /**
+     * The configured list repository.
+     *
+     * @var ListRepository
+     */
+    private $listRepository;
+
+    public function __construct(ListProviderInterface $listProvider, ListRepository $listRepository)
+    {
+        $this->listProvider = $listProvider;
+        $this->listRepository = $listRepository;
+
+        parent::__construct();
+    }
+
     protected function configure()
     {
         $this
@@ -23,27 +45,14 @@ class WebhookCommand extends ContainerAwareCommand
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
 
-        $listProviderKey = $this->getContainer()->getParameter('welp_mailchimp.list_provider');
-        try {
-            $listProvider = $this->getContainer()->get($listProviderKey); 
-        } catch (ServiceNotFoundException $e) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
-        }
-
-        if (!$listProvider instanceof ListProviderInterface) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
-        }       
-
-        $lists = $listProvider->getLists();
+        $lists = $this->listProvider->getLists();
 
         foreach ($lists as $list) {
             $url = $list->getWebhookUrl().'?hooksecret='.$list->getWebhookSecret();
             $output->writeln('Add webhook to list: '.$list->getListId());
             $output->writeln('Webhook url: '.$url);
 
-            $this->getContainer()->get('welp_mailchimp.list_repository')
-                ->registerMainWebhook($list->getListId(), $url);
-            ;
+            $this->listRepository->registerMainWebhook($list->getListId(), $url);
         }
 
         $output->writeln('✔ done');
