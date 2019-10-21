@@ -2,35 +2,38 @@
 
 namespace Welp\MailchimpBundle\Provider;
 
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Welp\MailchimpBundle\Provider\ProviderInterface;
+class ProviderFactory
+{
+    /**
+     * The available providers.
+     *
+     * @var array
+     */
+    private $providers;
 
-class ProviderFactory {
-
-    private $container;
-
-    public function __construct(ContainerInterface $container) {
-        $this->container = $container;
+    /**
+     * Add a provider to the provider array.
+     */
+    public function addProvider(string $providerKey, ProviderInterface $provider): void
+    {
+        if (!isset($this->providers[$providerKey])) {
+            $this->providers[$providerKey] = $provider;
+        }
     }
 
     /**
-     * Get subscriber provider
-     * @param string $providerServiceKey
+     * Get subscriber provider.
+     *
+     * @param string $providerKey
+     *
      * @return ProviderInterface $provider
      */
-    public function create($providerServiceKey) 
+    public function create($providerKey)
     {
-        try {
-            $provider = $this->container->get($providerServiceKey);
-        } catch (ServiceNotFoundException $e) {
-            throw new \InvalidArgumentException(sprintf('Provider "%s" should be defined as a service.', $providerServiceKey), $e->getCode(), $e);
+        if (!isset($this->providers[$providerKey])) {
+            throw new \InvalidArgumentException(sprintf('Provider "%s" should be defined as a service.', $providerKey));
         }
 
-        if (!$provider instanceof ProviderInterface) {
-            throw new \InvalidArgumentException(sprintf('Provider "%s" should implement Welp\MailchimpBundle\Provider\ProviderInterface.', $providerServiceKey));
-        }
-
-        return $provider;
+        return $this->providers[$providerKey];
     }
 }

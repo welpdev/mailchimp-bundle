@@ -2,17 +2,48 @@
 
 namespace Welp\MailchimpBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use DrewM\MailChimp\MailChimp;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Welp\MailchimpBundle\Provider\ListProviderInterface;
+use Welp\MailchimpBundle\Subscriber\ListSynchronizer;
 
-class SynchronizeSubscribersCommand extends ContainerAwareCommand
+class SynchronizeSubscribersCommand extends Command
 {
     /**
-     * @inheritDoc
+     * List Synchronizer.
+     *
+     * @var ListSynchronizer
+     */
+    private $listSynchronizer;
+
+    /**
+     * The configured list provider.
+     *
+     * @var ListProviderInterface
+     */
+    private $listProvider;
+
+    /**
+     * Mailchimp API class.
+     *
+     * @var MailChimp
+     */
+    private $mailchimp;
+
+    public function __construct(ListSynchronizer $listSynchronizer, ListProviderInterface $listProvider, MailChimp $mailchimp)
+    {
+        $this->listSynchronizer = $listSynchronizer;
+        $this->listProvider = $listProvider;
+        $this->mailchimp = $mailchimp;
+
+        parent::__construct();
+    }
+
+    /**
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -30,28 +61,17 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
-        $listProviderKey = $this->getContainer()->getParameter('welp_mailchimp.list_provider');
-        try {
-            $listProvider = $this->getContainer()->get($listProviderKey); 
-        } catch (ServiceNotFoundException $e) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
-        }
 
-        if (!$listProvider instanceof ListProviderInterface) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
-        }       
+        $lists = $this->listProvider->getLists();
 
-        $lists = $listProvider->getLists();
-        
-        foreach ($lists as $list) {           
-            
+        foreach ($lists as $list) {
             $output->writeln(sprintf('Synchronize list %s', $list->getListId()));
-            $batchesResult = $this->getContainer()->get('welp_mailchimp.list_synchronizer')->synchronize($list);
+            $batchesResult = $this->listSynchronizer->synchronize($list);
             if ($input->getOption('follow-sync')) {
                 while (!$this->batchesFinished($batchesResult)) {
                     $batchesResult = $this->refreshBatchesResult($batchesResult);
@@ -65,48 +85,56 @@ class SynchronizeSubscribersCommand extends ContainerAwareCommand
     }
 
     /**
-     * Refresh all batch from MailChimp API
+     * Refresh all batch from MailChimp API.
+     *
      * @param array $batchesResult
+     *
      * @return array
      */
     private function refreshBatchesResult($batchesResult)
     {
         $refreshedBatchsResults = [];
-        $mailchimp = $this->getContainer()->get('welp_mailchimp.mailchimp_master');
+
         foreach ($batchesResult as $key => $batch) {
-            $batch = $mailchimp->get("batches/".$batch['id']);
+            $batch = $this->mailchimp->get('batches/'.$batch['id']);
             array_push($refreshedBatchsResults, $batch);
         }
+
         return $refreshedBatchsResults;
     }
 
     /**
-     * Test if all batches are finished
+     * Test if all batches are finished.
+     *
      * @param array $batchesResult
+     *
      * @return bool
      */
     private function batchesFinished($batchesResult)
     {
         $allfinished = true;
         foreach ($batchesResult as $key => $batch) {
-            if ($batch['status'] != 'finished') {
+            if ('finished' != $batch['status']) {
                 $allfinished = false;
             }
         }
+
         return $allfinished;
     }
 
     /**
-     * Pretty display of batch info
+     * Pretty display of batch info.
+     *
      * @param array $batch
+     *
      * @return string
      */
     private function displayBatchInfo($batch)
     {
-        if ($batch['status'] == 'finished') {
+        if ('finished' == $batch['status']) {
             return sprintf('batch %s is finished, operations %d/%d with %d errors. http responses: %s', $batch['id'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations'], $batch['response_body_url']);
-        } else {
-            return sprintf('batch %s, current status %s, operations %d/%d with %d errors', $batch['id'], $batch['status'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations']);
         }
+
+        return sprintf('batch %s, current status %s, operations %d/%d with %d errors', $batch['id'], $batch['status'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations']);
     }
 }

@@ -27,9 +27,7 @@ services:
     welp_mailchimp.provider.factory:
         class: "%welp_mailchimp.provider_factory_class%"
         public: true
-        arguments:
-            - '@service_container'
-
+        
     welp_mailchimp.list_provider:
         class: "%welp_mailchimp.config_list_provider_class%"
         public: true
@@ -54,15 +52,26 @@ services:
     # Commands
     welp_mailchimp.command.synchronize_merge_fields:
         class: Welp\MailchimpBundle\Command\SynchronizeMergeFieldsCommand
+        arguments: 
+            - '@welp_mailchimp.list_synchronizer'
+            - '@welp_mailchimp.list_provider.current'
+
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:synchronize-merge-fields' }   
        
     welp_mailchimp.command.synchronize_subscribers:
         class: Welp\MailchimpBundle\Command\SynchronizeSubscribersCommand
+        arguments: 
+            - '@welp_mailchimp.list_synchronizer'
+            - '@welp_mailchimp.list_provider.current'
+            - '@welp_mailchimp.mailchimp_master'
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:synchronize-subscribers' }   
 
     welp_mailchimp.command.webhook:
         class: Welp\MailchimpBundle\Command\WebhookCommand
+        arguments: 
+            - '@welp_mailchimp.list_provider.current'
+            - '@welp_mailchimp.list_repository'
         tags:
             - { name: 'console.command', command: 'welp:mailchimp:webhook' }
