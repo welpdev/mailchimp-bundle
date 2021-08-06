@@ -4,7 +4,7 @@ php:
     - '7.1'
 
 before_script:
-    - composer install --dev -v --prefer-source
+    - php -d memory_limit=-1 composer install --dev -v --prefer-source
 
 script:
     - bin/phpspec run -fpretty --verbose
