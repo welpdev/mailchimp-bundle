@@ -2,7 +2,7 @@
 
 namespace Welp\MailchimpBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Event for MailChimp webhook
