@@ -17,7 +17,7 @@ class ListSynchronizerTest extends TestCase
 
     protected $listRepository = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $mailchimp            = new MailChimp(self::MAILCHIMP_API_KEY);
         $this->listRepository = new ListRepository($mailchimp);

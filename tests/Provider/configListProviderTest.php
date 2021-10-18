@@ -12,7 +12,7 @@ class ConfigListProviderTest extends TestCase
     protected $providerFactory = null;
     protected $listConfig;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->providerFactory = $this->createMock(\Welp\MailchimpBundle\Provider\ProviderFactory::class);   
           
