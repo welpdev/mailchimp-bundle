@@ -2,6 +2,8 @@
 
 namespace Welp\MailchimpBundle\Provider;
 
+use Welp\MailchimpBundle\Subscriber\SubscriberListInterface;
+
 /**
  * List provider interface
  */
