@@ -7,7 +7,7 @@ use Welp\MailchimpBundle\DependencyInjection\WelpMailchimpExtension;
 
 class WelpMailchimpBundle extends Bundle
 {
-    public function getContainerExtension()
+    public function getContainerExtension(): WelpMailchimpExtension
     {
         return new WelpMailchimpExtension();
     }
