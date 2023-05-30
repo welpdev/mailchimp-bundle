@@ -30,7 +30,7 @@ class WelpMailchimpExtension extends Extension
         $this->loadSubscriberProviders($container, $config['lists']);
     }
 
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'welp_mailchimp';
     }
