@@ -17,21 +17,21 @@ class SynchronizeSubscribersCommand extends Command
      *
      * @var ListSynchronizer
      */
-    private $listSynchronizer;
+    private ListSynchronizer $listSynchronizer;
 
     /**
      * The configured list provider.
      *
      * @var ListProviderInterface
      */
-    private $listProvider;
+    private ListProviderInterface $listProvider;
 
     /**
      * Mailchimp API class.
      *
      * @var MailChimp
      */
-    private $mailchimp;
+    private MailChimp $mailchimp;
 
     public function __construct(ListSynchronizer $listSynchronizer, ListProviderInterface $listProvider, MailChimp $mailchimp)
     {
@@ -45,7 +45,7 @@ class SynchronizeSubscribersCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Synchronizing subscribers in MailChimp')
@@ -63,7 +63,7 @@ class SynchronizeSubscribersCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
 
@@ -72,16 +72,21 @@ class SynchronizeSubscribersCommand extends Command
         foreach ($lists as $list) {
             $output->writeln(sprintf('Synchronize list %s', $list->getListId()));
             $batchesResult = $this->listSynchronizer->synchronize($list);
+
             if ($input->getOption('follow-sync')) {
                 while (!$this->batchesFinished($batchesResult)) {
                     $batchesResult = $this->refreshBatchesResult($batchesResult);
+
                     foreach ($batchesResult as $key => $batch) {
                         $output->writeln($this->displayBatchInfo($batch));
                     }
+
                     sleep(2);
                 }
             }
         }
+
+        return Command::SUCCESS;
     }
 
     /**
@@ -91,13 +96,13 @@ class SynchronizeSubscribersCommand extends Command
      *
      * @return array
      */
-    private function refreshBatchesResult($batchesResult)
+    private function refreshBatchesResult(array $batchesResult): array
     {
         $refreshedBatchsResults = [];
 
         foreach ($batchesResult as $key => $batch) {
             $batch = $this->mailchimp->get('batches/'.$batch['id']);
-            array_push($refreshedBatchsResults, $batch);
+            $refreshedBatchsResults[] = $batch;
         }
 
         return $refreshedBatchsResults;
@@ -110,11 +115,11 @@ class SynchronizeSubscribersCommand extends Command
      *
      * @return bool
      */
-    private function batchesFinished($batchesResult)
+    private function batchesFinished(array $batchesResult): bool
     {
         $allfinished = true;
         foreach ($batchesResult as $key => $batch) {
-            if ('finished' != $batch['status']) {
+            if ('finished' !== $batch['status']) {
                 $allfinished = false;
             }
         }
@@ -129,9 +134,9 @@ class SynchronizeSubscribersCommand extends Command
      *
      * @return string
      */
-    private function displayBatchInfo($batch)
+    private function displayBatchInfo(array $batch): string
     {
-        if ('finished' == $batch['status']) {
+        if ('finished' === $batch['status']) {
             return sprintf('batch %s is finished, operations %d/%d with %d errors. http responses: %s', $batch['id'], $batch['finished_operations'], $batch['total_operations'], $batch['errored_operations'], $batch['response_body_url']);
         }
 

@@ -2,34 +2,29 @@
 
 namespace Welp\MailchimpBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Psr\Container\ContainerExceptionInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
+use Symfony\Component\Routing\Attribute\Route;
 use Welp\MailchimpBundle\Provider\ListProviderInterface;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
-/**
- * @Route("/webhook")
- */
-class WebhookController extends Controller
+#[Route('/webhook')]
+class WebhookController extends AbstractController
 {
 
     /**
      * Endpoint for the mailchimp list Webhook
      * https://apidocs.mailchimp.com/webhooks/
-     * @Route("/endpoint", name="webhook_index")
-     * @Method({"POST", "GET"})
      * @param Request $request
-     * @throws AccessDeniedHttpException
+     * @param EventDispatcherInterface $eventDispatcher
      * @return JsonResponse
      */
-    public function indexAction(Request $request)
+    #[Route('/endpoint', name: 'webhook_index')]
+    public function indexAction(Request $request, EventDispatcherInterface $eventDispatcher): JsonResponse
     {
-
         // For Mailchimp ping GET
         if ($request->isMethod('GET')) {
             return new JsonResponse([
@@ -40,7 +35,7 @@ class WebhookController extends Controller
 
         // Handle POST request of Mailchimp
         $type = $request->request->get('type');
-        $data = $request->request->get('data');
+        $data = $request->request->all('data');
         /* Response example:
             data[merges][FNAME]: Tztz
             data[merges][EMAIL]: tztz@gmail.com
@@ -55,15 +50,16 @@ class WebhookController extends Controller
         $hooksecret = $request->query->get('hooksecret');
 
         if (empty($type) || empty($data) || empty($hooksecret) || !array_key_exists('list_id', $data)) {
-            throw new AccessDeniedHttpException('incorrect data format!');
+            throw $this->createAccessDeniedException('Incorrect data format!');
         }
 
         $listId = $data['list_id'];
 
         $listProviderKey = $this->getParameter('welp_mailchimp.list_provider');
+
         try {
-            $listProvider = $this->get($listProviderKey); 
-        } catch (ServiceNotFoundException $e) {
+            $listProvider = $this->get($listProviderKey);
+        } catch (ContainerExceptionInterface $e) {
             throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
         }
 
@@ -75,44 +71,26 @@ class WebhookController extends Controller
 
         // Check the webhook_secret
         $authorized = false;
-        if($list != null && $list->getWebhookSecret() == $hooksecret) {
+
+        if ($list !== null && $list->getWebhookSecret() === $hooksecret) {
             $authorized = true;                           
         }
 
         if (!$authorized) {
-            throw new AccessDeniedHttpException('Webhook secret mismatch!');
+            throw $this->createAccessDeniedException('Webhook secret mismatch!');
         }
 
-        // Trigger the right event
-        switch ($type) {
-            case 'subscribe':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_SUBSCRIBE, new WebhookEvent($data));
-                break;
-            case 'unsubscribe':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_UNSUBSCRIBE, new WebhookEvent($data));
-                break;
-            case 'profile':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_PROFILE, new WebhookEvent($data));
-                break;
-            case 'cleaned':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_CLEANED, new WebhookEvent($data));
-                break;
-            case 'upemail':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_UPEMAIL, new WebhookEvent($data));
-                break;
-            case 'campaign':
-                $dispatcher = $this->get('event_dispatcher');
-                $dispatcher->dispatch(WebhookEvent::EVENT_CAMPAIGN, new WebhookEvent($data));
-                break;
-            default:
-                throw new AccessDeniedHttpException('type mismatch!');
-                break;
-        }
+        $eventName = match ($type) {
+            'subscribe' => WebhookEvent::EVENT_SUBSCRIBE,
+            'unsubscribe' => WebhookEvent::EVENT_UNSUBSCRIBE,
+            'profile' => WebhookEvent::EVENT_PROFILE,
+            'cleaned' => WebhookEvent::EVENT_CLEANED,
+            'upemail' => WebhookEvent::EVENT_UPEMAIL,
+            'campaign' => WebhookEvent::EVENT_CAMPAIGN,
+            default => throw $this->createAccessDeniedException('Type mismatch!'),
+        };
+
+        $eventDispatcher->dispatch(new WebhookEvent($data), $eventName);
 
         return new JsonResponse([
             'type' => $type,
