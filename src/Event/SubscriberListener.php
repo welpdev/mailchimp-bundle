@@ -2,12 +2,13 @@
 
 namespace Welp\MailchimpBundle\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use Welp\MailchimpBundle\Subscriber\ListRepository;
 
 /**
  * Listener for subscriber unit synchronization
  */
-class SubscriberListener
+class SubscriberListener extends Event
 {
     /**
      * @var ListRepository

@@ -2,12 +2,13 @@
 
 namespace Welp\MailchimpBundle\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use Welp\MailchimpBundle\Subscriber\Subscriber;
 
 /**
  * Event for User unit sync
  */
-class SubscriberEvent
+class SubscriberEvent extends Event
 {
     /**
      * Event to subscribe a User

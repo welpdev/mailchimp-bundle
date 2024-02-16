@@ -2,10 +2,12 @@
 
 namespace Welp\MailchimpBundle\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
+
 /**
  * Event for MailChimp webhook
  */
-class WebhookEvent
+class WebhookEvent extends Event
 {
     /**
      * Event triggered when received webhook for user subscribe
