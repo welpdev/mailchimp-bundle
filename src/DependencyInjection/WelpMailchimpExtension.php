@@ -19,7 +19,7 @@ class WelpMailchimpExtension extends Extension
         $container->setParameter('welp_mailchimp.list_provider', $config['list_provider']);
         $container->setParameter('welp_mailchimp.api_key', isset($config['api_key']) ? $config['api_key'] : null);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../config'));
         $loader->load('services.yml');
 
         // create an alias for the chosen list provider service
