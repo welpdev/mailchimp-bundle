@@ -2,6 +2,6 @@
 #    resource: Welp\MailchimpBundle\Controller\WebhookController
 #    type:     attribute
 
-welp_mailchimp_bundle.routes:
+welp_mailchimp_webhook:
     type: attribute
     resource: '../src/Controller'
