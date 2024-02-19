@@ -4,7 +4,7 @@ namespace Welp\MailchimpBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
@@ -19,8 +19,12 @@ class WelpMailchimpExtension extends Extension
         $container->setParameter('welp_mailchimp.list_provider', $config['list_provider']);
         $container->setParameter('welp_mailchimp.api_key', isset($config['api_key']) ? $config['api_key'] : null);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yml');
+
+        $this->addAnnotatedClassesToCompile([
+            'Welp\\MailChimpBundle\\Controller\WebhookController',
+        ]);
 
         // create an alias for the chosen list provider service
         $alias = $config['list_provider'];

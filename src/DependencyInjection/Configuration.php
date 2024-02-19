@@ -19,13 +19,8 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('welp_mailchimp');
 
-        if (method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            $rootNode = $treeBuilder->root('welp_mailchimp');
-        }
-
-        $rootNode
+        $treeBuilder
+            ->getRootNode()
             ->children()
                 ->scalarNode('api_key')
                     ->isRequired()

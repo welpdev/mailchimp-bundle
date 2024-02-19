@@ -25,7 +25,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Welp\\MailchimpBundle\\Tests\\": "tests/"
         }
     },
     "require": {
@@ -40,6 +40,8 @@
         "symfony/symfony": "^6.3"
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }

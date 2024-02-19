@@ -10,8 +10,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    Welp\MailchimpBundle\Controller\WebhookController: ~
-
     # MailChimp
     welp_mailchimp.mailchimp_master:
         class: DrewM\MailChimp\MailChimp
