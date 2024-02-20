@@ -10,6 +10,9 @@ services:
         autowire: true
         autoconfigure: true
 
+    Welp\MailchimpBundle\Controller\:
+        resource: '../src/Controller/*'
+
     # MailChimp
     welp_mailchimp.mailchimp_master:
         class: DrewM\MailChimp\MailChimp

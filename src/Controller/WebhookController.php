@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route; // @TODO: deprecated since Symfony 6.4/7.0
 use Welp\MailchimpBundle\Provider\ListProviderInterface;
 use Welp\MailchimpBundle\Event\WebhookEvent;
 
