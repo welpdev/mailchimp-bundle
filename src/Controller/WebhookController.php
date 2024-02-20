@@ -35,7 +35,7 @@ class WebhookController extends AbstractController
 
         // Handle POST request of Mailchimp
         $type = $request->request->get('type');
-        $data = $request->request->all('data');
+        $data = $request->request->all('data'); // all() returns an array
         /* Response example:
             data[merges][FNAME]: Tztz
             data[merges][EMAIL]: tztz@gmail.com
