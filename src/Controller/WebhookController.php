@@ -2,8 +2,8 @@
 
 namespace Welp\MailchimpBundle\Controller;
 
-use Psr\Container\ContainerExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,11 @@ class WebhookController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/endpoint', name: 'webhook_index')]
-    public function indexAction(Request $request, EventDispatcherInterface $eventDispatcher): JsonResponse
+    public function indexAction(
+        Request $request,
+        EventDispatcherInterface $eventDispatcher,
+        #[Autowire('@welp_mailchimp.list_provider')] $listProvider,
+    ): JsonResponse
     {
         // For Mailchimp ping GET
         if ($request->isMethod('GET')) {
@@ -54,14 +58,6 @@ class WebhookController extends AbstractController
         }
 
         $listId = $data['list_id'];
-
-        $listProviderKey = $this->getParameter('welp_mailchimp.list_provider');
-
-        try {
-            $listProvider = $this->get($listProviderKey);
-        } catch (ContainerExceptionInterface $e) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should be defined as a service.', $listProviderKey), $e->getCode(), $e);
-        }
 
         if (!$listProvider instanceof ListProviderInterface) {
             throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
