@@ -36,7 +36,6 @@ class WebhookController extends AbstractController
                 'ping' => 'pong',
             ]);
         }
-
         // Handle POST request of Mailchimp
         $type = $request->request->get('type');
         $data = $request->request->all('data'); // all() returns an array
@@ -60,7 +59,7 @@ class WebhookController extends AbstractController
         $listId = $data['list_id'];
 
         if (!$listProvider instanceof ListProviderInterface) {
-            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProviderKey));
+            throw new \InvalidArgumentException(sprintf('List Provider "%s" should implement Welp\MailchimpBundle\Provider\ListProviderInterface.', $listProvider::class));
         }
 
         $list = $listProvider->getList($listId);
