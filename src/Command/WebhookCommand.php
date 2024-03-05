@@ -15,14 +15,14 @@ class WebhookCommand extends Command
      *
      * @var ListProviderInterface
      */
-    private $listProvider;
+    private ListProviderInterface $listProvider;
 
     /**
      * The configured list repository.
      *
      * @var ListRepository
      */
-    private $listRepository;
+    private ListRepository $listRepository;
 
     public function __construct(ListProviderInterface $listProvider, ListRepository $listRepository)
     {
@@ -32,7 +32,7 @@ class WebhookCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Add main webhook to a MailChimp List')
@@ -41,7 +41,7 @@ class WebhookCommand extends Command
         // @TODO add params : listId, webhookurl
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
 
@@ -56,5 +56,7 @@ class WebhookCommand extends Command
         }
 
         $output->writeln('✔ done');
+
+        return Command::SUCCESS;
     }
 }

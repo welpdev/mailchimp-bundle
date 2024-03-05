@@ -25,19 +25,23 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Welp\\MailchimpBundle\\Tests\\": "tests/"
         }
     },
     "require": {
-        "php": ">=5.6",
-        "drewm/mailchimp-api": "2.5.*"
+        "php": ">=8.1",
+        "drewm/mailchimp-api": "^2.5",
+        "symfony/event-dispatcher": "^6.3||^7.0",
+        "symfony/framework-bundle": "^6.3||^7.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2@dev",
-        "phpunit/phpunit": "~5",
-        "symfony/symfony": ">=2.7"
+        "phpspec/phpspec": "^7.5",
+        "phpunit/phpunit": "^9.6",
+        "symfony/symfony": "^6.3||^7.0"
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "bin",
+        "preferred-install": "dist",
+        "sort-packages": true
     }
 }

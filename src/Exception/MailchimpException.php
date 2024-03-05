@@ -12,20 +12,20 @@ class MailchimpException extends \Exception
      * for this occurrence of the problem.
      * @var int
      */
-    private $status;
+    private int $status;
 
     /**
      * A human-readable explanation specific to this occurrence of the problem.
      * @var string
      */
-    private $detail;
+    private string $detail;
 
     /**
      * An absolute URI that identifies the problem type. When dereferenced,
      * it should provide human-readable documentation for the problem type.
      * @var string
      */
-    private $type;
+    private string $type;
 
     /**
      * A short, human-readable summary of the problem type.
@@ -33,20 +33,20 @@ class MailchimpException extends \Exception
      * except for purposes of localization.
      * @var string
      */
-    private $title;
+    private string $title;
 
     /**
      * For field-specific details, see the 'errors' array.
-     * @var array
+     * @var array|null
      */
-    private $errors;
+    private ?array $errors;
 
     /**
      * A string that identifies this specific occurrence of the problem.
      * Please provide this ID when contacting support.
      * @var string
      */
-    private $instance;
+    private ?string $instance;
 
     /**
      * http://developer.mailchimp.com/documentation/mailchimp/guides/get-started-with-mailchimp-api-3/#errors
@@ -57,8 +57,9 @@ class MailchimpException extends \Exception
      * @param array  $errors
      * @param string $instance
      * @param \Throwable $previous
+     * @todo Fix $status: Optional parameter is provided before required.
      */
-    public function __construct($status=0, $detail, $type, $title, $errors=null, $instance=null, \Throwable $previous=null)
+    public function __construct($status = 0, $detail, $type, $title, $errors = null, $instance = null, \Throwable $previous=null)
     {
         parent::__construct($detail, $status, $previous);
 
@@ -75,7 +76,7 @@ class MailchimpException extends \Exception
      *
      * @return static
      */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
         return $this;
@@ -86,7 +87,7 @@ class MailchimpException extends \Exception
      *
      * @return static
      */
-    public function setTitle($title)
+    public function setTitle(string $title): static
     {
         $this->title = $title;
         return $this;
@@ -97,7 +98,7 @@ class MailchimpException extends \Exception
      *
      * @return static
      */
-    public function setErrors(array $errors)
+    public function setErrors(array $errors): static
     {
         $this->errors = $errors;
         return $this;
@@ -108,7 +109,7 @@ class MailchimpException extends \Exception
      *
      * @return static
      */
-    public function setInstance($instance)
+    public function setInstance(string $instance): static
     {
         $this->instance = $instance;
         return $this;
@@ -117,7 +118,7 @@ class MailchimpException extends \Exception
     /**
      * @return int
      */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
@@ -125,7 +126,7 @@ class MailchimpException extends \Exception
     /**
      * @return string
      */
-    public function getDetail()
+    public function getDetail(): string
     {
         return $this->detail;
     }
@@ -133,7 +134,7 @@ class MailchimpException extends \Exception
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -141,7 +142,7 @@ class MailchimpException extends \Exception
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -149,13 +150,14 @@ class MailchimpException extends \Exception
     /**
      * @return string
      */
-    public function getInstance()
+    public function getInstance(): ?string
     {
         return $this->instance;
     }
 
     /**
      * @return
+     * @todo: Artifact?
      */
     public function getString()
     {
@@ -163,9 +165,9 @@ class MailchimpException extends \Exception
     }
 
     /**
-     * @return array
+     * @return array|null
      */
-    public function getErrors()
+    public function getErrors(): ?array
     {
         return $this->errors;
     }

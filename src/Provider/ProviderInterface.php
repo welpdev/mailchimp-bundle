@@ -12,5 +12,5 @@ interface ProviderInterface
      * in order to sync with MailChimp List
      * @return array of Subscriber
      */
-    public function getSubscribers();
+    public function getSubscribers(): array;
 }

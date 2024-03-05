@@ -15,14 +15,14 @@ class SynchronizeMergeFieldsCommand extends Command
      *
      * @var ListSynchronizer
      */
-    private $listSynchronizer;
+    private ListSynchronizer $listSynchronizer;
 
     /**
      * The configured list provider.
      *
      * @var ListProviderInterface
      */
-    private $listProvider;
+    private ListProviderInterface $listProvider;
 
     public function __construct(ListSynchronizer $listSynchronizer, ListProviderInterface $listProvider)
     {
@@ -32,7 +32,7 @@ class SynchronizeMergeFieldsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription('Synchronizing merge fields in MailChimp')
@@ -41,7 +41,7 @@ class SynchronizeMergeFieldsCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf('<info>%s</info>', $this->getDescription()));
 
@@ -50,5 +50,7 @@ class SynchronizeMergeFieldsCommand extends Command
         foreach ($lists as $list) {
             $this->listSynchronizer->synchronizeMergeFields($list->getListId(), $list->getMergeFields());
         }
+
+        return Command::SUCCESS;
     }
 }

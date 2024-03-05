@@ -4,7 +4,7 @@ namespace Welp\MailchimpBundle\Subscriber;
 
 /**
  * Class to represent a subscriber
- * http://developer.mailchimp.com/documentation/mailchimp/reference/lists/members/
+ * https://mailchimp.com/developer/marketing/api/list-members/
  */
 class Subscriber
 {
@@ -12,19 +12,19 @@ class Subscriber
      * Subscriber's email
      * @var string
      */
-    protected $email;
+    protected string $email;
 
     /**
      * Subscriber's merge fields
      * @var array
      */
-    protected $mergeFields;
+    protected array $mergeFields;
 
     /**
      * Subscriber's options
      * @var array
      */
-    protected $options;
+    protected array $options;
 
     /**
      *
@@ -32,7 +32,7 @@ class Subscriber
      * @param array $mergeFields
      * @param array $options
      */
-    public function __construct($email, array $mergeFields = [], array $options = [])
+    public function __construct(string $email, array $mergeFields = [], array $options = [])
     {
         $this->email = $email;
         $this->mergeFields = $mergeFields;
@@ -40,10 +40,10 @@ class Subscriber
     }
 
     /**
-     * Formate Subscriber for MailChimp API request
+     * Format Subscriber for MailChimp API request
      * @return array
      */
-    public function formatMailChimp()
+    public function formatMailChimp(): array
     {
         $options = $this->options;
         if (!empty($this->getMergeFields())) {
@@ -61,7 +61,7 @@ class Subscriber
      * Correspond to email_address in MailChimp request
      * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -71,9 +71,9 @@ class Subscriber
      * @param array $mergeFields
      * @return array ['TAGKEY' => value, ...]
      */
-    public function setMergeFields(array $mergeFields)
+    public function setMergeFields(array $mergeFields): array
     {
-        // since fev2017, MailChimp API doesn't handle null value en throw 400
+        // since feb2017, MailChimp API doesn't handle null value en throw 400
         // errors when you try to add subscriber with a mergefields value to null
         foreach ($mergeFields as $key => $value) {
             if ($value === null) {
@@ -89,7 +89,7 @@ class Subscriber
      * Correspond to merge_fields in MailChimp request
      * @return array ['TAGKEY' => value, ...]
      */
-    public function getMergeFields()
+    public function getMergeFields(): array
     {
         // since fev2017, MailChimp API doesn't handle null value en throw 400
         // errors when you try to add subscriber with a mergefields value to null
@@ -98,6 +98,7 @@ class Subscriber
                 unset($this->mergeFields[$key]);
             }
         }
+
         return $this->mergeFields;
     }
 
@@ -106,7 +107,7 @@ class Subscriber
      * email_type, interests, language, vip, location, ip_signup, timestamp_signup, ip_opt, timestamp_opt
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
