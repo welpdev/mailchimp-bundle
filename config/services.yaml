@@ -6,6 +6,13 @@ parameters:
     welp_mailchimp.config_list_provider_class: Welp\MailchimpBundle\Provider\ConfigListProvider
 
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Welp\MailchimpBundle\Controller\:
+        resource: '../src/Controller/*'
+
     # MailChimp
     welp_mailchimp.mailchimp_master:
         class: DrewM\MailChimp\MailChimp

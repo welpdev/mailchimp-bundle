@@ -9,7 +9,7 @@ class ProviderFactory
      *
      * @var array
      */
-    private $providers;
+    private array $providers;
 
     /**
      * Add a provider to the provider array.
@@ -28,7 +28,7 @@ class ProviderFactory
      *
      * @return ProviderInterface $provider
      */
-    public function create($providerKey)
+    public function create(string $providerKey): ProviderInterface
     {
         if (!isset($this->providers[$providerKey])) {
             throw new \InvalidArgumentException(sprintf('Provider "%s" should be defined as a service.', $providerKey));

@@ -14,39 +14,39 @@ class SubscriberList implements SubscriberListInterface
      * MailChimp ListId
      * @var string
      */
-    protected $listId;
+    protected string $listId;
 
     /**
      * Subscriber provider
      * @var ProviderInterface
      */
-    protected $provider;
+    protected ProviderInterface $provider;
 
     /**
      * Merge fields
      * @var array
      */
-    protected $mergeFields;
+    protected array $mergeFields;
 
     /**
      * MailChimp webhook URL
      * @var string
      */
-    protected $webhookUrl;
-    
+    protected string $webhookUrl = '';
+
     /**
      * MailChimp webhook secret
      * @var string
      */
-    protected $webhookSecret;
+    protected string $webhookSecret = '';
 
     /**
      *
-     * @param string            $listId
+     * @param string $listId
      * @param ProviderInterface $provider
      * @param array             $mergeFields
      */
-    public function __construct($listId, ProviderInterface $provider, array $mergeFields = array())
+    public function __construct(string $listId, ProviderInterface $provider, array $mergeFields = [])
     {
         $this->listId = $listId;
         $this->provider = $provider;
@@ -55,14 +55,14 @@ class SubscriberList implements SubscriberListInterface
         //If the provider implements DynamicProviderInterface, set the list id in the provider
         if ($this->provider instanceof DynamicProviderInterface) {
             $this->provider->setListId($this->listId);
-        }        
+        }
     }
 
     /**
      * get the MailChimp ListId
      * @return string
      */
-    public function getListId()
+    public function getListId(): string
     {
         return $this->listId;
     }
@@ -71,7 +71,7 @@ class SubscriberList implements SubscriberListInterface
      * Get the subscriber provider
      * @return ProviderInterface
      */
-    public function getProvider()
+    public function getProvider(): ProviderInterface
     {
         return $this->provider;
     }
@@ -80,7 +80,7 @@ class SubscriberList implements SubscriberListInterface
      * Get the list merge fields
      * @return array
      */
-    public function getMergeFields()
+    public function getMergeFields(): array
     {
         return $this->mergeFields;
     }
@@ -89,16 +89,16 @@ class SubscriberList implements SubscriberListInterface
      * Get the list webhook URL
      * @return string
      */
-    public function getWebhookUrl()
+    public function getWebhookUrl(): string
     {
         return $this->webhookUrl;
     }
 
     /**
      * Set the list webhook URL
-     * @param string
+     * @param string $webhookUrl
      */
-    public function setWebhookUrl($webhookUrl)
+    public function setWebhookUrl(string $webhookUrl): void
     {
         $this->webhookUrl = $webhookUrl;
     }
@@ -107,16 +107,16 @@ class SubscriberList implements SubscriberListInterface
      * Get the list webhook secret
      * @return string
      */
-    public function getWebhookSecret()
+    public function getWebhookSecret(): string
     {
         return $this->webhookSecret;
     }
 
     /**
      * Set the list webhook secret
-     * @param string
+     * @param string $webhookSecret
      */
-    public function setWebhookSecret($webhookSecret)
+    public function setWebhookSecret(string $webhookSecret): void
     {
         $this->webhookSecret = $webhookSecret;
     }
