@@ -27,11 +27,11 @@ class ExampleSubscriberProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSubscribers()
+    public function getSubscribers(): array
     {
         $users = $this->userRepository->findSubscribers();
 
-        $subscribers = array_map(function (User $user) {
+        $subscribers = array_map(static function (User $user) {
             $subscriber = new Subscriber($user->getEmail(), [
                 self::TAG_NICKNAME => $user->getNickname(),
                 self::TAG_GENDER => $user->getGender(),

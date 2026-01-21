@@ -2,18 +2,18 @@
 
 namespace Welp\MailchimpBundle\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 use Welp\MailchimpBundle\Subscriber\ListRepository;
-use Welp\MailchimpBundle\Event\SubscriberEvent;
 
 /**
  * Listener for subscriber unit synchronization
  */
-class SubscriberListener
+class SubscriberListener extends Event
 {
     /**
      * @var ListRepository
      */
-    protected $listRepository;
+    protected ListRepository $listRepository;
 
     /**
      * @param ListRepository $listRepository
@@ -28,7 +28,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onSubscribe(SubscriberEvent $event)
+    public function onSubscribe(SubscriberEvent $event): void
     {
         $this->listRepository->subscribe(
             $event->getListId(),
@@ -41,7 +41,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onUnsubscribe(SubscriberEvent $event)
+    public function onUnsubscribe(SubscriberEvent $event): void
     {
         $this->listRepository->unsubscribe(
             $event->getListId(),
@@ -54,7 +54,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onPending(SubscriberEvent $event)
+    public function onPending(SubscriberEvent $event): void
     {
         $this->listRepository->pending(
             $event->getListId(),
@@ -67,7 +67,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onClean(SubscriberEvent $event)
+    public function onClean(SubscriberEvent $event): void
     {
         $this->listRepository->clean(
             $event->getListId(),
@@ -80,7 +80,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onUpdate(SubscriberEvent $event)
+    public function onUpdate(SubscriberEvent $event): void
     {
         $this->listRepository->update(
             $event->getListId(),
@@ -93,7 +93,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onChangeEmail(SubscriberEvent $event)
+    public function onChangeEmail(SubscriberEvent $event): void
     {
         $this->listRepository->changeEmailAddress(
             $event->getListId(),
@@ -107,7 +107,7 @@ class SubscriberListener
      * @param  SubscriberEvent $event
      * @return void
      */
-    public function onDelete(SubscriberEvent $event)
+    public function onDelete(SubscriberEvent $event): void
     {
         $this->listRepository->delete(
             $event->getListId(),

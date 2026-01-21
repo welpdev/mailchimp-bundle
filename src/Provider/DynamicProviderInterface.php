@@ -14,5 +14,5 @@ interface DynamicProviderInterface extends ProviderInterface
      * @param  string $listId
      * @return void
      */
-    public function setListId(string $listId);
+    public function setListId(string $listId): void;
 }
