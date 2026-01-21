@@ -15,14 +15,14 @@ class WebhookCommand extends Command
      *
      * @var ListProviderInterface
      */
-    private $listProvider;
+    private ListProviderInterface $listProvider;
 
     /**
      * The configured list repository.
      *
      * @var ListRepository
      */
-    private $listRepository;
+    private ListRepository $listRepository;
 
     public function __construct(ListProviderInterface $listProvider, ListRepository $listRepository)
     {
@@ -56,5 +56,7 @@ class WebhookCommand extends Command
         }
 
         $output->writeln('✔ done');
+
+        return Command::SUCCESS;
     }
 }
